@@ -3,57 +3,89 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Resources</title>
+  <title>NCA Resources</title>
   <style>
-    body { font-family: system-ui, Arial; max-width: 820px; margin: 48px auto; padding: 0 16px; }
-    h1 { margin: 0 0 10px; }
-    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
-    a.btn { display:block; text-decoration:none; color:#111; border:1px solid #ddd; border-radius:16px; padding:16px; }
-    a.btn:hover { border-color:#999; }
-    .title { font-weight: 800; margin: 0 0 6px; font-size: 18px; }
-    .desc { margin: 0; color:#555; }
+    body { font-family: system-ui, Arial; max-width: 900px; margin: 48px auto; padding: 0 16px; }
+    h1 { margin: 0 0 8px; font-size: 34px; letter-spacing: -0.02em; }
+    p.lead { margin: 0 0 22px; color:#555; }
 
-    /* Sub-buttons (under Extra's) */
-    .subrow { margin-top: 10px; display: grid; gap: 10px; }
+    .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .title { font-weight: 800; margin: 0 0 6px; font-size: 18px; }
+    .desc { margin: 0 0 12px; color:#555; }
+
+    a.btn {
+      display: block;
+      text-decoration: none;
+      color:#111;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 10px 14px;
+      text-align: center;
+      font-weight: 700;
+    }
+    a.btn:hover { border-color:#999; }
+
+    .subrow { margin-top: 12px; display: grid; gap: 10px; }
     a.subbtn {
       display: block;
       text-decoration: none;
-      color: #111;
+      color:#111;
       border: 1px solid #ddd;
       border-radius: 999px;
-      padding: 10px 12px;
-      font-size: 14px;
+      padding: 9px 12px;
       text-align: center;
+      font-size: 14px;
     }
     a.subbtn:hover { border-color:#999; }
+
     .disabled { opacity: 0.6; cursor: not-allowed; }
+    footer { margin-top: 22px; font-size: 13px; color:#666; }
   </style>
 </head>
 <body>
-  <h1>Resources</h1>
+  <h1>NCA Resources</h1>
+  <p class="lead">Book links and supporting materials.</p>
 
   <div class="grid">
-    <a class="btn" href="https://jandul.github.io/archived-nca-book/" target="_blank" rel="noopener">
+    <!-- Legacy / supported book -->
+    <div class="card">
       <div class="title">Archived Book</div>
-      <p class="desc">Current supported “legacy” version</p>
-    </a>
+      <p class="desc">Current supported “legacy” version.</p>
+      <a class="btn" href="https://jandul.github.io/archived-nca-book/" target="_blank" rel="noopener">Open</a>
+    </div>
 
-    <a class="btn" href="#" onclick="return false;">
+    <!-- New book (placeholder) -->
+    <div class="card">
       <div class="title">New book</div>
-      <p class="desc">Coming soon</p>
-    </a>
+      <p class="desc">Coming soon.</p>
+      <a class="btn disabled" href="#" onclick="return false;">Coming soon</a>
+    </div>
 
-    <!-- Extra's card -->
-    <div class="btn" style="padding:16px;">
+    <!-- Extras -->
+    <div class="card">
       <div class="title">Extra's</div>
-      <p class="desc">Coming soon</p>
+      <p class="desc">Downloads and supporting material.</p>
 
       <div class="subrow">
-        <!-- Replace # with your real link when ready -->
-        <a class="subbtn disabled" href="#" onclick="return false;">Additional R code</a>
+        <!-- Live now -->
+        <a class="subbtn" href="https://github.com/jandul/nca-rcode" target="_blank" rel="noopener">Additional R code</a>
+
+        <!-- Placeholders for later -->
+        <a class="subbtn disabled" href="#" onclick="return false;">Quick Start guide</a>
+        <a class="subbtn disabled" href="#" onclick="return false;">SCoRe checklist</a>
       </div>
     </div>
   </div>
+
 </body>
 </html>
+
 
