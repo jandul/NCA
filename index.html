@@ -12,6 +12,21 @@
     a.btn:hover { border-color:#999; }
     .title { font-weight: 800; margin: 0 0 6px; font-size: 18px; }
     .desc { margin: 0; color:#555; }
+
+    /* Sub-buttons (under Extra's) */
+    .subrow { margin-top: 10px; display: grid; gap: 10px; }
+    a.subbtn {
+      display: block;
+      text-decoration: none;
+      color: #111;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 14px;
+      text-align: center;
+    }
+    a.subbtn:hover { border-color:#999; }
+    .disabled { opacity: 0.6; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -23,16 +38,22 @@
       <p class="desc">Current supported “legacy” version</p>
     </a>
 
-
     <a class="btn" href="#" onclick="return false;">
       <div class="title">New book</div>
       <p class="desc">Coming soon</p>
     </a>
 
-    <a class="btn" href="#" onclick="return false;">
+    <!-- Extra's card -->
+    <div class="btn" style="padding:16px;">
       <div class="title">Extra's</div>
       <p class="desc">Coming soon</p>
-    </a>
+
+      <div class="subrow">
+        <!-- Replace # with your real link when ready -->
+        <a class="subbtn disabled" href="#" onclick="return false;">Additional R code</a>
+      </div>
+    </div>
   </div>
 </body>
 </html>
+
