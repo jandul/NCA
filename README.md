@@ -1,4 +1,4 @@
-# NCA resources
+# NCA book resources
 
 This page contains supportive materials for the NCA book(s)  (code, checklists, templates, guides).
 
@@ -11,17 +11,17 @@ This page contains supportive materials for the NCA book(s)  (code, checklists, 
 ## Downloads
 Downloads will be available via the landing page under **Extra’s**.
 
-Available and planned:
+Available and planned resources:
 - Quick Start guide
 - Additional R code
-  - R scripts in book (partly available)
+  - R script in book (partly available)
   - Demonstration NCA
-  - Combining NCA with regression (NERT)
-  - Combining NCA with QCA (NEST)
-  - Combining NCA with SEM (script, helper functions, BIPMA)
+  - NCA with regression
+  - NCA with QCA
+  - NCA with SEM
 - SCoRe checklist
 
-## How to download (once available)
+## How to download
 1. Open: https://jandul.github.io/NCA/
 2. Go to **Extra’s**
 3. Click the item you want (e.g., **R scripts for book R code**)
