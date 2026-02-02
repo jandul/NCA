@@ -14,7 +14,7 @@ Downloads will be available via the landing page under **Extra’s**.
 Planned:
 - Quick Start guide
 - Additional R code
-  - R script in book
+  - R scripts in book
   - Demonstration NCA
   - Combining NCA with regression (NERT)
   - Combining NCA with QCA (NEST)
