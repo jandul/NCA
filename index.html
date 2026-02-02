@@ -48,8 +48,13 @@
 
     .disabled { opacity: 0.6; cursor: not-allowed; }
     footer { margin-top: 22px; font-size: 13px; color:#666; }
+
+    /* Optional styling for subgroup header */
+    .subgroup { border-top: 1px dashed #ddd; padding-top: 10px; margin-top: 6px; }
+    .subheading { font-weight: 800; font-size: 14px; color:#333; margin: 0 0 6px; }
   </style>
 </head>
+
 <body>
   <h1>NCA Resources</h1>
   <p class="lead">Book links and supporting materials.</p>
@@ -69,38 +74,31 @@
       <a class="btn disabled" href="#" onclick="return false;">Coming soon</a>
     </div>
 
-<!-- Extras -->
-<div class="card">
-  <div class="title">Extra's</div>
-  <p class="desc">Supporting material.</p>
+    <!-- Extras -->
+    <div class="card">
+      <div class="title">Extra's</div>
+      <p class="desc">Supporting material.</p>
 
-  <div class="subrow">
-    <!-- Order: Score, Quick, Additional -->
-    <a class="subbtn disabled" href="#" onclick="return false;">SCoRe checklist</a>
-    <a class="subbtn disabled" href="#" onclick="return false;">Quick Start guide</a>
+      <div class="subrow">
+        <!-- Order: Score, Quick, Additional -->
+        <a class="subbtn disabled" href="#" onclick="return false;">SCoRe checklist</a>
+        <a class="subbtn disabled" href="#" onclick="return false;">Quick Start guide</a>
 
-    <!-- Additional R code group -->
-    <div class="subgroup">
-      <div class="subheading">Additional R code</div>
+        <!-- Additional R code group -->
+        <div class="subgroup">
+          <div class="subheading">Additional R code</div>
 
-      <!-- Optional "all code" button -->
-      <!--
-      <a class="subbtn" href="https://github.com/jandul/nca-rcode" target="_blank" rel="noopener">
-        Open nca-rcode repo
-      </a>
-      -->
-      
-      <!-- Subbuttons under Additional R code -->
-      <a class="subbtn disabled" href="#" onclick="return false;">Demonstration NCA</a>
-      <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with regression (NERT)</a>
-      <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with QCA (NEST)</a>
-      <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with SEM (script, helper functions, BIPMA)</a>
+          <!-- ✅ Active button to your scripts index page -->
+          <a class="subbtn" href="/NCA/NCA/script/">R scripts for book</a>
+
+          <!-- Other buttons (still disabled placeholders) -->
+          <a class="subbtn disabled" href="#" onclick="return false;">Demonstration NCA</a>
+          <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with regression (NERT)</a>
+          <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with QCA (NEST)</a>
+          <a class="subbtn disabled" href="#" onclick="return false;">Combining NCA with SEM (script, helper functions, BIPMA)</a>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-
 </body>
 </html>
-
-
