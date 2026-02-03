@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NCA Scripts</title>
+  <title>R scripts & functions for the book</title>
   <style>
     body { font-family: system-ui, Arial; max-width: 900px; margin: 48px auto; padding: 0 16px; }
     h1 { margin: 0 0 8px; font-size: 30px; }
     p { margin: 0 0 18px; color:#555; }
+    h2 { margin: 22px 0 10px; }
     ul { padding-left: 18px; }
     li { margin: 10px 0; }
     a { color:#111; }
@@ -18,32 +19,62 @@
       border-radius: 999px;
       padding: 8px 12px;
       font-weight: 700;
-      margin: 10px 0 16px;
+      margin: 10px 8px 16px 0;
     }
     a.btn:hover { border-color:#999; }
     .small { font-size: 13px; color:#666; }
+    .group { border-top: 1px dashed #ddd; padding-top: 14px; margin-top: 14px; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
   </style>
 </head>
 
 <body>
-  <h1>NCA Scripts</h1>
-  <p>Download scripts and helper files related to the book.</p>
+  <h1>R scripts & functions for the book</h1>
+  <p>Download selected scripts and helper functions related to the book.</p>
 
-  <!-- Back to your landing page -->
-  <p><a class="btn" href="/NCA/">← Back to main site</a></p>
+  <p>
+    <a class="btn" href="/NCA/">← Back to main site</a>
+  </p>
 
-  <h2>Downloads</h2>
-  <ul>
-    <!-- Because these files are in the same folder, link by filename -->
-    <li><a href="R scripts Chapter_Data_analysis.R" download>R scripts Chapter_Data_analysis.R</a> <span class="small">(R script)</span></li>
-   <!-- <li><a href="another_script.R" download>another_script.R</a> <span class="small">(R script)</span></li>-->
+  <div class="group">
+    <h2>Scripts</h2>
+    <ul>
+      <!-- Files in script/ are linked by filename -->
+      <li>
+        <a href="R scripts Chapter_Data_analysis.R" download>
+          R scripts Chapter_Data_analysis.R
+        </a>
+        <span class="small">(R script)</span>
+      </li>
 
-    <!-- Optional: zip of everything -->
-    <!-- <li><a href="scripts.zip" download>scripts.zip</a> <span class="small">(all scripts)</span></li> -->
-  </ul>
+      <!-- Add more scripts here if needed -->
+    </ul>
+  </div>
+
+  <div class="group">
+    <h2>Functions</h2>
+    <p class="small">These files are served from the <code>functions/</code> folder.</p>
+    <ul>
+      <li><a href="../functions/estimate_sem_model_TAM.R" download>estimate_sem_model_TAM.R</a></li>
+      <li><a href="../functions/get_bipma_df.R" download>get_bipma_df.R</a></li>
+      <li><a href="../functions/get_bipma_plot.R" download>get_bipma_plot.R</a></li>
+      <li><a href="../functions/get_bottleneck_cases.R" download>get_bottleneck_cases.R</a></li>
+      <li><a href="../functions/get_cipma_df.R" download>get_cipma_df.R</a></li>
+      <li><a href="../functions/get_cipma_plot.R" download>get_cipma_plot.R</a></li>
+      <li><a href="../functions/get_indicator_data_TAM.R" download>get_indicator_data_TAM.R</a></li>
+      <li><a href="../functions/get_ipma_df.R" download>get_ipma_df.R</a></li>
+      <li><a href="../functions/get_ipma_plot.R" download>get_ipma_plot.R</a></li>
+      <li><a href="../functions/get_outliers.R" download>get_outliers.R</a></li>
+      <li><a href="../functions/get_significance_sem.R" download>get_significance_sem.R</a></li>
+      <li><a href="../functions/get_single_bottleneck_cases.R" download>get_single_bottleneck_cases.R</a></li>
+      <li><a href="../functions/nca_robustness_checks.R" download>nca_robustness_checks.R</a></li>
+      <li><a href="../functions/unstandardize.R" download>unstandardize.R</a></li>
+      <li><a href="../functions/README.md" download>README.md</a></li>
+    </ul>
+  </div>
 
   <p class="small">
-    Tip: If your browser opens a .R file instead of downloading, right-click the link and choose “Save link as…”.
+    Tip: If your browser opens a file instead of downloading, right-click the link and choose “Save link as…”.
   </p>
 </body>
 </html>
