@@ -382,10 +382,23 @@ empirical NCA study</h3>
 
 <p>Last update: February 25, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
-and Application. Chapman &amp; Hall, CRC Press.<br />
-<br />
-<br />
-</p>
+and Application. Chapman &amp; Hall, CRC Press.</p>
+<div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
+<div style="font-weight: 800; margin-bottom: 8px;">
+Scores
+</div>
+<div>
+Must-have: <span id="scoreMust">0%</span>
+</div>
+<div>
+Should-have: <span id="scoreShould">0%</span>
+</div>
+<div>
+Nice-to-have: <span id="scoreNice">0%</span>
+</div>
+<p><button id="calcScoresBtn" type="button" style="margin-top: 10px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;">
+Calculate scores </button></p>
+</div>
 <style type="text/css">@charset "UTF-8";
 :root {
 --dt-row-selected: 13, 110, 253;
@@ -15890,6 +15903,10 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
     });
   }
 
+
+
+
+
  // Allow only one checkbox (green OR red) per row
   document.addEventListener('change', function (e) {
     if (!e.target.classList.contains('tickbox')) return;
@@ -15907,13 +15924,53 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
       green.checked = false;
     }
   });
+  
+  
+    /* ===== ADD THE 3-SCORES BLOCK RIGHT HERE ===== */
+
+  function calculateScores() {
+    const tbody = document.querySelector('#assesments tbody');
+    if (!tbody) return;
+
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+    function pctFor(priorityLabel) {
+      const group = rows.filter(r => {
+        const prCell = r.querySelector('td:nth-child(2)'); // Priority column
+        return prCell && prCell.textContent.trim() === priorityLabel;
+      });
+
+      const total = group.length;
+      const green = group.filter(r => {
+        const g = r.querySelector('input.tick-green');
+        return g && g.checked;
+      }).length;
+
+      return total ? Math.round((green / total) * 100) : 0;
+    }
+
+    const mustPct = pctFor('Must-have');
+    const shouldPct = pctFor('Should-have');
+    const nicePct = pctFor('Nice-to-have');
+
+    document.getElementById('scoreMust').textContent = mustPct + '%';
+    document.getElementById('scoreShould').textContent = shouldPct + '%';
+    document.getElementById('scoreNice').textContent = nicePct + '%';
+  }
+
+  const btn = document.getElementById('calcScoresBtn');
+  if (btn) btn.addEventListener('click', calculateScores);
+
+  /* ===== END 3-SCORES BLOCK ===== */
+  
+  
 
   // --- 3) Now initialize DataTables (AFTER the columns exist) ---
   const table = new DataTable('#assesments', {
     info: false,
     order: [[2, 'asc']],      // Item column stays 3rd (index 2)
-    pageLength: 10,
-    lengthMenu: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    pageLength: 50,
+    lengthMenu: [10,  20,  30, 40, 50]
   });
 
   let publications = getSelectValues(publication);
