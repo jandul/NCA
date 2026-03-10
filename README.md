@@ -5,7 +5,7 @@ This page contains supportive materials for the NCA book(s)  (code, checklists, 
 ## Open the landing page
 - https://jandul.github.io/NCA/
 
-## Read the book
+## Read the archived book
 - Supported legacy version: https://jandul.github.io/archived-nca-book/
 
 ## Downloads
