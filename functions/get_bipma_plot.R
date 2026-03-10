@@ -1,5 +1,5 @@
 # Helper function for producing the BIPMA plot
-# Revised January 18, 2026
+# Revised March 8, 2026
 
 get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits, size_range) {
   
@@ -28,6 +28,7 @@ get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits
     "black",
     NA_character_
   )
+  bipma_df$fill_color <- ifelse(bipma_df$Necessity == "no", "black", NA_character_)
   bipma_df$fill_color[is.na(bipma_df$fill_color) & bipma_df$Sufficiency == "no"] <- "grey90"
   bipma_df$fill_color[is.na(bipma_df$fill_color)] <- "white"
   
@@ -63,8 +64,8 @@ get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits
   mean_importance <- mean(bipma_df$Importance[bipma_df$Sufficiency != "no"], na.rm = TRUE)
   
   # Mean Performance for the horizontal line (usually across all shown points)
-  mean_performance <- mean(bipma_df$Performance, na.rm = TRUE)
-
+  # exclude the "no sufficiency" predictors from the mean calculation
+  mean_performance <- mean(bipma_df$Performance[bipma_df$Sufficiency != "no"], na.rm = TRUE)
   
   # Plot
   pc1 <- ggplot(bipma_df, aes(x = Importance_adj, y = Performance)) +
@@ -85,15 +86,15 @@ get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits
     
     geom_text_repel(
       aes(label = Predictor_with_single_cases),
-      size = 3.5,
-      box.padding = 1.2, #spacing
+      size = 3.5, #text size of labels
+      box.padding = 1.2, #spacing between labels
       #point.padding = 2.2, 
-      force = 5, # allow labels to move further away
-      force_pull = 3, # allow labels to move further away
-      max.iter = 50000, # more work to find a non-overlapping layout
-      #max.time = 2,  # allow more candidate positions
+      force = 5, # allow labels push further away from points
+      force_pull = 3, # pull labels back to points away 
+      max.iter = 50000, # work to find a non-overlapping layout
+      #max.time = 2,  # maximum duration of finding label placements
       seed = 123,
-      min.segment.length = 0,  # keep labels from overlapping each other completely
+      min.segment.length = 1,  # minimum length of segment connecting label to point
     ) +
     
     coord_cartesian(xlim = x_range_adj, ylim = y_range) +
@@ -105,7 +106,7 @@ get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits
     scale_size_continuous(limits = size_limits, range = size_range) +
     
     labs(
-      title = paste("BIPMA for target outcome Y =", target.Y, name_plot),
+      title = paste("BIPMA for target outcome Y =", target.Y),
       x = "Importance",
       y = "Performance"
     ) +
@@ -143,3 +144,4 @@ get_bipma_plot <- function(bipma_df, x_range = NULL, y_range = NULL, size_limits
   ggsave(filename, pc1, width = 5, height = 5, dpi = 600, device = cairo_pdf)
   
 }
+
