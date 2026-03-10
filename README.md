@@ -9,7 +9,7 @@ This page contains supportive materials for the NCA book(s)  (code, checklists, 
 - Supported legacy version: https://jandul.github.io/archived-nca-book/
 
 ## Preview the new book
-- Preliminary version 1.0.0 : https://jandul.github.io/Current-NCA-book/
+- Preliminary version 1.0.0 : https://jandul.github.io/current-nca-book/
 
 ## Downloads
 Downloads will be available via the landing page under **Extra’s**.
