@@ -380,9 +380,9 @@ empirical NCA study</h3>
 </div>
 
 
-<p>Last update: February 25, 2026</p>
+<p>Last update: March 16, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
-and Application. Chapman &amp; Hall, CRC Press.</p>
+and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
 <div style="font-weight: 800; margin-bottom: 8px;">
 Scores
@@ -14758,6 +14758,9 @@ margin: 0 3px 0 0;
 	return DataTable;
 }));
 </script>
+<!-- above lines locally downloaded from -->
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" /> -->
+<!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script> -->
 <style>
 .inline-table {
 width: 1000px;
@@ -14773,19 +14776,19 @@ cursor: pointer;
 }
 .tick-green { accent-color: #2e7d32; } 
 .tick-red { accent-color: #c62828; } 
-#assesments td.tickcell, #assesments th.tickcell { text-align: center; }
-#assesments td {
+#assessments td.tickcell, #assessments th.tickcell { text-align: center; }
+#assessments td {
 font-size: 10px;
 }
 
-#assesments th:nth-child(1), #assesments td:nth-child(1) { width: 10%; } 
-#assesments th:nth-child(2), #assesments td:nth-child(2) { width: 10%; } 
-#assesments th:nth-child(3), #assesments td:nth-child(3) { width: 5%; } 
-#assesments th:nth-child(4), #assesments td:nth-child(4) { width: 25%; } 
-#assesments th:nth-child(5), #assesments td:nth-child(5) { width: 3%; } 
-#assesments th:nth-child(6), #assesments td:nth-child(6) { width: 3%; } 
-#assesments th:nth-child(5), #assesments td:nth-child(5) { width: 34%; } 
-#assesments th:nth-child(6), #assesments td:nth-child(6) { width: 10%; } 
+#assessments th:nth-child(1), #assessments td:nth-child(1) { width: 10%; } 
+#assessments th:nth-child(2), #assessments td:nth-child(2) { width: 10%; } 
+#assessments th:nth-child(3), #assessments td:nth-child(3) { width: 5%; } 
+#assessments th:nth-child(4), #assessments td:nth-child(4) { width: 25%; } 
+#assessments th:nth-child(5), #assessments td:nth-child(5) { width: 3%; } 
+#assessments th:nth-child(6), #assessments td:nth-child(6) { width: 3%; } 
+#assessments th:nth-child(5), #assessments td:nth-child(5) { width: 34%; } 
+#assessments th:nth-child(6), #assessments td:nth-child(6) { width: 10%; } 
 </style>
 <table class="inputs">
 <tbody>
@@ -14818,8 +14821,8 @@ font-size: 10px;
 </tr>
 </tbody>
 </table>
-<div style="overflow-x: auto; overflow-y: auto; max-height: 600px; border: 1px solid #ddd;">
-<table id="assesments" class="display" style="width:100%">
+<div style="overflow-x: auto; overflow-y: auto; max-height: 1000px; border: 1px solid #ddd;">
+<table id="assessments" class="display" style="width:100%">
 <thead>
 <tr>
 <th>
@@ -14858,20 +14861,20 @@ Must-have
 Are the goals and contributions of applying NCA explicitly stated?
 </td>
 <td>
-State the primary and (possibly) secondairy goals and contributions of
+State the primary and (possibly) secondary goals and contributions of
 the empirical NCA study. The study may primarily contribute to theory
 development by, for example, developing and testing new necessity
-hypotheses, developing an existing necessity claims further towards a
-formal necessity hypotheses and testing it with NCA, or replication of
+hypotheses, developing an existing necessity claim further toward a
+formal necessity hypothesis and testing it with NCA, or replicating
 results of previously tested necessity hypotheses. Secondary goals could
 be methodological (e.g., introducing NCA to a new field/phenomenon), or
-practical (e.g., using results of NCA to produce practically meaningful
+practical (e.g., using results of NCA for practically meaningful
 recommendations/insights).
 </td>
 <td>
-Articles: <span class="citation">Bokrantz and Dul (<a href="#ref-bokrantz2022building">2023</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>;
-<span class="citation">Hollenbeck and Wright (<a href="#ref-hollenbeck2017harking">2017</a>)</span>; <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023constructive">2023</a>)</span>; <span class="citation">Bergh et al. (<a href="#ref-bergh2022constitutes">2022</a>)</span>; This book: Sections
-@ref(theoreticalcontribution) and @ref(relatedmultiple)
+Articles: <span class="citation">Bokrantz &amp; Dul (<a href="#ref-bokrantz2022building">2023</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>;
+<span class="citation">Hollenbeck &amp; Wright (<a href="#ref-hollenbeck2017harking">2017</a>)</span>; <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023constructive">2023</a>)</span>; <span class="citation">Bergh et al. (<a href="#ref-bergh2022constitutes">2022</a>)</span>; Book: Chapter 7 and
+Section 10.2
 </td>
 </tr>
 <tr>
@@ -14889,14 +14892,15 @@ When referring to necessity, are only words that correctly describe a
 necessity relationship used?
 </td>
 <td>
-Refer to necessity only by using words that describe a necessity
-relationship. Avoid imprecise descriptions like X (cor)relates with Y, X
-is associated with Y, X affects Y, X causes Y, etc. Avoid incorrect
-sufficiency-based descriptions like X produces Y, X drives Y, X
-increase/decreases Y, etc.
+When referring to necessity relationships, use appropriate terminology.
+In practice, this means using equivalents/derivatives of the statement
+that 𝑋 is necessary for 𝑌. Avoid ambiguous statements (𝑋 causes 𝑌, 𝑋
+correlates with 𝑌, 𝑋 is associated with 𝑌, 𝑋 affects 𝑌), or incorrect
+(sufficiency-based) statements such as 𝑋 produces 𝑌, 𝑋 drives 𝑌, 𝑋
+increases/decreases 𝑌, etc.
 </td>
 <td>
-This book: Table @ref(tab:wordsnecessity)
+Book: Table 7.1
 </td>
 </tr>
 <tr>
@@ -14915,13 +14919,14 @@ causal logic (methodology) and the related data analysis technique
 (method)?
 </td>
 <td>
-Refer to NCA as an approach that combines necessity causality (rather
-than common probabilistic or configurational causality) and a related
-data analysis technique (ensuring theory-method fit). NCA is not just a
-data analysis technique or statistical tool.
+Refer to NCA as a methodological approach that combines the theoretical
+perspective of necessity causality (rather than common probabilistic or
+configurational causality) with a corresponding data analysis method,
+ensuring theory-method fit. Emphasize that NCA entails more than just a
+data analysis or statistical method.
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>
+Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>; Book: Chapters 1, 2, 5
 </td>
 </tr>
 <tr>
@@ -14936,24 +14941,23 @@ Must-have
 </td>
 <td>
 Is a proper comparison made between NCA’s causal perspective and
-conventional causal perspectives (e.g., causal inference from regression
-analysis or QCA studies)?
+conventional causal perspectives (e.g., probabilistic sufficiency,
+configurational sufficiency)?
 </td>
 <td>
-When comparing necessity (causal) logic and NCA with causal
-interpretations of conventional regression-based/statistical approaches,
-use the term “probabilistic sufficiency” and not just “sufficiency” for
-the latter approaches, as &quot;sufficiency&quot; suggests (quasi-)determinism,
-like in QCA configurational sufficiency logic. This recommendation is
-often violated in studies that combine NCA with PLS-SEM. When NCA is
-compared with QCA’s necessity analysis, use the term &quot;necessity analysis
-of QCA&quot; for the latter (and not &quot;NCA&quot;) and explain the differences
-between the necessity analysis of QCA (only in kind) and that of NCA
-(also in degree).
+When, in the context of an NCA study, a comparison is made between NCA’s
+causal perspective and the causal perspective inferred from conventional
+regression-based/statistical approaches, use the term probabilistic
+sufficiency for the latter, and not just sufficiency. The term
+sufficiency suggests determinism (as applied in QCA’s configurational
+sufficiency logic). This recommendation is often violated in studies
+that combine NCA with SEM. When NCA is compared with QCA’s necessity
+analysis, use the term necessity analysis of QCA for the latter (and not
+NCA) and explain the differences between the necessity analysis of QCA
+(only necessity-in-kind) and that of NCA (also necessity-in-degree).
 </td>
 <td>
-Articles: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2016jbr">2016a</a>)</span>; <span class="citation">Vis and Dul (<a href="#ref-vis2018analyzing">2018</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2022problematic">2022</a>)</span>; This book: Section
-@ref(ncaplssem); Section @ref(ncaqca)
+Articles: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2016jbr">2016a</a>)</span>; <span class="citation">Vis &amp; Dul (<a href="#ref-vis2018analyzing">2018</a>)</span>; <span class="citation">Dul (<a href="#ref-dul2022problematic">2022</a>)</span>; Book: Sections 2.3, 2.4
 </td>
 </tr>
 <tr>
@@ -14967,17 +14971,20 @@ Must-have
 5
 </td>
 <td>
-In multimethod studies, is NCA used as an approach with a different
-perspective on causality and data analysis (and not as a robustness or
-confirmation test for other methods), and vice versa?
+In multimethod studies, is NCA described and used as an approach with a
+specific perspective on causality and data analysis, and not merely as a
+robustness check or an add-on to other methods (and vice versa).
 </td>
 <td>
-Use NCA as an approach with a different perspective on causality and
-therefore a different way of data analysis. NCA is not a robustness or a
-confirmation test for other methods (and vice versa).
+In multimethod studies, use and refer to NCA as an approach with a
+specific perspective on causality and data analysis, and do not
+incorrectly refer to it as a robustness check or add-on to other methods
+(and vice versa). This recommendation is often violated in studies that
+combine NCA with SEM.
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>
+Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>; Book: Sections 2.7,
+11.4, 11.5
 </td>
 </tr>
 <tr>
@@ -14995,12 +15002,12 @@ If the necessity analysis is a prominent part of the publication, do the
 title and abstract reflect this necessity perspective/NCA?
 </td>
 <td>
-If an important part of the publication and/or its conclusions are based
-on necessity logic and NCA, include in the title (and abstract) words
-that reflect necessity logic or NCA.
+If important parts of the publication and/or its conclusions are based
+on necessity logic and NCA, ensure that this is reflected in the title
+and abstract by using words that reflect necessity logic or NCA.
 </td>
 <td>
-This book: Table @ref(tab:wordsnecessity)
+Book: Table 7.1
 </td>
 </tr>
 <!-- THEORY -->
@@ -15015,18 +15022,17 @@ Must-have
 7
 </td>
 <td>
-Is the hypothesized necessity relationship explicitly formulated as: X
-is necessary for Y, or similar?
+Is the hypothesized necessity relationship explicitly formulated as: 𝑋
+is necessary for 𝑌, or similar?
 </td>
 <td>
 Formulate the necessity relationship explicitly as a necessary condition
-hypothesis: &quot;X is necessary for Y&quot;. For hypothesis testing research this
-is done before data analysis; for hypothesis building/exploration
-research this is done after data analysis when a necessity relationship
-is found.
+hypothesis: &quot;𝑋 is necessary for 𝑌&quot;. For a deductive study, this is done
+before data analysis; for an explorative study, this is done after data
+analysis when when indications for a necessity relationship are found.
 </td>
 <td>
-This book: Sections @ref(formulationnecessity) and @ref(ncaplssem)
+Book: Section 7.5
 </td>
 </tr>
 <tr>
@@ -15040,20 +15046,23 @@ Must-have
 8
 </td>
 <td>
-Are the four elements of a necessity theory precisely defined
-(condition(s) X, outcome Y, direction of the hypothesis, focal unit,
-theoretical domain)?
+Are the four elements of a necessity theory precisely defined: concepts
+𝑋 and 𝑌, direction of the hypothesis, focal unit, theoretical domain?
 </td>
 <td>
-Specify the theoretical domain of the necessity theory/hypothesis
-(theoretical phenomenon/constructs for which the necessity relation
-holds), and the focal unit of analysis (the population, or subset of
-population, of focal units). Note that the theoretical domain is usually
-larger than a population for empirical study, and the theoretical domain
-may be better specified after doing a thought experiment.
+To obtain a formal necessity hypothesis that is ready for testing,
+precisely define the four elements of the necessity theory. (1) Define
+the concepts 𝑋 and 𝑌 according to their meaning in the hypothesis. (2)
+Specify the hypothesis and its direction, which indicates which corner
+of the 𝑋𝑌-plot is expected to be empty, particularly if the expected
+corner is not the default upper-left corner. (3) Specify the focal unit
+of which 𝑋 and 𝑌 of the hypothesis are characteristics. (4) Define the
+theoretical domain where it is claimed/expected that the hypothesis will
+hold, given its boundary conditions. Note that the theoretical domain is
+usually larger than a population from which cases are selected.
 </td>
 <td>
-This book: Sections @ref(partstheory) and @ref(thoughtexperiment)
+Book: Section 3.2, Chapter 7 in particular Section 7.5
 </td>
 </tr>
 <tr>
@@ -15067,17 +15076,22 @@ Must-have
 9
 </td>
 <td>
-Is it convincingly explained WHY X is necessary for Y (no compensation
-possible), using necessity causal logic to justify the necessity
-hypothesis?
+Is a causal explanation provided WHY 𝑋 is necessary for 𝑌 using
+necessity causal logic to justify the necessity hypothesis by addressing
+three questions? Why does 𝑋 enable 𝑌? Why does the absence of 𝑋 lead to
+the absence of 𝑌? Why is the absence of 𝑋 not compensable?
 </td>
 <td>
-Explain why X is necessary for Y using necessity logic (why compensation
-is not possible) based on experience of academics and practitioners,
-and/or literature and experiences of academics and practitioners.
+Explain why 𝑋 is necessary for 𝑌 using a causal explanation (narrative)
+by answering three questions: (1) Why does 𝑋 enable 𝑌 (𝑋 is an enabler).
+The existing literature may be a source of information; (2) Why does the
+absence of 𝑋 lead to the absence of 𝑌 (𝑋 is a constraint); (3) Why is
+the absence of 𝑋 not compensable (no substitution for 𝑋). Making the
+narrative complete is a creative process, supported by literature and
+experiences of scholars and practitioners.
 </td>
 <td>
-This book: Sections @ref(thoughtexperiment) and @ref(ncaplssem)
+Book: Chapter 7 in particular Section 7.5.3
 </td>
 </tr>
 <tr>
@@ -15091,17 +15105,22 @@ Must-have
 10
 </td>
 <td>
-Are temporal aspects considered including specifying the expected
-direction of the temporal order of X and Y if this is not obvious?
+Are temporal aspects considered including specification of the temporal
+order of 𝑋 and 𝑌 if this is not obvious?
 </td>
 <td>
-If this is not obvious, include a plausible explanation why the temporal
-order is X before Y (why Y cannot happen without X having occurred) and
-why the alternative explanation, &quot;Y is sufficient for X&quot; is not
-plausible.
+If this is not self-evident, include a plausible explanation of the
+temporal order (first 𝑋 then 𝑌 ) in the description of why the necessity
+causal relationship exists. If the data support 𝑋 is necessary for 𝑌 ,
+explain why the alternative reverse explanation, namely that 𝑌 is
+sufficient for 𝑋 (or in terms of necessity: absence of 𝑌 is necessary
+for absence of 𝑋) that would also be consistent with the expected empty
+space, is not plausible. Also consider other temporal aspects of the
+hypothesis such as whether 𝑋 is necessary for the onset or continuation
+of 𝑌 , or whether the hypothesis holds in all time periods.
 </td>
 <td>
-This book: Section @ref(temporalorder)
+Book: Section 2.5, Chapter 7 in particular Section 7.5.3
 </td>
 </tr>
 <tr>
@@ -15115,20 +15134,23 @@ Should-have
 11
 </td>
 <td>
-Is the existing literature about the relationship between X and Y
+Is the existing literature about the relationship between 𝑋 and 𝑌
 re-considered from a necessity causal perspective?
 </td>
 <td>
-Review existing literature (that commonly describes relationships in
-sufficiency terms) about the relationship between X and Y and
-interpret/re-consider this literature from a necessity causal
-perspective. This helps to see if the relationship might actually be a
-necessity relationship, and might also provide arguments (based on
-previous literature) for making a justification for necessity causal
-logic.
+Review existing literature (that commonly describes probabilistic
+relationships between your variables 𝑋 and 𝑌), to find hints for
+necessity causality. Avoid just describing, summarizing, or referring to
+probabilistic findings/ideas. Where possible, include quotes in the
+literature that hint to necessity logic. Avoid using
+sufficiency/probabilistic causal logic for making a justification for
+necessity causal logic. Note that only describing, summarizing, or
+quoting prior work (often based on probabilistic sufficiency logic) does
+not constitute a valid theoretical justification of a necessity
+hypothesis.
 </td>
 <td>
-This book: Table @ref(tab:wordsnecessity)
+Book: Section 7.4.1, Table 7.1
 </td>
 </tr>
 <tr>
@@ -15146,12 +15168,12 @@ If applicable, is an &quot;nc&quot; symbol added near the arrow in a figure that
 represents a necessity relationship?
 </td>
 <td>
-In a figure representing an (expected) necessity relationship, add a
-small symbol (nc, nc- or +nc-) near the arrow to show the direction of
-necessity.
+In a diagram representing an (expected) necessity relationship between
+two variables using an arrow, add a relevant symbol (+nc+,-nc+, -nc-, or
++nc-) near the arrow to show the direction of necessity.
 </td>
 <td>
-This book: Section @ref(direction)
+Book: Section 3.5
 </td>
 </tr>
 <tr>
@@ -15168,12 +15190,16 @@ Nice-to-have
 Is it specified if rare exceptions are allowed?
 </td>
 <td>
-When formulating necessity theory/hypotheses explicitly state if rare
-exceptions are allowed (probabilistic perspective on necessity, &quot;almost
-always necessary’&quot;) or not (deterministic perspective on necessity).
+Explain whether the necessity theory allows for rare exceptions (i.e., a
+typicality perspective on necessity), or whether any exception leads to
+a rejection of the theory (i.e., a deterministic perspective on
+necessity). The typicality perspective is not a solution for poor
+measurement and should not be used in a probabilistic manner (e.g.,
+ignoring a certain percentage of cases above the ceiling).
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>
+Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>; Book: Sections 2.4.3,
+9.8, 4.5.4
 </td>
 </tr>
 <!-- METHODS-DATA -->
@@ -15192,23 +15218,15 @@ Is the study design (observational study, longitudinal study, case
 study, experimental study) adequate?
 </td>
 <td>
-Specify: 1. the research design which can be the experiment (when there
-is theoretical, methodological and practical possibility of manipulating
-X and having a control group), observational study (cross-sectional,
-longitudinal), qualitative/case study, simulation study, or other; 2.
-the data set and type of data (quantitative, qualitative, simulated).
-Note: NCA is a method that analyzes data without generating data. NCA is
-not a method for collecting data. NCA can analyze all types of data.
-However, due to the specific causal logic, NCA makes specific
-requirements to data. These requirements depend on the research design,
-and include requirements for sample size, sampling, measurement, and
-distribution characteristics of X and Y (boundedness, ceiling). Specify
-how the research design meets requirements for the levels of X and Y.
-Data are input to NCA, not part of NCA.
+Possible study designs for NCA include the large-n observational study
+(both 𝑋 and 𝑌 are observed), the longitudinal study (𝑋 and 𝑌 data from
+different time points), the small-n case study (𝑋 and 𝑌 are observed),
+and the experiment (𝑋 is manipulated and 𝑌 is observed). The general
+principles for good study design apply. For case selection and
+experiments, there is an NCA-specific approach.
 </td>
 <td>
-This book: Sections @ref(experiment), @ref(samplesize),
-@ref(qualitative), @ref(longitudinal), and @ref(setmembership)
+Book: Section 8.2
 </td>
 </tr>
 <tr>
@@ -15222,21 +15240,20 @@ Should-have
 15
 </td>
 <td>
-For large N quantitative studies: are adequate sampling approaches used
+For large-n quantitative studies: are adequate sampling approaches used
 and is a pre-study power analysis reported?
 </td>
 <td>
-For large N quantitative studies, use sampling approaches that are
-appropriate for identifying empty zones in scatter plots and for
-accurately estimating ceilings. Thus: use random sampling and sample
-size should be sufficiently large (rule of thumb: N&gt;=100). For
-testing necessity hypotheses, power analysis is needed. Provide a
-pre-study power analysis for effect size (d) and statistical
-significance (p). Post-hoc power analysis is not informative for the
-present study but could inform future studies only.
+For large-n quantitative studies the preferred sampling approach from
+the theoretical domain is random sampling with good coverage of the
+population of interest. The general principles for good sampling apply.
+Report if an NCA-specific pre-study power analysis was done to estimate
+the required sample size for finding necessity if it exists. Note that
+doing a post-hoc power analysis makes no sense for the present study,
+but could inform future studies.
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>; This book: Section @ref(power)
+Article: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>; Book: Sections 5.6, 8.3.1
 </td>
 </tr>
 <tr>
@@ -15250,18 +15267,19 @@ Should-have
 16
 </td>
 <td>
-For small N qualitative studies: are adequate NCA-specific approaches
+For small-n qualitative studies: are adequate NCA-specific approaches
 used for purposive case selection?
 </td>
 <td>
-For qualitative small N studies, use NCA-specific purposive case
-selection approaches. If using typical qualitative purposeful case
-selection approaches, specify the type of case selection and its
-limitations.
+For small-n qualitative NCA studies, aim to use purposive selection of
+cases from the theoretical domain, with cases being selected based on
+the presence of 𝑌 or absence of 𝑋. Always clearly state how cases were
+selected. Reflect on, and report the potential limitations when cases
+were not selected purposively based on the absence of 𝑋 or presence of 𝑌
+.
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>; This book: Section
-@ref(smalln)
+Article: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>; Book: Sections 8.2.3, 8.3.2
 </td>
 </tr>
 <tr>
@@ -15275,18 +15293,19 @@ Must-have
 17
 </td>
 <td>
-Are adequate measurement approaches used for getting scores of X and Y,
+Are adequate measurement approaches used for getting scores of 𝑋 and 𝑌,
 and are these measures practically interpretable?
 </td>
 <td>
-Use measurement approaches that make the scores of X and Y practically
-interpretable, i.e. meaningfully reflect the level of X and Y (not just
-&quot;rank&quot;). NCA is a data analytic technique applied to measures of X and
-Y. Data are input to NCA, not part of NCA.
+Ensure a proper measurement approach with valid, reliable, and
+meaningful data (scores of 𝑋 and 𝑌 ). Data are input to NCA, not part of
+NCA. General principles for good data (collection) apply to an NCA
+study. For interpretation of results, it is important that the scores
+have a practical meaning in terms of the levels of 𝑋 and 𝑌 . Data are
+stored in a dataset. The dataset may consist of archival data.
 </td>
 <td>
-This book: Sections @ref(experiment), @ref(samplesize),
-@ref(qualitative), @ref(longitudinal), and @ref(setmembership)
+Article: <span class="citation">Dul et al. (<a href="#ref-dul2024advancing">2024</a>)</span>; Book: Section 8.4
 </td>
 </tr>
 <tr>
@@ -15301,16 +15320,16 @@ Must-have
 </td>
 <td>
 For simulation studies: are simulated data sampled from bounded
-distributions of X and Y?
+distributions of 𝑋 and 𝑌?
 </td>
 <td>
-NCA requires bounded distributions for both X and Y (e.g. physical
-constraints, or scale boundedness). For simulation studies, sample data
-from bounded distributions. Uniform distribution or bounded beta are
-eligible but not sampling from normal distributed data.
+For data generated by simulation, ensure that the variables 𝑋 and 𝑌 are
+bounded (have minimum and maximum values). Simulated data drawn from,
+for example, a normal distribution would not be eligible whereas data
+from a uniform or truncated normal distribution would be appropriate.
 </td>
 <td>
-This book: Section @ref(requirementssim)
+Book: Sections 4.3, 5.4
 </td>
 </tr>
 <tr>
@@ -15327,15 +15346,23 @@ Must-have
 Are only data transformations that align with NCA employed?
 </td>
 <td>
-Explain possible data transformations. NCA only allows linear
-transformations of X and Y (affine transformations: X2=aX+b) because
-necessity relationship depends on absolute levels of X and Y. Log and
-other non-linear transformations are not allowed. Exception: piecewise
-linear transformation (called ‘S-curve’) is applied mechanistically for
-calibration purposes.
+Explain whether and how the data were transformed, and whether the
+transformation aligns with NCA. Affine transformations (including linear
+transformation) produces valid results. NCA’s data analysis does not
+require data transformation and non-transformed data are often more
+meaningful and better interpretable (e.g., levels of a Likert scale)
+than transformed data. This particularly applies to necessity-in-degree
+and interpretations of specific levels of 𝑋 being necessary for specific
+levels of 𝑌 . Refrain from conducting non-linear data transformations
+(e.g., log-transformation, logistic transformation) unless the
+transformed data represent 𝑋 and 𝑌 as defined in the necessity
+hypothesis (e.g., log-transformed GDP). This recommendation may be
+violated in studies that combine NCA with QCA when the logistic
+transformation (S-curve) is applied mechanistically for calibration
+purposes.
 </td>
 <td>
-This book: Sections @ref(transformation) and @ref(ncaplssem)
+Book: Section 8.5.2, Appendix D
 </td>
 </tr>
 <!-- METHODS - DATA ANALYSIS -->
@@ -15353,14 +15380,15 @@ Must-have
 Is the selected ceiling line specified and justified?
 </td>
 <td>
-Specify and justify the primary selection of the ceiling line (e.g.,
-CE-FDH when X or Y is discrete or when the ceiling line is expected to
-be non-linear; CR-FDH when X and Y are continuous or when the ceiling
-line is expected to be straight).
+Specify and justify the selected ceiling line by considering theoretical
+expectations (border is linear or non-linear), type of data (discrete or
+continuous), observed border pattern (regular or irregular), balance
+between accuracy and generalizability (avoiding overfitting), and
+quality of the data (data with/without measurement error, simulated
+data).
 </td>
 <td>
-This book: Sections @ref(selectioneilingline), @ref(choiceceiling), and
-@ref(ncaplssem)
+Book: Sections 4.3.2, 9.3.2
 </td>
 </tr>
 <tr>
@@ -15374,12 +15402,17 @@ Should-have
 21
 </td>
 <td>
-Is the selected scope (empirical or theoretical) deliberately selected
-and specified?
+Is the bounding box (empirical or theoretical scope) deliberately
+selected and specified?
 </td>
 <td>
+Specify and justify the selected scope (empirical or theoretical).
+Commonly, the empirical scope is selected to avoid over-estimation of
+the effect size. The theoretical scope can be considered when 𝑋 and 𝑌
+are measured on bounded scales (e.g. Likert scales, percentages).
 </td>
 <td>
+Book: Sections 4.3.2, 9.3.1
 </td>
 </tr>
 <tr>
@@ -15394,18 +15427,20 @@ Should-have
 </td>
 <td>
 Are the hypothesis evaluation criteria (thresholds for effect size,
-statistical significance, ceiling fit, ceiling accuracy, and possibly
-target outcome) deliberately specified and justified?
+p-value, and possibly target outcome) deliberately specified and
+justified?
 </td>
 <td>
-Specify and justify the selection of the threshold value for necessity
-effect size for in kind necessity (d) and for statistical significance
-(p). In absence of a specified value, a common benchmark value may be
-used (d = 0.10).
+Specify and justify the selected threshold values for necessity effect
+size 𝑑 and 𝑝-value for identifying necessity-in-kind. This threshold
+depends on the specific context of the study. If no argument is
+available for a specific value, common benchmark values may be used (𝑑 =
+0.10; 𝑝 = 0.05 with 10,000 permutations). Optionally, select a target
+outcome 𝑌 to evaluate a specific outcome of necessity-in-degree.
 </td>
 <td>
-Article: <span class="citation">Dul (<a href="#ref-dul2016orm">2016b</a>)</span>; This book: Sections
-@ref(inkind) and @ref(choiceeffectsize)
+Article: <span class="citation">Dul (<a href="#ref-dul2016orm">2016b</a>)</span>; Book: Sections 4.4.1, 5.3,
+9.4.1, 9.4.2, 9.4.3
 </td>
 </tr>
 <tr>
@@ -15419,11 +15454,17 @@ Should-have
 23
 </td>
 <td>
-Are the results of a visual inspection of the XY-plot reported?
+Are the results of a visual inspection of the 𝑋𝑌-plot reported?
 </td>
 <td>
+Conduct the analysis with the selected ceiling line and scope to obtain
+an 𝑋𝑌-plot for visual inspection. Evaluate whether the expected corner
+is empty, if the selected ceiling line is appropriate, if potential
+outliers are present, and what the data pattern in the rest of the plot
+is.
 </td>
 <td>
+Book: Section 9.5
 </td>
 </tr>
 <tr>
@@ -15437,11 +15478,17 @@ Must-have
 24
 </td>
 <td>
-Is it explained how potential outliers are analysed and handled?
+Is it explained how potential outliers are analyzed and handled, and are
+removed cases reported?
 </td>
 <td>
+Conduct an outlier analysis with the selected ceiling line and scope to
+identify potential ceiling and scope outliers. If outliers are removed,
+report in detail which cases are removed and why, and compare the
+results with and without removing the outliers (see robustness checks).
 </td>
 <td>
+Article: <span class="citation">Dul (<a href="#ref-dul2016orm">2016b</a>)</span>; Book: Section 9.8
 </td>
 </tr>
 <tr>
@@ -15455,15 +15502,16 @@ Should-have
 25
 </td>
 <td>
-Is it described and justified how the ceiling line estimation accuracy
-is evaluated?
+Are all model fit parameters evaluated?
 </td>
 <td>
-Specify how ceiling line accuracy is evaluated and which threshold
-values are used; consider for example Fit &gt; 80% and ceiling-accuracy
-&gt; 0.95
+Conduct the analysis with the selected ceiling line and scope and
+evaluate the model fit parameters (complexity, fit, ceiling accuracy,
+noise, exceptions, support, spread, sharpness), and compare it with
+benchmark values.
 </td>
 <td>
+Book: Sections 4.5, 6.5, 9.9
 </td>
 </tr>
 <tr>
@@ -15481,16 +15529,14 @@ Are all NCA-related parameters, terms and concepts properly used and
 described?
 </td>
 <td>
-Make sure that the feasible area is described as the area under the
-ceiling line and not as the empty zone. Avoid using the term &quot;ceiling
-zone&quot; and &quot;infeasible area&quot;. Provide a proper description of effect
-size, ceiling line, accuracy, and scope. Specify what is meant by the
-data-analytic term &quot;relative&quot; (relative to observed scores; relative to
-selected scale for scoring X and Y; comparing effect sizes as in
-simulations).
+Describe the NCA-related parameters, terms, and concepts properly,
+including using the term ‘permutation test’ (not terms like
+bootstrapping, (Monte Carlo) simulation, robustness check, or 𝑡-test)
+for NCA’s statistical test, and using ‘multiple NCA’ (not multivariate
+NCA) for analyses with several necessity hypotheses.
 </td>
 <td>
-This book: Section @ref(formalexpression)
+Book: Appendix A
 </td>
 </tr>
 <tr>
@@ -15508,10 +15554,11 @@ Is the utilized software, including its version number specified?
 </td>
 <td>
 Specify which software and which version of the software was used to
-conduct NCA.
+conduct NCA. The version number for the NCA package in R can be obtained
+with the command packageVersion(“NCA”).
 </td>
 <td>
-This book: Section @ref(software)
+Book: Appendix B
 </td>
 </tr>
 <tr>
@@ -15525,16 +15572,17 @@ Nice-to-have
 28
 </td>
 <td>
-Is a short description of NCA’s data analysis approach provided?
+Is a short general description of NCA’s data analysis approach provided
+to serve readers who are less familiar with NCA?
 </td>
 <td>
-Provide to readers who are unfamiliar with NCA’s data analysis approach
-a short description of how NCA works (e.g., focusing on empty zone,
-ceiling line, scope, effect size) and refer to references for further
-reading.
+Include a brief description of NCA’s main logic and data analysis
+elements (ceiling line, ceiling zone, scope, effect size) so that the
+study is easier to understand for readers unfamiliar with NCA. Consider
+adding references for further reading.
 </td>
 <td>
-This book: Chapter @ref(summary) ; Appendix in <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)</span>
+Articles: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>, <span class="citation">Dul (<a href="#ref-dul2024identifying">2025</a>)</span>
 </td>
 </tr>
 <!-- RESULTS -->
@@ -15549,15 +15597,15 @@ Must-have
 29
 </td>
 <td>
-Are XY-tables or XY-plots of all tested/explored relationships shown?
+Are 𝑋𝑌-tables or 𝑋𝑌-plots of all tested/explored relationships shown?
 </td>
 <td>
-Show in the main text or an appendix the XY tables or XY plots of all
-tested/explored relationships such that the reader can inspect the
-patterns.
+Include the 𝑋𝑌-tables or 𝑋𝑌-plots of all tested/explored relationships,
+preferably in the main text. It is essential that readers are able to
+inspect them visually.
 </td>
 <td>
-This book: Sections @ref(visualinspection) and @ref(ncaplssem)
+Book: Section 9.5
 </td>
 </tr>
 <tr>
@@ -15572,13 +15620,19 @@ Should-have
 </td>
 <td>
 Is only the ceiling line that is used to draw conclusions about the
-necessity relationship shown in the XY-plot?
+necessity relationship shown in the 𝑋𝑌-plot?
 </td>
 <td>
-Report results of another plausible ceiling line if this is part of a
-robustness check
+In the 𝑋𝑌-plot(s), include only the ceiling line that is used to draw
+conclusions about the necessity relationship. Note that the default
+output of the NCA software in R includes two ceiling lines, but that
+only one is usually selected for drawing conclusions about the
+hypothesis (𝑋𝑌-plots with other ceiling lines that were explored before
+the final selection was made, or that were evaluated during the
+robustness checks could be provided separately).
 </td>
 <td>
+-
 </td>
 </tr>
 <tr>
@@ -15592,15 +15646,20 @@ Must-have
 31
 </td>
 <td>
-For large-N quantitative research: are the effect size and its p-value
+For large-n quantitative study: are the effect size and its p-value
 properly reported?
 </td>
 <td>
-Report the estimated effect size preferably with two decimal places
-(e.g., d = 0.09 or d = 0.11), ensuring that the two decimal p values
-have meaningful information about the precision of the p value.
+Report the estimated effect size and its 𝑝-value. Preferably, report the
+effect size in two decimal places. This ensures that the result contains
+meaningful information about the precision, and that there is no
+unwarranted level of accuracy. Report the estimated 𝑝-value, preferably
+with three decimal places for the same reasons. Give exact 𝑝-values (or
+if applicable 𝑝 &lt; 0.001) and do not use inequalities or stars (i.e.,
+not p &lt; 0.05 or *).
 </td>
 <td>
+-
 </td>
 </tr>
 <tr>
@@ -15614,17 +15673,20 @@ Must-have
 32
 </td>
 <td>
-Is the conclusion about necessity in kind based on three criteria:
+Is the conclusion about necessity-in-kind based on three criteria:
 theoretical justification, effect size, and p-value?
 </td>
 <td>
-Conclude about necessity in kind using three criteria: 1. theoretical
-justification (the hypothesis); 2. Effect size large enough (above the
-selected threshold value), p value small enough (below the selected
-threshold value).
+Conclude about necessity-in-kind using three criteria: (1) Theoretical
+justification (the formal hypothesis), (2) Effect size not below the
+selected threshold value, (3) 𝑝-value below the selected threshold
+value. Note that for support all criteria apply and that missing just
+one of them is enough for a rejection. This implies, for example, that
+without theoretical justification the claim for a necessity relationship
+is rejected.
 </td>
 <td>
-This book: Sections @ref(summarybottleneck) and @ref(ncaplssem)
+Book: Section 9.10
 </td>
 </tr>
 <tr>
@@ -15638,15 +15700,15 @@ Should-have
 33
 </td>
 <td>
-Is the bottleneck table reported and necessity in degree evaluated?
+Is the bottleneck table reported and necessity-in-degree evaluated?
 </td>
 <td>
-Report the bottleneck table when multiple necessary conditions are not
-rejected to evaluate for which level of Y, which levels of the X&#39;s are
-required.
+Report the bottleneck table only for necessary conditions that were not
+rejected. This facilitates the evaluation of necessity-in-degree: which
+level of 𝑋 is necessary for which level of 𝑌.
 </td>
 <td>
-This book: Section @ref(bottleneck)
+Book: Section 9.11
 </td>
 </tr>
 <tr>
@@ -15660,14 +15722,14 @@ Nice-to-have
 34
 </td>
 <td>
-If applicable: is the meaning of &#39;NN&#39; and &#39;NA&#39; in the bottleneck table
+If applicable: is the meaning of NN and NA in the bottleneck table
 explained?
 </td>
 <td>
-Explain the meaning of &#39;NN&#39; and &#39;NA&#39; in the bottleneck table.
+Explain the meaning of NN or NA in the bottleneck table if it appears.
 </td>
 <td>
-This book: Section @ref(bottleneck)
+Book: Section 9.11.5
 </td>
 </tr>
 <tr>
@@ -15684,13 +15746,14 @@ Should-have
 Are the type of values used in the bottleneck analysis justified?
 </td>
 <td>
-Justify the type of values for X and Y (percentage of range, actual
-values, percentiles). In particular, the actual values of X and Y are
-meaningful, and not the percentage of cases not able to achieve a target
-outcome.
+Justify the type of values for 𝑋 and 𝑌 that are displayed in the
+bottleneck table (e.g., percentage of range, actual values,
+percentiles). In particular, the actual values of 𝑌 and percentile
+values of 𝑋 might be informative about the percentage or number of cases
+unable to achieve a target outcome.
 </td>
 <td>
-This book: Section @ref(bottleneck)
+Book: Section 9.11
 </td>
 </tr>
 <tr>
@@ -15707,15 +15770,15 @@ Must-have
 Are the results of the robustness checks summarized?
 </td>
 <td>
-Summarize the results of the robustness checks: is the conclusion about
-necessity (e.g., acceptance and rejection of hypotheses, effect sizes)
-robust across choice of ceiling line (e.g., CE-FDH, CR-FDH), scope
-(observed, theoretical), removing outliers and missing values, and other
-choices (e.g., scope outliers). Conclude if the results are robust or
-fragile.
+Conduct robustness checks and summarize the results: is the main
+conclusion about necessity (support or rejection of the hypothesis)
+sensitive to choices by the analyst regarding ceiling line, scope,
+effect size threshold, 𝑝-value threshold, removing/keeping outliers,
+different choices for the target outcome? Conclude if the results are
+robust or fragile.
 </td>
 <td>
-This book: Section @ref(robustnesschecks)
+Book: Section 9.12
 </td>
 </tr>
 <!-- DISCUSSION -->
@@ -15734,12 +15797,13 @@ Is it explained why all tested necessary conditions were (not) rejected?
 </td>
 <td>
 Summarize the results of using NCA in terms of which necessary
-conditions were tested/explored, and which were (not) rejected. Explain
-what could be a theoretical reason of it (refer to the reasoning for the
-hypothesis formulation).
+conditions were tested/explored, and which were rejected or not
+rejected. Assuming that (methodological) errors are unlikely, provide
+theoretical explanations for the results, referring to the necessity
+theory and hypotheses formulated earlier.
 </td>
 <td>
-This book: Section @ref(ncaqca)
+Book: Section 7.5.3
 </td>
 </tr>
 <tr>
@@ -15753,16 +15817,17 @@ Must-have
 38
 </td>
 <td>
-For multimethod research: is it explained how the results of NCA and of
+For a multimethod study: is it explained how the results of NCA and of
 other methods complement each other?
 </td>
 <td>
-When NCA is used in combination with another methods (e.g.,
-regression-based methods or QCA), report how the results of NCA and of
-the other method complement each other.
+When NCA is used in a causal-pluralism study by combining it with
+another method (e.g., regression-based methods or QCA), report how the
+results of NCA and the other method complement each other using NERT,
+NEST and BIPMA when applicable.
 </td>
 <td>
-This book: Sections @ref(ncaregression) and @ref(ncaplssem)
+Book: Chapter 11.
 </td>
 </tr>
 <tr>
@@ -15780,11 +15845,12 @@ Referring to the goals of the study (see introduction): is it discussed
 if the intended contribution is realized and what the key insights are?
 </td>
 <td>
-For a theoretical, empirical, methodological and/or practical
-contribution (see introduction), discuss if the added value has been
-realized and what key insights were gained.
+For the primary and possibly secondary goals (see introduction), discuss
+if the intended contribution is realized and what key insights are
+gained.
 </td>
 <td>
+Book: Section 10.2.1
 </td>
 </tr>
 <tr>
@@ -15802,12 +15868,13 @@ Are the results of the bottleneck analysis explained in terms of
 necessity-in-degree?
 </td>
 <td>
-Give an interpretation of necessity in degree using the results of the
-bottleneck analysis. For example, explain what level of X is necessary
-for what target level of Y.
+If necessity-in-kind is accepted, provide an interpretation of
+necessity-in-degree using the results of the bottleneck analysis. For
+example, explain what level of 𝑋 is necessary for a given target level
+of 𝑌.
 </td>
 <td>
-This book: Section @ref(bottleneck)
+Book: Section 9.11
 </td>
 </tr>
 <tr>
@@ -15824,11 +15891,13 @@ Should-have
 Are limitations of applying NCA mentioned?
 </td>
 <td>
-Mention general limitations of NCA (e.g., only focus on necessity;
-potential sensitivity to outliers), and specific limitations of applying
-NCA in the current study.
+Mention the study’s limitations. Discuss general limitations of NCA
+(e.g., exclusive focus on necessity; potential sensitivity to outliers),
+and specific limitations of applying NCA in the current study, and how
+this may affect the findings.
 </td>
 <td>
+-
 </td>
 </tr>
 <tr>
@@ -15845,14 +15914,14 @@ Should-have
 Are potential future studies with NCA discussed?
 </td>
 <td>
-Discuss potential future research directions with NCA, for example
-conducting studies in other parts of the theoretical domain to verify
+Discuss potential future studies with NCA, for example conducting
+studies in other parts of the theoretical domain to assess the
 generalizability of the current findings, or applying NCA in related
 substantive areas that could benefit from the necessity causal
 perspective.
 </td>
 <td>
-Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023constructive">2023</a>)</span>
+Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023constructive">2023</a>)</span>
 </td>
 </tr>
 </tbody>
@@ -15862,8 +15931,7 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
   const publication = document.querySelector('#publication');
   const priority = document.querySelector('#priority');
   
- // --- 1) Insert two NEW HEADER columns after "Question" ---
-  const headerRow = document.querySelector('#assesments thead tr');
+  const headerRow = document.querySelector('#assessments thead tr');
   if (headerRow) {
     const ths = headerRow.querySelectorAll('th');
     // Insert after Question (index 3)
@@ -15879,14 +15947,11 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
     thGreen.after(thRed);
   }
 
-  // --- 2) Insert two NEW BODY columns (empty tickable boxes) after "Question" in EVERY ROW ---
-  const tbody = document.querySelector('#assesments tbody');
+  const tbody = document.querySelector('#assessments tbody');
   if (tbody) {
     tbody.querySelectorAll('tr').forEach((tr) => {
       const tds = tr.querySelectorAll('td');
 
-      // Only modify rows that are still in the original 6-column format
-      // (Section, Priority, Item, Question, Recommendation, Further reading)
       if (tds.length === 6) {
         const greenTd = document.createElement('td');
         greenTd.className = 'tickcell';
@@ -15903,11 +15968,6 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
     });
   }
 
-
-
-
-
- // Allow only one checkbox (green OR red) per row
   document.addEventListener('change', function (e) {
     if (!e.target.classList.contains('tickbox')) return;
 
@@ -15924,12 +15984,9 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
       green.checked = false;
     }
   });
-  
-  
-    /* ===== ADD THE 3-SCORES BLOCK RIGHT HERE ===== */
-
+ 
   function calculateScores() {
-    const tbody = document.querySelector('#assesments tbody');
+    const tbody = document.querySelector('#assessments tbody');
     if (!tbody) return;
 
     const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -15961,12 +16018,7 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
   const btn = document.getElementById('calcScoresBtn');
   if (btn) btn.addEventListener('click', calculateScores);
 
-  /* ===== END 3-SCORES BLOCK ===== */
-  
-  
-
-  // --- 3) Now initialize DataTables (AFTER the columns exist) ---
-  const table = new DataTable('#assesments', {
+   const table = new DataTable('#assessments', {
     info: false,
     order: [[2, 'asc']],      // Item column stays 3rd (index 2)
     pageLength: 50,
@@ -15977,7 +16029,6 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
   let priorities = getSelectValues(priority);
 
   table.search.fixed('range', function (searchStr, data) {
-    // Section is still column 0, Priority still column 1
     if (JSON.stringify(publications) !== JSON.stringify(['All'])) {
       if (!publications.includes(data[0])) return false;
     }
@@ -16015,59 +16066,70 @@ Article: <span class="citation">Köhler and Cortina (<a href="#ref-kohler2023con
 </script>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
 <div id="ref-bergh2022constitutes" class="csl-entry">
-Bergh, Donald D, Brian K Boyd, Kris Byron, Steve Gove, and David J
-Ketchen Jr. 2022. <span>“What Constitutes a Methodological
-Contribution?”</span> <em>Journal of Management</em> 48 (7): 1835–48. <a href="https://doi.org/10.1177/01492063221088235">https://doi.org/10.1177/01492063221088235</a>.
+Bergh, D. D., Boyd, B. K., Byron, K., Gove, S., &amp; Ketchen Jr, D. J.
+(2022). What constitutes a methodological contribution? <em>Journal of
+Management</em>, <em>48</em>(7), 1835–1848. <a href="https://doi.org/10.1177/01492063221088235">https://doi.org/10.1177/01492063221088235</a>
 </div>
 <div id="ref-bokrantz2022building" class="csl-entry">
-Bokrantz, Jon, and Jan Dul. 2023. <span>“Building and Testing Necessity
-Theories in Supply Chain Management.”</span> <em>Journal of Supply Chain
-Management</em> 59: 48–65. <a href="https://doi.org/10.1111/jscm.12287">https://doi.org/10.1111/jscm.12287</a>.
+Bokrantz, J., &amp; Dul, J. (2023). Building and testing necessity
+theories in supply chain management. <em>Journal of Supply Chain
+Management</em>, <em>59</em>, 48–65. <a href="https://doi.org/10.1111/jscm.12287">https://doi.org/10.1111/jscm.12287</a>
 </div>
 <div id="ref-dul2016jbr" class="csl-entry">
-Dul, Jan. 2016a. <span>“Identifying Single Necessary Conditions with
-<span>NCA</span> and Fs<span>QCA</span>.”</span> <em>Journal of Business
-Research</em> 69 (4): 1516–23. <a href="https://doi.org/10.1016/j.jbusres.2015.10.134">https://doi.org/10.1016/j.jbusres.2015.10.134</a>.
+Dul, J. (2016a). Identifying single necessary conditions with
+<span>NCA</span> and fs<span>QCA</span>. <em>Journal of Business
+Research</em>, <em>69</em>(4), 1516–1523. <a href="https://doi.org/10.1016/j.jbusres.2015.10.134">https://doi.org/10.1016/j.jbusres.2015.10.134</a>
 </div>
 <div id="ref-dul2016orm" class="csl-entry">
-———. 2016b. <span>“<span>Necessary Condition Analysis</span>
-(<span>NCA</span>): Logic and Methodology of <span>‘Necessary but Not
-Sufficient’</span> Causality.”</span> <em>Organizational Research
-Methods</em> 19 (1): 10–52. <a href="https://doi.org/10.1177/1094428115584005">https://doi.org/10.1177/1094428115584005</a>.
+Dul, J. (2016b). <span>Necessary Condition Analysis</span>
+(<span>NCA</span>): Logic and methodology of <span>“necessary but not
+sufficient”</span> causality. <em>Organizational Research Methods</em>,
+<em>19</em>(1), 10–52. <a href="https://doi.org/10.1177/1094428115584005">https://doi.org/10.1177/1094428115584005</a>
 </div>
 <div id="ref-dul2022problematic" class="csl-entry">
-———. 2022. <span>“Problematic Applications of <span>Necessary Condition
-Analysis</span> (<span>NCA</span>) in Tourism and Hospitality
-Research.”</span> <em>Tourism Management</em> 93: 104616. <a href="https://doi.org/10.1016/j.tourman.2022.104616">https://doi.org/10.1016/j.tourman.2022.104616</a>.
+Dul, J. (2022). Problematic applications of <span>Necessary Condition
+Analysis</span> (<span>NCA</span>) in tourism and hospitality research.
+<em>Tourism Management</em>, <em>93</em>, 104616. <a href="https://doi.org/10.1016/j.tourman.2022.104616">https://doi.org/10.1016/j.tourman.2022.104616</a>
 </div>
 <div id="ref-dul2024different" class="csl-entry">
-———. 2024a. <span>“A Different Causal Perspective with <span>Necessary
-Condition Analysis</span>.”</span> <em>Journal of Business Research</em>
-177: 114618. <a href="https://doi.org/10.1016/j.jbusres.2024.114618">https://doi.org/10.1016/j.jbusres.2024.114618</a>.
+Dul, J. (2024a). A different causal perspective with <span>Necessary
+Condition Analysis</span>. <em>Journal of Business Research</em>,
+<em>177</em>, 114618. <a href="https://doi.org/10.1016/j.jbusres.2024.114618">https://doi.org/10.1016/j.jbusres.2024.114618</a>
 </div>
 <div id="ref-dul2024how" class="csl-entry">
-———. 2024b. <span>“How to Sample in <span>Necessary Condition Analysis
-(NCA)</span>.”</span> <em>European Journal of International
-Management</em> 23 (1): 1–12. <a href="https://doi.org/10.1504/EJIM.2024.138446">https://doi.org/10.1504/EJIM.2024.138446</a>.
+Dul, J. (2024b). How to sample in <span>Necessary Condition Analysis
+(NCA)</span>. <em>European Journal of International Management</em>,
+<em>23</em>(1), 1–12. <a href="https://doi.org/10.1504/EJIM.2024.138446">https://doi.org/10.1504/EJIM.2024.138446</a>
+</div>
+<div id="ref-dul2024identifying" class="csl-entry">
+Dul, J. (2025). Identifying the perfect predictor of absence of disease:
+A shift toward necessary condition analysis in evidence-based medicine?
+In <em>Journal of the American Academy of Child and Adolescent
+Psychiatry</em> (pp. S0890–8567). <a href="https://doi.org/10.1016/j.jaac.2024.11.020">https://doi.org/10.1016/j.jaac.2024.11.020</a>
+</div>
+<div id="ref-dul2024advancing" class="csl-entry">
+Dul, J., Raaij, E. van, &amp; Caputo, A. (2024). Advancing scientific
+inquiry through data reuse: <span>Necessary Condition Analysis</span>
+with archival data. <em>Strategic Change</em>, <em>33</em>(1), 35–40. <a href="https://doi.org/10.1002/jsc.2562">https://doi.org/10.1002/jsc.2562</a>
 </div>
 <div id="ref-hollenbeck2017harking" class="csl-entry">
-Hollenbeck, John R, and Patrick M Wright. 2017. <span>“Harking,
-Sharking, and Tharking: Making the Case for Post Hoc Analysis of
-Scientific Data.”</span> <em>Journal of Management</em> 43 (1): 5–18. <a href="https://doi.org/10.1177/0149206316679487">https://doi.org/10.1177/0149206316679487</a>.
+Hollenbeck, J. R., &amp; Wright, P. M. (2017). Harking, sharking, and
+tharking: Making the case for post hoc analysis of scientific data.
+<em>Journal of Management</em>, <em>43</em>(1), 5–18. <a href="https://doi.org/10.1177/0149206316679487">https://doi.org/10.1177/0149206316679487</a>
 </div>
 <div id="ref-kohler2023constructive" class="csl-entry">
-Köhler, Tine, and Jose M Cortina. 2023. <span>“Constructive Replication,
-Reproducibility, and Generalizability: Getting Theory Testing for JOMSR
-Right.”</span> <em>Journal of Management Scientific Reports</em> 1 (2):
-75–93. <a href="https://doi.org/10.1177/27550311231176016">https://doi.org/10.1177/27550311231176016</a>.
+Köhler, T., &amp; Cortina, J. M. (2023). Constructive replication,
+reproducibility, and generalizability: Getting theory testing for JOMSR
+right. <em>Journal of Management Scientific Reports</em>, <em>1</em>(2),
+75–93. <a href="https://doi.org/10.1177/27550311231176016">https://doi.org/10.1177/27550311231176016</a>
 </div>
 <div id="ref-vis2018analyzing" class="csl-entry">
-Vis, Barbara, and Jan Dul. 2018. <span>“Analyzing Relationships of
-Necessity Not Just in Kind but Also in Degree: Complementing
-Fs<span>QCA</span> with <span>NCA</span>.”</span> <em>Sociological
-Methods &amp; Research</em> 47 (4): 872–99. <a href="https://doi.org/10.1177/0049124115626179">https://doi.org/10.1177/0049124115626179</a>.
+Vis, B., &amp; Dul, J. (2018). Analyzing relationships of necessity not
+just in kind but also in degree: Complementing fs<span>QCA</span> with
+<span>NCA</span>. <em>Sociological Methods &amp; Research</em>,
+<em>47</em>(4), 872–899. <a href="https://doi.org/10.1177/0049124115626179">https://doi.org/10.1177/0049124115626179</a>
 </div>
 </div>
 </div>
