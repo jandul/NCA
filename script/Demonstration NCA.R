@@ -16,7 +16,7 @@
 library(NCA)  # load the package
 
 # Limit computation time
-test.rep <- 100 # for final analysis select 10000
+test.rep <- 1000 # for final analysis set 10000
 
 # Load the data
 data("nca.example2")  # load the data
@@ -73,9 +73,9 @@ ceiling <- "ce_fdh"
 metrics <- c("Complexity", "Fit", "Ceiling accuracy", "Noise", "Exceptions",
              "Support", "Spread", "Sharpness")
 
-tab2 <- sapply(xs, function(x) {
+tab1 <- sapply(xs, function(x) {
   sapply(metrics, function(p) {
-    nca_extract(model2, x = x, ceiling = ceiling, param = p)
+    nca_extract(model1, x = x, ceiling = ceiling, param = p)
   })
 })
 
@@ -98,7 +98,7 @@ model2 <- nca_analysis(data,
                        corner = 1,          # default upper-left corner
                        scope = NULL,        # default empirical scope
                        test.rep = test.rep)     
-model2
+print(model2)
 nca_output(model2, summaries = FALSE)
 
 # Extract model fit metrics
@@ -111,6 +111,7 @@ tab2 <- sapply(xs, function(x) {
     nca_extract(model2, x = x, ceiling = ceiling, param = p)
   })
 })
+
 # Print model fit metrics
 tab2_df <- data.frame(Metric = rownames(tab2), tab2, 
                       row.names = NULL, check.names = FALSE)
@@ -127,7 +128,7 @@ model3 <- nca_analysis(data,
                        corner = 1,          # default upper-left corner
                        scope = list (c(1,7,1,5), c(1,5,1,5), c(1,5,1,5)),  
                        test.rep = test.rep)     
-model3
+print(model3)
 nca_output(model3, summaries = FALSE)
 
 # Extract model fit metrics
@@ -171,11 +172,10 @@ model4
 nca_output(model4, summaries = FALSE)
 
 
-#----Bottleneck analysis
+#----Bottleneck analysis: necessity-in-degree
 
 # Default bottleneck analysis with percentage range for X and Y
 nca_output(model1, bottlenecks = TRUE, summaries = FALSE, plots = FALSE)
-
 
 # Bottleneck analysis with actual values for X and Y
 model5 <- nca_analysis(data,
@@ -211,7 +211,7 @@ difference_contrast <- nca_difference(data1 = data,
                                       x = c("Goodwill trust", "Competence trust"),
                                       y = "Innovation",
                                       ceilings = "cr_fdh",
-                                      test.rep = test.rep, 
+                                      test.rep = 100, # for final analysis set 10000 
                                       test.type = "contrast")
 print(difference_contrast)
 
@@ -224,7 +224,7 @@ difference_independent <- nca_difference(data1 = data1,
                                          x = c("Contractual detail"),
                                          y = "Innovation",
                                          ceilings = "ce_fdh",
-                                         test.rep = test.rep, 
+                                         test.rep = 100, # for final analysis set 10000 
                                          test.type = "independent")
 print(difference_independent)
 
@@ -247,7 +247,7 @@ difference_paired <- nca_difference(data1=data1,
                                     x = "Contractual detail",
                                     y = "Innovation",
                                     ceiling = "ce_fdh",
-                                    test.rep = test.rep,
+                                    test.rep = 100, # for final analysis set 10000 
                                     test.type = "paired")
 print(difference_paired)
 
