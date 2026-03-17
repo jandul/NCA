@@ -373,32 +373,54 @@ display: none;
 
 
 <h1 class="title toc-ignore">SCoRe checklist</h1>
-<h3 class="subtitle">For conducting and reporting a high-quality
-empirical NCA study</h3>
+<h3 class="subtitle">For conducting and reporting an empirical NCA
+study</h3>
 <h4 class="author"></h4>
 
 </div>
 
 
-<p>© Jan Dul</p>
-<p>Last update: March 16, 2026</p>
+<p>SCoRe = <strong>S</strong>trengthening (theoretical rigor),
+<strong>Co</strong>nducting (data and analysis quality), and
+<strong>Re</strong>porting (transparency).</p>
+<p><br><br> © Jan Dul</p>
+<p>Last update: March 17, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
 and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
-<div style="font-weight: 800; margin-bottom: 8px;">
-Scores
+  <div style="font-weight: 800; margin-bottom: 8px;">Percentage scores</div>
+
+  <p style="margin: 0 0 4px 0;">Must-have: <span id="scoreMust">0%</span></p>
+  <p style="margin: 0 0 4px 0;">Should-have: <span id="scoreShould">0%</span></p>
+  <p style="margin: 0 0 8px 0;">Nice-to-have: <span id="scoreNice">0%</span></p>
+
+  <div style="margin-top: 10px; font-weight: 800; margin-bottom: 8px;">Total quality score</div>
+
+  <p style="margin: 0 0 8px 0;">
+    SCoRe score: <span id="totalScoreValue">0</span>/100
+     | 
+    Color: <span id="totalScoreColorLabel">Red</span>
+    <span id="totalScoreColorSwatch" style="display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:middle; margin-left:6px; background:#ff3b30; border:1px solid #999;"></span>
+  </p>
+
+<div style="margin-top: 8px; font-size: 11px; color: #666; line-height: 1.4;">
+  Note: Must-have items are the most important because they determine access to scores above 60. Should-have items score less than must-have items, but more than nice-to-have points.
 </div>
-<div>
-Must-have: <span id="scoreMust">0%</span>
-</div>
-<div>
-Should-have: <span id="scoreShould">0%</span>
-</div>
-<div>
-Nice-to-have: <span id="scoreNice">0%</span>
-</div>
-<p><button id="calcScoresBtn" type="button" style="margin-top: 10px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;">
-Calculate scores </button></p>
+
+  <div id="scoreBarWrap">
+    <div id="scoreBar">
+      <div id="scoreArrow"></div>
+    </div>
+    <div id="scoreTicks">
+      <span>0</span>
+      <span>60</span>
+      <span>100</span>
+    </div>
+  </div>
+
+  <!-- <button id="calcScoresBtn" type="button" style="margin-top: 12px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;"> -->
+  <!--   Calculate scores -->
+  <!-- </button> -->
 </div>
 <style type="text/css">@charset "UTF-8";
 :root {
@@ -14759,9 +14781,13 @@ margin: 0 3px 0 0;
 	return DataTable;
 }));
 </script>
-<!-- above lines locally downloaded from -->
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" /> -->
-<!-- <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script> -->
+<script>
+  if (typeof DataTable === 'undefined') {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.datatables.net/2.1.8/js/dataTables.js';
+    document.head.appendChild(s);
+  }
+</script>
 <style>
 .inline-table {
 width: 1000px;
@@ -14770,26 +14796,75 @@ width: 1000px;
 max-width: 100%;
 }
 
-.tickbox{
+.tickbox {
 width: 18px;
 height: 18px;
 cursor: pointer;
 }
-.tick-green { accent-color: #2e7d32; } 
-.tick-red { accent-color: #c62828; } 
-#assessments td.tickcell, #assessments th.tickcell { text-align: center; }
+.tick-green { accent-color: #2e7d32; }
+.tick-red { accent-color: #c62828; }
+#assessments td.tickcell,
+#assessments th.tickcell {
+text-align: center;
+}
 #assessments td {
 font-size: 10px;
 }
 
 #assessments th:nth-child(1), #assessments td:nth-child(1) { width: 10%; } 
 #assessments th:nth-child(2), #assessments td:nth-child(2) { width: 8%; } 
-#assessments th:nth-child(3), #assessments td:nth-child(3) { width: 2%; } 
+#assessments th:nth-child(3), #assessments td:nth-child(3) { width: 4%; } 
 #assessments th:nth-child(4), #assessments td:nth-child(4) { width: 17%; } 
-#assessments th:nth-child(5), #assessments td:nth-child(5) { width: 2%; } 
-#assessments th:nth-child(6), #assessments td:nth-child(6) { width: 2%; } 
-#assessments th:nth-child(7), #assessments td:nth-child(7) { width: 45%; } 
+#assessments th:nth-child(5), #assessments td:nth-child(5) { width: 3%; } 
+#assessments th:nth-child(6), #assessments td:nth-child(6) { width: 3%; } 
+#assessments th:nth-child(7), #assessments td:nth-child(7) { width: 40%; } 
 #assessments th:nth-child(8), #assessments td:nth-child(8) { width: 15%; } 
+
+#scoreBarWrap {
+width: 100%;
+max-width: 900px;
+padding-top: 14px;
+}
+#scoreBar {
+position: relative;
+height: 26px;
+border-radius: 999px;
+border: 1px solid #bbb;
+overflow: visible;
+background: linear-gradient(
+to right,
+#ff3b30 0%,
+#ff9500 60%,
+#34c759 100%
+);
+}
+#scoreArrow {
+position: absolute;
+top: -12px;
+left: 0%;
+transform: translateX(-50%);
+width: 0;
+height: 0;
+border-left: 8px solid transparent;
+border-right: 8px solid transparent;
+border-top: 12px solid #111;
+z-index: 10;
+}
+#scoreTicks {
+position: relative;
+height: 18px;
+margin-top: 6px;
+max-width: 900px;
+font-size: 12px;
+}
+#scoreTicks span {
+position: absolute;
+transform: translateX(-50%);
+white-space: nowrap;
+}
+#scoreTicks span:nth-child(1) { left: 0%; transform: translateX(0); }
+#scoreTicks span:nth-child(2) { left: 60%; }
+#scoreTicks span:nth-child(3) { left: 100%; transform: translateX(-100%); }
 </style>
 <table class="inputs">
 <tbody>
@@ -14847,7 +14922,6 @@ Further reading
 </tr>
 </thead>
 <tbody>
-<!-- INTRODUCTION -->
 <tr>
 <td>
 Introduction/General
@@ -15011,7 +15085,6 @@ and abstract by using words that reflect necessity logic or NCA.
 Book: Table 7.1
 </td>
 </tr>
-<!-- THEORY -->
 <tr>
 <td>
 Theory/Hypotheses
@@ -15028,9 +15101,9 @@ is necessary for 𝑌, or similar?
 </td>
 <td>
 Formulate the necessity relationship explicitly as a necessary condition
-hypothesis: &quot;𝑋 is necessary for 𝑌&quot;. For a deductive study, this is done
+hypothesis: “𝑋 is necessary for 𝑌”. For a deductive study, this is done
 before data analysis; for an explorative study, this is done after data
-analysis when when indications for a necessity relationship are found.
+analysis when indications for a necessity relationship are found.
 </td>
 <td>
 Book: Section 7.5
@@ -15111,14 +15184,14 @@ order of 𝑋 and 𝑌 if this is not obvious?
 </td>
 <td>
 If this is not self-evident, include a plausible explanation of the
-temporal order (first 𝑋 then 𝑌 ) in the description of why the necessity
-causal relationship exists. If the data support 𝑋 is necessary for 𝑌 ,
+temporal order (first 𝑋 then 𝑌) in the description of why the necessity
+causal relationship exists. If the data support 𝑋 is necessary for 𝑌,
 explain why the alternative reverse explanation, namely that 𝑌 is
 sufficient for 𝑋 (or in terms of necessity: absence of 𝑌 is necessary
 for absence of 𝑋) that would also be consistent with the expected empty
 space, is not plausible. Also consider other temporal aspects of the
 hypothesis such as whether 𝑋 is necessary for the onset or continuation
-of 𝑌 , or whether the hypothesis holds in all time periods.
+of 𝑌, or whether the hypothesis holds in all time periods.
 </td>
 <td>
 Book: Section 2.5, Chapter 7 in particular Section 7.5.3
@@ -15165,13 +15238,13 @@ Nice-to-have
 12
 </td>
 <td>
-If applicable, is an &quot;nc&quot; symbol added near the arrow in a figure that
+If applicable, is an “nc” symbol added near the arrow in a figure that
 represents a necessity relationship?
 </td>
 <td>
 In a diagram representing an (expected) necessity relationship between
-two variables using an arrow, add a relevant symbol (+nc+,-nc+, -nc-, or
-+nc-) near the arrow to show the direction of necessity.
+two variables using an arrow, add a relevant symbol (+nc+, -nc+, -nc-,
+or +nc-) near the arrow to show the direction of necessity.
 </td>
 <td>
 Book: Section 3.5
@@ -15203,7 +15276,6 @@ Article: <span class="citation">Dul (<a href="#ref-dul2024different">2024a</a>)<
 9.8, 4.5.4
 </td>
 </tr>
-<!-- METHODS-DATA -->
 <tr>
 <td>
 Methods - data
@@ -15276,8 +15348,8 @@ For small-n qualitative NCA studies, aim to use purposive selection of
 cases from the theoretical domain, with cases being selected based on
 the presence of 𝑌 or absence of 𝑋. Always clearly state how cases were
 selected. Reflect on, and report the potential limitations when cases
-were not selected purposively based on the absence of 𝑋 or presence of 𝑌
-.
+were not selected purposively based on the absence of 𝑋 or presence of
+𝑌.
 </td>
 <td>
 Article: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>; Book: Sections 8.2.3, 8.3.2
@@ -15299,10 +15371,10 @@ and are these measures practically interpretable?
 </td>
 <td>
 Ensure a proper measurement approach with valid, reliable, and
-meaningful data (scores of 𝑋 and 𝑌 ). Data are input to NCA, not part of
+meaningful data (scores of 𝑋 and 𝑌). Data are input to NCA, not part of
 NCA. General principles for good data (collection) apply to an NCA
 study. For interpretation of results, it is important that the scores
-have a practical meaning in terms of the levels of 𝑋 and 𝑌 . Data are
+have a practical meaning in terms of the levels of 𝑋 and 𝑌. Data are
 stored in a dataset. The dataset may consist of archival data.
 </td>
 <td>
@@ -15354,7 +15426,7 @@ require data transformation and non-transformed data are often more
 meaningful and better interpretable (e.g., levels of a Likert scale)
 than transformed data. This particularly applies to necessity-in-degree
 and interpretations of specific levels of 𝑋 being necessary for specific
-levels of 𝑌 . Refrain from conducting non-linear data transformations
+levels of 𝑌. Refrain from conducting non-linear data transformations
 (e.g., log-transformation, logistic transformation) unless the
 transformed data represent 𝑋 and 𝑌 as defined in the necessity
 hypothesis (e.g., log-transformed GDP). This recommendation may be
@@ -15366,7 +15438,6 @@ purposes.
 Book: Section 8.5.2, Appendix D
 </td>
 </tr>
-<!-- METHODS - DATA ANALYSIS -->
 <tr>
 <td>
 Methods - data analysis
@@ -15586,7 +15657,6 @@ adding references for further reading.
 Articles: <span class="citation">Dul (<a href="#ref-dul2024how">2024b</a>)</span>, <span class="citation">Dul (<a href="#ref-dul2024identifying">2025</a>)</span>
 </td>
 </tr>
-<!-- RESULTS -->
 <tr>
 <td>
 Results
@@ -15782,7 +15852,6 @@ robust or fragile.
 Book: Section 9.12
 </td>
 </tr>
-<!-- DISCUSSION -->
 <tr>
 <td>
 Discussion
@@ -15929,144 +15998,312 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
 </table>
 </div>
 <script>
-  const publication = document.querySelector('#publication');
-  const priority = document.querySelector('#priority');
-  
-  const headerRow = document.querySelector('#assessments thead tr');
-  if (headerRow) {
-    const ths = headerRow.querySelectorAll('th');
-    // Insert after Question (index 3)
-    const thGreen = document.createElement('th');
-    thGreen.className = 'tickcell';
-    thGreen.textContent = '✅';
+(function () {
+  function initScoreChecklist() {
+    const publication = document.querySelector('#publication');
+    const priority = document.querySelector('#priority');
+    const tableEl = document.querySelector('#assessments');
+    const tbody = document.querySelector('#assessments tbody');
+    const calcBtn = document.getElementById('calcScoresBtn');
 
-    const thRed = document.createElement('th');
-    thRed.className = 'tickcell';
-    thRed.textContent = '❌';
+    if (!publication || !priority || !tableEl || !tbody) return false;
+    if (typeof DataTable === 'undefined') return false;
+    if (tableEl.dataset.scoreInitialized === 'true') return true;
 
-    ths[3].after(thGreen);
-    thGreen.after(thRed);
-  }
+    tableEl.dataset.scoreInitialized = 'true';
 
-  const tbody = document.querySelector('#assessments tbody');
-  if (tbody) {
+    const headerRow = document.querySelector('#assessments thead tr');
+    if (headerRow) {
+      const ths = headerRow.querySelectorAll('th');
+      const hasGreenHeader = Array.from(ths).some(th => th.textContent.trim() === '✅');
+      const hasRedHeader = Array.from(ths).some(th => th.textContent.trim() === '❌');
+
+      if (!hasGreenHeader && !hasRedHeader && ths.length >= 4) {
+        const thGreen = document.createElement('th');
+        thGreen.className = 'tickcell';
+        thGreen.textContent = '✅';
+
+        const thRed = document.createElement('th');
+        thRed.className = 'tickcell';
+        thRed.textContent = '❌';
+
+        ths[3].after(thGreen);
+        thGreen.after(thRed);
+      }
+    }
+
     tbody.querySelectorAll('tr').forEach((tr) => {
-      const tds = tr.querySelectorAll('td');
+      if (tr.querySelector('.tickbox')) return;
 
+      const tds = tr.querySelectorAll('td');
       if (tds.length === 6) {
         const greenTd = document.createElement('td');
         greenTd.className = 'tickcell';
-        greenTd.innerHTML = `<input class="tickbox tick-green" type="checkbox" aria-label="Green">`;
+        greenTd.innerHTML = '<input class="tickbox tick-green" type="checkbox" aria-label="Green">';
 
         const redTd = document.createElement('td');
         redTd.className = 'tickcell';
-        redTd.innerHTML = `<input class="tickbox tick-red" type="checkbox" aria-label="Red">`;
+        redTd.innerHTML = '<input class="tickbox tick-red" type="checkbox" aria-label="Red">';
 
-        // Insert after Question (index 3)
         tds[3].after(greenTd);
         greenTd.after(redTd);
       }
     });
-  }
 
-  document.addEventListener('change', function (e) {
-    if (!e.target.classList.contains('tickbox')) return;
-
-    const row = e.target.closest('tr');
-    if (!row) return;
-
-    const green = row.querySelector('input.tick-green');
-    const red   = row.querySelector('input.tick-red');
-
-    if (e.target.classList.contains('tick-green') && green.checked && red) {
-      red.checked = false;
-    }
-    if (e.target.classList.contains('tick-red') && red.checked && green) {
-      green.checked = false;
-    }
-  });
- 
-  function calculateScores() {
-    const tbody = document.querySelector('#assessments tbody');
-    if (!tbody) return;
-
-    const rows = Array.from(tbody.querySelectorAll('tr'));
-
-    function pctFor(priorityLabel) {
-      const group = rows.filter(r => {
-        const prCell = r.querySelector('td:nth-child(2)'); // Priority column
-        return prCell && prCell.textContent.trim() === priorityLabel;
-      });
-
-      const total = group.length;
-      const green = group.filter(r => {
-        const g = r.querySelector('input.tick-green');
-        return g && g.checked;
-      }).length;
-
+    function pct(green, total) {
       return total ? Math.round((green / total) * 100) : 0;
     }
 
-    const mustPct = pctFor('Must-have');
-    const shouldPct = pctFor('Should-have');
-    const nicePct = pctFor('Nice-to-have');
+    function getCountsByPriority() {
+      const rows = Array.from(tbody.querySelectorAll('tr'));
 
-    document.getElementById('scoreMust').textContent = mustPct + '%';
-    document.getElementById('scoreShould').textContent = shouldPct + '%';
-    document.getElementById('scoreNice').textContent = nicePct + '%';
+      function counts(priorityLabel) {
+        const group = rows.filter(r => {
+          const prCell = r.querySelector('td:nth-child(2)');
+          return prCell && prCell.textContent.trim() === priorityLabel;
+        });
+
+        const total = group.length;
+        const green = group.filter(r => {
+          const g = r.querySelector('input.tick-green');
+          return g && g.checked;
+        }).length;
+
+        return { total, green };
+      }
+
+      return {
+        must: counts('Must-have'),
+        should: counts('Should-have'),
+        nice: counts('Nice-to-have')
+      };
+    }
+
+
+function calculateTotalScore(mustGreen, mustTotal, shouldGreen, shouldTotal, niceGreen, niceTotal) {
+  const MUST_MAX = 60;
+  const EXTRA_MAX = 40;
+
+  const mustFraction = mustTotal > 0 ? (mustGreen / mustTotal) : 0;
+  const mustPart = MUST_MAX * mustFraction;
+
+  const shouldWeight = 2;
+  const niceWeight = 1;
+
+  const weightedDone = (shouldGreen * shouldWeight) + (niceGreen * niceWeight);
+  const weightedTotal = (shouldTotal * shouldWeight) + (niceTotal * niceWeight);
+
+  const extraFraction = weightedTotal > 0 ? (weightedDone / weightedTotal) : 0;
+  const extraBase = EXTRA_MAX * extraFraction;
+
+  // 10% when no must-haves are fulfilled, 100% when all are fulfilled
+  const activation = 0.10 + 0.90 * mustFraction;
+
+  let total = mustPart + (extraBase * activation);
+
+  // If not all must-haves are fulfilled, total cannot exceed 60
+  const allMustDone = mustTotal > 0 && mustGreen === mustTotal;
+  if (!allMustDone) {
+    total = Math.min(total, 60);
   }
 
-  const btn = document.getElementById('calcScoresBtn');
-  if (btn) btn.addEventListener('click', calculateScores);
+  return total;
+}
 
-   const table = new DataTable('#assessments', {
-    info: false,
-    order: [[2, 'asc']],      // Item column stays 3rd (index 2)
-    pageLength: 50,
-    lengthMenu: [10,  20,  30, 40, 50]
-  });
+function getColorForScore(score) {
+  const safeScore = Math.max(0, Math.min(100, score));
+  let r, g, b, label;
 
-  let publications = getSelectValues(publication);
-  let priorities = getSelectValues(priority);
+  if (safeScore <= 60) {
+    // red -> orange across 0..60
+    const t = safeScore / 60;
+    r = 255;
+    g = Math.round(59 + (149 - 59) * t);
+    b = Math.round(48 + (0 - 48) * t);
+    label = safeScore < 30 ? 'Red' : 'Orange-red';
+  } else {
+    // orange -> green across 60..100
+    const t = (safeScore - 60) / 40;
+    r = Math.round(255 + (52 - 255) * t);
+    g = Math.round(149 + (199 - 149) * t);
+    b = Math.round(0 + (89 - 0) * t);
+    label = safeScore < 80 ? 'Orange' : (safeScore < 92 ? 'Yellow-green' : 'Green');
+  }
 
-  table.search.fixed('range', function (searchStr, data) {
-    if (JSON.stringify(publications) !== JSON.stringify(['All'])) {
-      if (!publications.includes(data[0])) return false;
+  return {
+    hex: 'rgb(' + r + ', ' + g + ', ' + b + ')',
+    label: label
+  };
+}
+
+function updateTotalScoreDisplay(score) {
+  const scoreEl = document.getElementById('totalScoreValue');
+  const colorEl = document.getElementById('totalScoreColorLabel');
+  const swatchEl = document.getElementById('totalScoreColorSwatch');
+  const arrowEl = document.getElementById('scoreArrow');
+
+  const safeScore = Math.max(0, Math.min(100, score));
+  const colorInfo = getColorForScore(safeScore);
+
+  if (scoreEl) scoreEl.textContent = safeScore.toFixed(1);
+  if (colorEl) colorEl.textContent = colorInfo.label;
+  if (swatchEl) swatchEl.style.background = colorInfo.hex;
+  if (arrowEl) arrowEl.style.left = safeScore + '%';
+}
+
+
+const allChecklistRows = Array.from(tbody.querySelectorAll('tr'));
+
+function getCountsByPriority() {
+  function counts(priorityLabel) {
+    const group = allChecklistRows.filter(r => {
+      const prCell = r.querySelector('td:nth-child(2)');
+      return prCell && prCell.textContent.trim() === priorityLabel;
+    });
+
+    const total = group.length;
+    const green = group.filter(r => {
+      const g = r.querySelector('input.tick-green');
+      return g && g.checked;
+    }).length;
+
+    return { total, green };
+  }
+
+  return {
+    must: counts('Must-have'),
+    should: counts('Should-have'),
+    nice: counts('Nice-to-have')
+  };
+}
+
+function calculateScores() {
+  const counts = getCountsByPriority();
+  if (!counts) return;
+
+  const mustPct = pct(counts.must.green, counts.must.total);
+  const shouldPct = pct(counts.should.green, counts.should.total);
+  const nicePct = pct(counts.nice.green, counts.nice.total);
+
+  const mustEl = document.getElementById('scoreMust');
+  const shouldEl = document.getElementById('scoreShould');
+  const niceEl = document.getElementById('scoreNice');
+
+  if (mustEl) mustEl.textContent = mustPct + '%';
+  if (shouldEl) shouldEl.textContent = shouldPct + '%';
+  if (niceEl) niceEl.textContent = nicePct + '%';
+
+  const totalScore = calculateTotalScore(
+    counts.must.green, counts.must.total,
+    counts.should.green, counts.should.total,
+    counts.nice.green, counts.nice.total
+  );
+
+  updateTotalScoreDisplay(totalScore);
+}
+
+
+    function getSelectValues(select) {
+      const result = [];
+      const options = select && select.options;
+
+      for (let i = 0; i < options.length; i++) {
+        const opt = options[i];
+        if (opt.selected) result.push(opt.value || opt.text);
+      }
+
+      if (result.includes('All') && result.length > 1) {
+        result.shift();
+        select.getElementsByTagName('option')[0].selected = false;
+      }
+
+      return result;
     }
-    if (JSON.stringify(priorities) !== JSON.stringify(['All'])) {
-      if (!priorities.includes(data[1])) return false;
+
+    document.addEventListener('change', function (e) {
+      if (!e.target.classList.contains('tickbox')) return;
+
+      const row = e.target.closest('tr');
+      if (!row) return;
+
+      const green = row.querySelector('input.tick-green');
+      const red = row.querySelector('input.tick-red');
+
+      if (e.target.classList.contains('tick-green') && green && green.checked && red) {
+        red.checked = false;
+      }
+      if (e.target.classList.contains('tick-red') && red && red.checked && green) {
+        green.checked = false;
+      }
+
+      calculateScores();
+    });
+
+    if (calcBtn) {
+      calcBtn.addEventListener('click', calculateScores);
     }
+
+    const table = new DataTable('#assessments', {
+      info: false,
+      order: [[2, 'asc']],
+      pageLength: 50,
+      lengthMenu: [10, 20, 30, 40, 50]
+    });
+
+table.on('draw', function () {
+  calculateScores();
+});
+    let publications = getSelectValues(publication);
+    let priorities = getSelectValues(priority);
+
+    table.search.fixed('range', function (searchStr, data) {
+      if (JSON.stringify(publications) !== JSON.stringify(['All'])) {
+        if (!publications.includes(data[0])) return false;
+      }
+      if (JSON.stringify(priorities) !== JSON.stringify(['All'])) {
+        if (!priorities.includes(data[1])) return false;
+      }
+      return true;
+    });
+
+    publication.addEventListener('change', function () {
+      publications = getSelectValues(publication);
+      table.order([[2, 'asc']]);
+      table.draw();
+      calculateScores();
+    });
+
+    priority.addEventListener('change', function () {
+      priorities = getSelectValues(priority);
+      table.order([[2, 'asc']]);
+      table.draw();
+      calculateScores();
+    });
+
+    calculateScores();
     return true;
-  });
-
-  publication.addEventListener('change', function () {
-    publications = getSelectValues(publication);
-    table.order([[2, 'asc']]);
-    table.draw();
-  });
-
-  priority.addEventListener('change', function () {
-    priorities = getSelectValues(priority);
-    table.order([[2, 'asc']]);
-    table.draw();
-  });
-
-  function getSelectValues(select) {
-    const result = [];
-    const options = select && select.options;
-    for (let i = 0; i < options.length; i++) {
-      const opt = options[i];
-      if (opt.selected) result.push(opt.value || opt.text);
-    }
-    if (result.includes('All') && result.length > 1) {
-      result.shift();
-      select.getElementsByTagName('option')[0].selected = '';
-    }
-    return result;
   }
+
+  function waitForDependencies() {
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    const timer = setInterval(function () {
+      attempts += 1;
+      const ok = initScoreChecklist();
+      if (ok || attempts >= maxAttempts) {
+        clearInterval(timer);
+      }
+    }, 100);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitForDependencies);
+  } else {
+    waitForDependencies();
+  }
+})();
 </script>
-<div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
 <div id="ref-bergh2022constitutes" class="csl-entry">
 Bergh, D. D., Boyd, B. K., Byron, K., Gove, S., &amp; Ketchen Jr, D. J.
@@ -16131,7 +16368,6 @@ Vis, B., &amp; Dul, J. (2018). Analyzing relationships of necessity not
 just in kind but also in degree: Complementing fs<span>QCA</span> with
 <span>NCA</span>. <em>Sociological Methods &amp; Research</em>,
 <em>47</em>(4), 872–899. <a href="https://doi.org/10.1177/0049124115626179">https://doi.org/10.1177/0049124115626179</a>
-</div>
 </div>
 </div>
 
