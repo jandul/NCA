@@ -404,7 +404,7 @@ and Application. Chapman &amp; Hall/CRC Press.</p>
   </p>
 
 <div style="margin-top: 8px; font-size: 11px; color: #666; line-height: 1.4;">
-  Note: Must-have items are the most important because they determine access to scores above 60. Should-have items score less than must-have items, but more than nice-to-have items.
+  Note: Score 60 is the minimum requirement for a publication. Must-have items are the most important because they determine access to scores 60 and above (all must-haves items must be satisfied). Should-have items score less than must-have items, but more than nice-to-have items. They help to increase scores above 60.
 </div>
 
   <div id="scoreBarWrap">
@@ -16104,7 +16104,7 @@ function calculateTotalScore(mustGreen, mustTotal, shouldGreen, shouldTotal, nic
   // If not all must-haves are fulfilled, total cannot exceed 60
   const allMustDone = mustTotal > 0 && mustGreen === mustTotal;
   if (!allMustDone) {
-    total = Math.min(total, 60);
+    total = Math.min(total, 59);
   }
 
   return total;
