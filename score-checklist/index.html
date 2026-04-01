@@ -384,9 +384,9 @@ empirical NCA study</h3>
 <strong>Co</strong>nducting (data and analysis quality), and
 <strong>Re</strong>porting (transparency).</p>
 <p><br><br> © Jan Dul</p>
-<p>Last update: March 31, 2026</p>
-<p>Reference: Dul, J. (2026). Necessary Condition Analysis (NCA).
-Principles and Application. Chapman &amp; Hall/CRC Press.</p>
+<p>Last update: April 01, 2026</p>
+<p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
+and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
   <div style="font-weight: 800; margin-bottom: 8px;">Percentage scores</div>
 
@@ -417,14 +417,6 @@ Principles and Application. Chapman &amp; Hall/CRC Press.</p>
       <span>100</span>
     </div>
   </div>
-
-  <button id="savePdfBtn" type="button" style="margin-top: 12px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;">
-  Save checklist as PDF
-</button>
-
-<!-- <button id="downloadPdfFormBtn" type="button" style="margin-top: 12px; margin-left: 8px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;"> -->
-<!--   Download clickable PDF -->
-<!-- </button> -->
 
   <!-- <button id="calcScoresBtn" type="button" style="margin-top: 12px; padding: 8px 12px; border-radius: 999px; border: 1px solid #ddd; font-weight: 700; cursor: pointer;"> -->
   <!--   Calculate scores -->
@@ -14789,7 +14781,6 @@ margin: 0 3px 0 0;
 	return DataTable;
 }));
 </script>
-<!-- <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script> -->
 <script>
   if (typeof DataTable === 'undefined') {
     const s = document.createElement('script');
@@ -14860,16 +14851,20 @@ border-top: 12px solid #111;
 z-index: 10;
 }
 #scoreTicks {
-display: flex;
-justify-content: space-between;
-align-items: center;
+position: relative;
+height: 18px;
 margin-top: 6px;
 max-width: 900px;
 font-size: 12px;
 }
 #scoreTicks span {
+position: absolute;
+transform: translateX(-50%);
 white-space: nowrap;
 }
+#scoreTicks span:nth-child(1) { left: 0%; transform: translateX(0); }
+#scoreTicks span:nth-child(2) { left: 60%; }
+#scoreTicks span:nth-child(3) { left: 100%; transform: translateX(-100%); }
 </style>
 <table class="inputs">
 <tbody>
@@ -14902,7 +14897,7 @@ white-space: nowrap;
 </tr>
 </tbody>
 </table>
-<div id="tableWrap" style="overflow-x: auto; overflow-y: auto; max-height: 1000px; border: 1px solid #ddd;">
+<div style="overflow-x: auto; overflow-y: auto; max-height: 1000px; border: 1px solid #ddd;">
 <table id="assessments" class="display" style="width:100%">
 <thead>
 <tr>
@@ -16011,9 +16006,6 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
     const tbody = document.querySelector('#assessments tbody');
     const calcBtn = document.getElementById('calcScoresBtn');
 
-const savePdfBtn = document.getElementById('savePdfBtn');
-<!-- const downloadPdfFormBtn = document.getElementById('downloadPdfFormBtn'); -->
-
     if (!publication || !priority || !tableEl || !tbody) return false;
     if (typeof DataTable === 'undefined') return false;
     if (tableEl.dataset.scoreInitialized === 'true') return true;
@@ -16258,13 +16250,12 @@ function calculateScores() {
       calcBtn.addEventListener('click', calculateScores);
     }
 
-const table = new DataTable('#assessments', {
-  info: false,
-  searching: false,
-  paging: false,
-  lengthChange: false,
-  order: [[2, 'asc']]
-});
+    const table = new DataTable('#assessments', {
+      info: false,
+      order: [[2, 'asc']],
+      pageLength: 50,
+      lengthMenu: [10, 20, 30, 40, 50]
+    });
 
 table.on('draw', function () {
   calculateScores();
@@ -16296,370 +16287,6 @@ table.on('draw', function () {
       calculateScores();
     });
 
-
-if (savePdfBtn) {
-  savePdfBtn.addEventListener('click', function () {
-    calculateScores();
-
-    const scoreBox = document.getElementById('scoresWrap').cloneNode(true);
-    const filtersBox = document.querySelector('.inputs').cloneNode(true);
-    const tableClone = document.getElementById('assessments').cloneNode(true);
-
-const headerCells = tableClone.querySelectorAll('thead th');
-if (headerCells.length >= 6) {
-  headerCells[4].innerHTML = '<span style="color:#2e7d32; font-size:18px; font-weight:700;">✅</span>';
-  headerCells[5].innerHTML = '<span style="color:#c62828; font-size:18px; font-weight:700;">❌</span>';
-}
-
-tableClone.querySelectorAll('input.tick-green, input.tick-red').forEach(function (input) {
-  const span = document.createElement('span');
-  span.style.fontWeight = '700';
-  span.style.fontSize = '18px';
-  span.style.lineHeight = '1';
-  span.style.display = 'inline-block';
-  span.style.width = '18px';
-  span.style.textAlign = 'center';
-  span.style.verticalAlign = 'middle';
-
-  if (input.classList.contains('tick-green')) {
-    span.textContent = input.checked ? '☑' : '☐';
-    span.style.color = '#43a047';
-  } else {
-    span.textContent = input.checked ? '☑' : '☐';
-    span.style.color = '#e53935';
-  }
-
-  input.parentNode.replaceChild(span, input);
-});
-
-    const now = new Date();
-const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`;
-
-const printWindow = window.open('', '_blank');
-
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>SCoRe_checklist_${timestamp}</title>
-        <style>
-          @page {
-            size: A4 portrait;
-            margin: 10mm;
-          }
-
-          body {
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            margin: 0;
-            padding: 0;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-
-          #savePdfBtn {
-            display: none !important;
-          }
-
-          table {
-            border-collapse: collapse;
-            width: 100%;
-            table-layout: fixed;
-          }
-
-          th, td {
-            border: 1px solid #ccc;
-            padding: 4px 6px;
-            vertical-align: top;
-            word-break: break-word;
-            white-space: normal;
-          }
-
-          th {
-            background: #f3f3f3;
-          }
-
-          .tickcell {
-            text-align: center;
-            width: 28px;
-          }
-
-
-
-.tickcell {
-  text-align: center;
-  width: 28px;
-}
-
-          .inputs {
-            margin-bottom: 16px;
-          }
-
-          .inputs td {
-            border: none;
-            padding: 4px 8px 4px 0;
-          }
-
-          #scoresWrap {
-            margin-bottom: 16px;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            break-inside: avoid;
-          }
-
-          #scoreBarWrap {
-            width: 100%;
-            padding-top: 14px;
-          }
-
-          #scoreBar {
-            position: relative;
-            height: 26px;
-            border-radius: 999px;
-            border: 1px solid #bbb;
-            overflow: visible;
-            background: linear-gradient(
-              to right,
-              #ff3b30 0%,
-              #ff9500 60%,
-              #34c759 100%
-            );
-          }
-
-          #scoreArrow {
-            position: absolute;
-            top: -12px;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 12px solid #111;
-            z-index: 10;
-          }
-
-          #scoreTicks {
-            position: relative;
-            height: 18px;
-            margin-top: 6px;
-            font-size: 12px;
-          }
-
-          #scoreTicks span {
-            position: absolute;
-            transform: translateX(-50%);
-            white-space: nowrap;
-          }
-
-          #scoreTicks span:nth-child(1) { left: 0%; transform: translateX(0); }
-          #scoreTicks span:nth-child(2) { left: 60%; }
-          #scoreTicks span:nth-child(3) { left: 100%; transform: translateX(-100%); }
-
-          tr, td, th {
-            break-inside: avoid;
-          }
-        </style>
-      </head>
-      <body>
-      </body>
-      </html>
-    `);
-
-    printWindow.document.body.appendChild(scoreBox);
-    printWindow.document.body.appendChild(filtersBox);
-    printWindow.document.body.appendChild(tableClone);
-
-    printWindow.document.close();
-    printWindow.focus();
-
-    setTimeout(function () {
-      printWindow.print();
-    }, 300);
-  });
-}
-
-
-<!-- if (downloadPdfFormBtn) { -->
-<!--   downloadPdfFormBtn.addEventListener('click', async function () { -->
-<!--     try { -->
-<!--       calculateScores(); -->
-
-<!--       if (typeof PDFLib === 'undefined') { -->
-<!--         alert('The PDF library did not load. Reload the page and try again.'); -->
-<!--         return; -->
-<!--       } -->
-
-<!--       const { PDFDocument, StandardFonts, rgb } = PDFLib; -->
-<!--       const pdfDoc = await PDFDocument.create(); -->
-<!--       const form = pdfDoc.getForm(); -->
-
-<!--       const font = await pdfDoc.embedFont(StandardFonts.Helvetica); -->
-<!--       const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold); -->
-
-<!--       const pageWidth = 842; -->
-<!--       const pageHeight = 595; -->
-<!--       const margin = 30; -->
-<!--       const rowHeight = 44; -->
-
-<!--       let page = pdfDoc.addPage([pageWidth, pageHeight]); -->
-<!--       let y = pageHeight - margin; -->
-
-<!--       function drawHeader() { -->
-<!--         page.drawText('SCoRe checklist', { -->
-<!--           x: margin, -->
-<!--           y: y, -->
-<!--           size: 16, -->
-<!--           font: boldFont -->
-<!--         }); -->
-
-<!--         y -= 20; -->
-
-<!--         const now = new Date(); -->
-<!--         const timestampText = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`; -->
-
-<!--         page.drawText(`Generated: ${timestampText}`, { -->
-<!--           x: margin, -->
-<!--           y: y, -->
-<!--           size: 9, -->
-<!--           font -->
-<!--         }); -->
-
-<!--         y -= 16; -->
-
-<!--         page.drawText('Green = yes / satisfied    Red = no / not satisfied', { -->
-<!--           x: margin, -->
-<!--           y: y, -->
-<!--           size: 9, -->
-<!--           font -->
-<!--         }); -->
-
-<!--         y -= 20; -->
-
-<!--         page.drawText('Item', { x: margin, y: y, size: 10, font: boldFont }); -->
-<!--         page.drawText('Section / Priority / Question', { x: 70, y: y, size: 10, font: boldFont }); -->
-<!--         page.drawText('Green', { x: 700, y: y, size: 10, font: boldFont }); -->
-<!--         page.drawText('Red', { x: 760, y: y, size: 10, font: boldFont }); -->
-
-<!--         y -= 14; -->
-<!--         page.drawLine({ -->
-<!--           start: { x: margin, y: y }, -->
-<!--           end: { x: pageWidth - margin, y: y }, -->
-<!--           thickness: 1, -->
-<!--           color: rgb(0.7, 0.7, 0.7) -->
-<!--         }); -->
-
-<!--         y -= 12; -->
-<!--       } -->
-
-<!--       function wrapText(text, maxCharsPerLine) { -->
-<!--         const words = String(text || '').split(/\s+/); -->
-<!--         const lines = []; -->
-<!--         let line = ''; -->
-
-<!--         words.forEach(word => { -->
-<!--           const test = line ? `${line} ${word}` : word; -->
-<!--           if (test.length > maxCharsPerLine) { -->
-<!--             if (line) lines.push(line); -->
-<!--             line = word; -->
-<!--           } else { -->
-<!--             line = test; -->
-<!--           } -->
-<!--         }); -->
-
-<!--         if (line) lines.push(line); -->
-<!--         return lines; -->
-<!--       } -->
-
-<!--       drawHeader(); -->
-
-<!--       const rows = Array.from(document.querySelectorAll('#assessments tbody tr')); -->
-
-<!--       rows.forEach((row, idx) => { -->
-<!--         const cells = row.querySelectorAll('td'); -->
-<!--         if (cells.length < 8) return; -->
-
-<!--         const section = cells[0].textContent.trim(); -->
-<!--         const priority = cells[1].textContent.trim(); -->
-<!--         const item = cells[2].textContent.trim(); -->
-<!--         const question = cells[3].textContent.trim(); -->
-
-<!--         const questionLines = wrapText(`${section} | ${priority} | ${question}`, 85); -->
-<!--         const neededHeight = Math.max(rowHeight, 14 + questionLines.length * 11 + 10); -->
-
-<!--         if (y - neededHeight < margin) { -->
-<!--           page = pdfDoc.addPage([pageWidth, pageHeight]); -->
-<!--           y = pageHeight - margin; -->
-<!--           drawHeader(); -->
-<!--         } -->
-
-<!--         page.drawText(item, { -->
-<!--           x: margin, -->
-<!--           y: y, -->
-<!--           size: 9, -->
-<!--           font: boldFont -->
-<!--         }); -->
-
-<!--         let textY = y; -->
-<!--         questionLines.forEach(line => { -->
-<!--           page.drawText(line, { -->
-<!--             x: 70, -->
-<!--             y: textY, -->
-<!--             size: 9, -->
-<!--             font -->
-<!--           }); -->
-<!--           textY -= 11; -->
-<!--         }); -->
-
-<!--         const greenBox = form.createCheckBox(`item_${idx + 1}_green`); -->
-<!--         greenBox.addToPage(page, { -->
-<!--           x: 705, -->
-<!--           y: y - 2, -->
-<!--           width: 14, -->
-<!--           height: 14, -->
-<!--           borderWidth: 1, -->
-<!--           borderColor: rgb(0, 0.5, 0) -->
-<!--         }); -->
-
-<!--         const redBox = form.createCheckBox(`item_${idx + 1}_red`); -->
-<!--         redBox.addToPage(page, { -->
-<!--           x: 765, -->
-<!--           y: y - 2, -->
-<!--           width: 14, -->
-<!--           height: 14, -->
-<!--           borderWidth: 1, -->
-<!--           borderColor: rgb(0.7, 0, 0) -->
-<!--         }); -->
-
-<!--         const greenChecked = row.querySelector('input.tick-green')?.checked; -->
-<!--         const redChecked = row.querySelector('input.tick-red')?.checked; -->
-
-<!--         if (greenChecked) greenBox.check(); -->
-<!--         if (redChecked) redBox.check(); -->
-
-<!--         y -= neededHeight; -->
-<!--       }); -->
-
-<!--       const now = new Date(); -->
-<!--       const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}-${String(now.getSeconds()).padStart(2, '0')}`; -->
-
-<!--       const pdfBytes = await pdfDoc.save(); -->
-
-<!--       const blob = new Blob([pdfBytes], { type: 'application/pdf' }); -->
-<!--       const url = URL.createObjectURL(blob); -->
-<!--       const a = document.createElement('a'); -->
-<!--       a.href = url; -->
-<!--       a.download = `SCoRe_checklist_clickable_${timestamp}.pdf`; -->
-<!--       document.body.appendChild(a); -->
-<!--       a.click(); -->
-<!--       a.remove(); -->
-
-<!--       setTimeout(() => URL.revokeObjectURL(url), 1000); -->
-<!--     } catch (err) { -->
-<!--   console.error(err); -->
-<!--   alert('Could not create the clickable PDF: ' + err.message); -->
-<!-- } -->
-<!--   }); -->
-<!-- } -->
     calculateScores();
     return true;
   }
@@ -16683,7 +16310,6 @@ const printWindow = window.open('', '_blank');
     waitForDependencies();
   }
 })();
-
 </script>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0" line-spacing="2">
 <div id="ref-bergh2022constitutes" class="csl-entry">
