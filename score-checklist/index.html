@@ -384,7 +384,7 @@ empirical NCA study</h3>
 <strong>Co</strong>nducting (data and analysis quality), and
 <strong>Re</strong>porting (transparency).</p>
 <p><br><br> © Jan Dul</p>
-<p>Last update: April 01, 2026</p>
+<p>Last update: April 05, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
 and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
@@ -16687,23 +16687,29 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
       calculateScores();
     });
 
-    async function exportChecklistToPDF() {
-      if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
-        alert('PDF export libraries are not loaded.');
-        return;
-      }
+async function exportChecklistToPDF() {
+  if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF export libraries are not loaded.');
+    return;
+  }
 
-      const originalButtonText = savePdfBtn ? savePdfBtn.textContent : '';
-      if (savePdfBtn) {
-        savePdfBtn.disabled = true;
-        savePdfBtn.textContent = 'Preparing PDF...';
-      }
+  if (/Android/i.test(navigator.userAgent)) {
+    await new Promise(resolve => setTimeout(resolve, 150));
+  }
 
-      const previousPublications = getSelectValues(publication);
-      const previousPriorities = getSelectValues(priority);
-      const previousPageLen = table.page.len();
+  const originalButtonText = savePdfBtn ? savePdfBtn.textContent : '';
+  if (savePdfBtn) {
+    savePdfBtn.disabled = true;
+    savePdfBtn.textContent = 'Preparing PDF...';
+  }
 
-      try {
+  const previousPublications = getSelectValues(publication);
+  const previousPriorities = getSelectValues(priority);
+  const previousPageLen = table.page.len();
+  
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  try {
         setSelectValues(publication, ['All']);
         setSelectValues(priority, ['All']);
         publications = ['All'];
@@ -16717,7 +16723,7 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
         wrapper.style.position = 'fixed';
         wrapper.style.left = '-99999px';
         wrapper.style.top = '0';
-        wrapper.style.width = '1400px';
+        wrapper.style.width = isMobile ? '1000px' : '1400px';
         wrapper.style.background = '#ffffff';
         wrapper.style.padding = '24px';
         wrapper.style.boxSizing = 'border-box';
@@ -16775,15 +16781,15 @@ if (headerCells[7]) headerCells[7].style.textAlign = 'left';   // Further readin
 
         document.body.appendChild(wrapper);
 
-        const canvas = await html2canvas(wrapper, {
-          scale: 2,
-          backgroundColor: '#ffffff',
-          useCORS: true,
-          logging: false
-        });
+const canvas = await html2canvas(wrapper, {
+  scale: isMobile ? 1 : 2,
+  backgroundColor: '#ffffff',
+  useCORS: true,
+  logging: false
+});
 
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
+const { jsPDF } = window.jspdf;
+const pdf = new jsPDF(isMobile ? 'l' : 'p', 'mm', 'a4');
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
@@ -16831,9 +16837,13 @@ if (headerCells[7]) headerCells[7].style.textAlign = 'left';   // Further readin
       }
     }
 
-    if (savePdfBtn) {
-      savePdfBtn.addEventListener('click', exportChecklistToPDF);
-    }
+if (savePdfBtn) {
+  savePdfBtn.addEventListener('click', exportChecklistToPDF);
+  savePdfBtn.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    exportChecklistToPDF();
+  }, { passive: false });
+}
 
     calculateScores();
     return true;
