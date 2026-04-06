@@ -16763,6 +16763,8 @@ if (headerCells[7]) headerCells[7].style.textAlign = 'left';   // Further readin
 
         const tableRowsForBreaks = Array.from(dataTableClone.querySelectorAll('tbody tr'));
         const wrapperRect = wrapper.getBoundingClientRect();
+        const tableRect = dataTableClone.getBoundingClientRect();
+        const hardBreakAfterFiltersPx = Math.round(tableRect.top - wrapperRect.top);
         const rowBottomsPx = tableRowsForBreaks.map(function (row) {
           const rect = row.getBoundingClientRect();
           return Math.round(rect.bottom - wrapperRect.top);
@@ -16789,6 +16791,7 @@ const pdf = new jsPDF(isMobile ? 'l' : 'p', 'mm', 'a4');
 
         const pageHeightPx = Math.floor((usableHeight * canvas.width) / usableWidth);
         const pxScale = canvas.height / wrapper.scrollHeight;
+        const hardBreakAfterFiltersCanvasPx = Math.round(hardBreakAfterFiltersPx * pxScale);
         const rowBottomsCanvasPx = rowBottomsPx.map(function (v) {
           return Math.round(v * pxScale);
         });
@@ -16800,12 +16803,21 @@ const pdf = new jsPDF(isMobile ? 'l' : 'p', 'mm', 'a4');
           const targetBottomPx = Math.min(renderedHeightPx + pageHeightPx, canvas.height);
 
           let sliceBottomPx = targetBottomPx;
-          const candidateBreaks = rowBottomsCanvasPx.filter(function (b) {
-            return b > renderedHeightPx + 40 && b <= targetBottomPx;
-          });
 
-          if (candidateBreaks.length > 0 && targetBottomPx < canvas.height) {
-            sliceBottomPx = candidateBreaks[candidateBreaks.length - 1];
+          if (
+            pageIndex === 0 &&
+            hardBreakAfterFiltersCanvasPx > renderedHeightPx + 40 &&
+            hardBreakAfterFiltersCanvasPx <= targetBottomPx
+          ) {
+            sliceBottomPx = hardBreakAfterFiltersCanvasPx;
+          } else {
+            const candidateBreaks = rowBottomsCanvasPx.filter(function (b) {
+              return b > renderedHeightPx + 40 && b <= targetBottomPx;
+            });
+
+            if (candidateBreaks.length > 0 && targetBottomPx < canvas.height) {
+              sliceBottomPx = candidateBreaks[candidateBreaks.length - 1];
+            }
           }
 
           const sliceHeightPx = Math.max(1, sliceBottomPx - renderedHeightPx);
