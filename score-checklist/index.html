@@ -384,7 +384,7 @@ empirical NCA study</h3>
 <strong>Co</strong>nducting (data and analysis quality), and
 <strong>Re</strong>porting (transparency).</p>
 <p><br><br> © Jan Dul</p>
-<p>Last update: April 05, 2026</p>
+<p>Last update: April 06, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
 and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
@@ -16798,22 +16798,40 @@ const pdf = new jsPDF(isMobile ? 'l' : 'p', 'mm', 'a4');
         const usableWidth = pdfWidth - (margin * 2);
         const usableHeight = pdfHeight - (margin * 2);
 
-        const imgWidth = usableWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        // Slice the tall canvas into page-sized images to avoid seams/overlap
+        const pageHeightPx = Math.floor((usableHeight * canvas.width) / usableWidth);
 
-        let heightLeft = imgHeight;
-        let position = margin;
+        let pageIndex = 0;
+        let renderedHeightPx = 0;
 
-        const imgData = canvas.toDataURL('image/png');
+        while (renderedHeightPx < canvas.height) {
+          const sliceCanvas = document.createElement('canvas');
+          const sliceHeightPx = Math.min(pageHeightPx, canvas.height - renderedHeightPx);
 
-        pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-        heightLeft -= usableHeight;
+          sliceCanvas.width = canvas.width;
+          sliceCanvas.height = sliceHeightPx;
 
-        while (heightLeft > 0) {
-          position = heightLeft - imgHeight + margin;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-          heightLeft -= usableHeight;
+          const sliceCtx = sliceCanvas.getContext('2d');
+          sliceCtx.fillStyle = '#ffffff';
+          sliceCtx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+
+          sliceCtx.drawImage(
+            canvas,
+            0, renderedHeightPx, canvas.width, sliceHeightPx,
+            0, 0, sliceCanvas.width, sliceCanvas.height
+          );
+
+          const sliceData = sliceCanvas.toDataURL('image/png');
+          const sliceHeightMm = (sliceHeightPx * usableWidth) / canvas.width;
+
+          if (pageIndex > 0) {
+            pdf.addPage();
+          }
+
+          pdf.addImage(sliceData, 'PNG', margin, margin, usableWidth, sliceHeightMm);
+
+          renderedHeightPx += sliceHeightPx;
+          pageIndex += 1;
         }
 
         pdf.save('SCoRe-checklist.pdf');
