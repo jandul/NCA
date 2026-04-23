@@ -1,5 +1,5 @@
 # Helper function to get significance of SEM predictors
-# Revised August 4, 2025
+# Revised February 19, 2026
 
 get_significance_sem <- function(sem, nboot = 5000) {
   
@@ -11,8 +11,12 @@ get_significance_sem <- function(sem, nboot = 5000) {
   df_total  <- as.data.frame(summary(boot_model)[[6]])
   
   # Rename confidence interval columns
-  colnames(df_direct)[5:6] <- c("CI_low", "CI_high")
-  colnames(df_total)[5:6]  <- c("CI_low", "CI_high")
+  # colnames(df_direct)[5:6] <- c("CI_low", "CI_high")
+  # colnames(df_total)[5:6]  <- c("CI_low", "CI_high")
+  
+  colnames(df_direct)[5:7] <- c("CI_low", "CI_high", "pval")
+  colnames(df_total)[5:7]  <- c("CI_low", "CI_high", "pval")
+  
   
   # Add Path column from rownames
   df_direct <- cbind(Path = rownames(df_direct), df_direct)
@@ -40,18 +44,34 @@ get_significance_sem <- function(sem, nboot = 5000) {
   merged_df$Sig_Indirect <- merged_df$Sig_Total & !merged_df$Sig_Direct
   
   # Final summary
+  # summary_df <- merged_df[, c(
+  #   "Path",
+  #   "Original.Est._direct", "Indirect_Estimate", "Original.Est._total",
+  #   "Sig_Direct", "Sig_Indirect", "Sig_Total"
+  # )]
+  
   summary_df <- merged_df[, c(
     "Path",
     "Original.Est._direct", "Indirect_Estimate", "Original.Est._total",
-    "Sig_Direct", "Sig_Indirect", "Sig_Total"
+    "Sig_Direct", "Sig_Indirect", "Sig_Total", "pval_direct", "pval_total"
   )]
   
+  
   # Round for readability
+  # summary_df <- within(summary_df, {
+  #   Original.Est._direct  <- round(Original.Est._direct, 3)
+  #   Indirect_Estimate     <- round(Indirect_Estimate, 3)
+  #   Original.Est._total   <- round(Original.Est._total, 3)
+  # })
+  
   summary_df <- within(summary_df, {
     Original.Est._direct  <- round(Original.Est._direct, 3)
     Indirect_Estimate     <- round(Indirect_Estimate, 3)
     Original.Est._total   <- round(Original.Est._total, 3)
+    pval_total   <- round(pval_total, 3)
+    pval_direct   <- round(pval_direct, 3)
   })
+  
   
   # Preserve original order
   summary_df$Path <- factor(summary_df$Path, levels = path_order)
