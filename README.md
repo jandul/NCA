@@ -11,21 +11,19 @@ This page contains supportive materials for the NCA book(s)  (code, checklists, 
 ## Preview the new book
 - Preliminary version 1.0.0 : https://jandul.github.io/nca-book/
 
-## Downloads
-Downloads will be available via the landing page under **Extra’s**.
-
+## Additional materials
 Available and planned resources:
-- Quick Start guide
-- Additional R code
-  - R script in book (partly available)
+- SCoRe checklist 
+- Quick Start guide  
+- R code
+  - R script in book
   - Demonstration NCA
-  - NCA with regression
-  - NCA with QCA
-  - NCA with SEM
-- SCoRe checklist
+  - NERT (NCA with regression)
+  - BIPMA (NCA with SEM)
+  - NEST (NCA with QCA)
 
-## How to download
+## How to download 
 1. Open: https://jandul.github.io/NCA/
-2. Go to **Extra’s**
-3. Click the item you want (e.g., **R scripts for book R code**)
+2. Go to **R code**
+3. Click the item you want (e.g., **Demonstration NCA**)
 4. If your browser opens the file instead of downloading, use **Right click → Save link as…**
