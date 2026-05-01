@@ -1,1 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEST Tool v2</title>
+<style>
+:root {
+  --bg:#faf9f7;--surface:#fff;--border:#e2e0da;--border-light:#eeece6;
+  --text:#1a1a18;--muted:#6b6b68;--accent:#2a4d8f;--danger:#c0392b;
+  --mono:'Courier New',monospace;--ui:system-ui,-apple-system,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--text);font-size:14px}
+.app{display:grid;grid-template-columns:var(--sw,600px) 1fr;grid-template-rows:auto 1fr;height:100vh;height:100dvh;overflow:hidden}
+.topbar{grid-column:1/-1;background:var(--text);color:#f5f4f0;padding:14px 24px;display:flex;align-items:baseline;gap:16px;flex-shrink:0}
+.topbar h1{font-size:16px;font-weight:600}
+.topbar span{font-size:12px;color:#aaa;font-family:var(--mono)}
+.mob-tabs{display:none}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-height:0;position:relative}
+#drag-handle{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:10}
+#drag-handle::after{content:"";display:block;width:2px;height:40px;background:var(--border);border-radius:2px;margin:auto;transition:background .15s}
+#drag-handle:hover::after,#drag-handle.dragging::after{background:var(--accent)}
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:auto;min-height:0}
+.main{overflow-y:auto;overflow-x:auto;display:flex;flex-direction:column;padding:24px;min-height:0}
+@media screen and (max-width:768px) {
+  html,body { overflow:hidden }
+  .app { display:flex; flex-direction:column; height:100vh; height:100dvh; width:100%; grid-template-columns:none }
+  .topbar { position:sticky; top:0; z-index:100; padding:10px 14px; flex-shrink:0 }
+  .topbar span { display:none }
+  .mob-tabs { display:flex; flex-shrink:0; background:var(--surface); border-bottom:2px solid var(--border); position:sticky; top:44px; z-index:99 }
+  .mob-tabs button { flex:1; padding:10px 0; font-size:13px; font-weight:600; border:none; background:none; color:var(--muted); cursor:pointer; font-family:inherit; border-bottom:3px solid transparent; margin-bottom:-2px; transition:color .15s,border-color .15s }
+  .mob-tabs button.active { color:var(--accent); border-bottom-color:var(--accent) }
+  #drag-handle { display:none }
+  .sidebar { display:none; flex:1; width:100%; min-width:0; border-right:none; overflow-y:auto; overflow-x:hidden; min-height:0 }
+  .sidebar.mob-visible { display:flex; flex-direction:column }
+  .main { display:none; flex:1; width:100%; min-width:0; padding:12px; overflow-y:auto; overflow-x:auto; min-height:0 }
+  .main.mob-visible { display:flex; flex-direction:column }
+  .s-section { padding:10px 10px }
+  .btn-group { padding:10px 10px; gap:6px }
+  .btn { font-size:12px; padding:7px 10px }
+  .action-row { gap:6px }
+  .cond-table,.cfg-table { font-size:11px; table-layout:fixed; width:100% }
+  .cond-table th,.cfg-table th { font-size:9px; padding:3px 2px; white-space:normal }
+  .cond-table td,.cfg-table td { padding:2px 2px }
+  .cond-table td input,.cfg-table td input { font-size:11px; padding:3px 2px }
+  .nec-toggle button { font-size:9px; padding:2px 0 }
+  .field input,.field select { font-size:16px }
+  .sidebar-scroll { overflow-x:hidden }
+}
+.s-section{border-bottom:1px solid var(--border-light);padding:16px 20px}
+.s-section h3{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field input,.field select{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:5px;background:var(--bg);font-size:13px;color:var(--text);outline:none;font-family:inherit}
+.field input:focus,.field select:focus{border-color:var(--accent);background:#fff}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dir-toggle{display:flex;border:1px solid #c8c6c0;border-radius:4px;overflow:hidden;width:100%}
+.dir-toggle button{flex:1;padding:5px 0;font-size:12px;font-weight:600;border:none;cursor:pointer;background:#f0ede8;color:#999;font-family:inherit;transition:background .12s,color .12s}
+.dir-toggle button.active{background:var(--accent);color:#fff}
+.dir-toggle button:first-child{border-right:1px solid #c8c6c0}
+.cond-table,.cfg-table{width:100%;border-collapse:collapse;font-size:12px}
+.cond-table th,.cfg-table th{font-size:10px;font-weight:600;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border);background:#f5f4f0;white-space:nowrap}
+.cond-table td,.cfg-table td{padding:3px 4px;border-bottom:1px solid var(--border-light);vertical-align:middle}
+.cond-table td input,.cfg-table td input{width:100%;padding:4px 5px;border:1px solid var(--border-light);border-radius:4px;background:#fff;font-size:12px;color:#1a1a18;font-family:inherit;outline:none}
+.cond-table td input:focus,.cfg-table td input:focus{border-color:var(--accent)}
+.cond-table td input:disabled{background:var(--bg);color:var(--muted);cursor:default;border-color:transparent}
+.nec-toggle{display:flex;border:1px solid #c8c6c0;border-radius:4px;overflow:hidden}
+.nec-toggle button{flex:1;padding:3px 0;font-size:11px;font-weight:600;border:none;cursor:pointer;background:#f0ede8;color:#999;font-family:inherit;transition:background .12s,color .12s;white-space:nowrap}
+.nec-toggle button.active{background:#1a6640;color:#fff}
+.nec-toggle button:first-child{border-right:1px solid #c8c6c0}
+.del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 2px}
+.del-btn:hover{color:var(--danger)}
+.row-num{font-size:10px;color:var(--muted);text-align:center;min-width:16px}
+.btn-group{display:flex;gap:8px;padding:14px 20px;flex-wrap:wrap;flex-shrink:0}
+.btn{padding:8px 16px;border-radius:5px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:all .15s;font-family:inherit}
+.btn:hover{background:var(--bg);border-color:#bbb}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#1e3a6e}
+.btn.ghost{border-color:transparent;color:var(--muted);font-size:12px;padding:6px 12px}
+.btn.ghost:hover{background:var(--bg);color:var(--text)}
+.action-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+#preview-wrap{margin-bottom:18px;display:flex;flex-direction:column;align-items:center}
+.nest-preview{font-family:var(--ui);font-size:13px;border-collapse:collapse;margin:8px auto 0 auto}
+.nest-preview caption{text-align:left;font-size:12px;color:var(--muted);padding:0 0 10px 0;caption-side:top;font-style:italic;line-height:1.5}
+.nest-preview th{padding:6px 14px;text-align:center;font-weight:600;font-size:12px;border-bottom:2px solid #ccc;color:var(--muted)}
+.nest-preview th.lh{text-align:left;min-width:120px}
+.nest-preview td{padding:5px 14px;text-align:center;vertical-align:middle;border-bottom:1px solid var(--border-light);font-size:16px}
+.nest-preview td.lh{text-align:left;font-weight:600;font-size:13px;padding-left:4px;color:var(--text)}
+.nest-preview td.fit-lh{text-align:left;font-size:12px;color:var(--muted);padding-left:4px;font-style:italic}
+.nest-preview td.fit-val{font-size:12px;color:var(--text)}
+.nest-preview .last-cond td{border-bottom:2px solid #aaa}
+.nest-preview .sep td{border-top:2px solid #ccc;border-bottom:none}
+.nest-preview .sol-row td{font-size:11px;color:var(--muted);font-style:italic;text-align:left;padding:3px 4px;border-bottom:none}
+.footnote{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.9;border-top:1px solid var(--border-light);padding-top:8px}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>NEST Tool</h1>
+    <span>NCA-Extended Solution Table</span>
+    <span style="margin-left:auto;font-size:11px;opacity:.5">NCA + fsQCA · multimethod</span>
+  </header>
 
+  <nav class="mob-tabs">
+    <button class="active" onclick="mobTab(this,'sidebar')">&#9998; Input</button>
+    <button onclick="mobTab(this,'main')">&#128202; Output</button>
+  </nav>
+
+  <aside class="sidebar mob-visible">
+    <div id="drag-handle"></div>
+    <div class="sidebar-scroll">
+
+      <div class="s-section">
+        <h3>Outcome</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Outcome name</label>
+            <input type="text" id="g-outname" value="JSR" oninput="syncCaption();buildAll()">
+          </div>
+          <div class="field">
+            <label>Direction</label>
+            <div class="dir-toggle" id="dir-toggle">
+              <button class="active" data-val="presence" onclick="dirClick(this)">presence</button>
+              <button data-val="absence" onclick="dirClick(this)">absence</button>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Caption</label>
+          <input type="text" id="g-caption" oninput="captionManual=true;buildAll()">
+          <p style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5">Background of NEST tool: <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Conditions &amp; necessity</h3>
+        <table class="cond-table">
+          <colgroup><col style="width:22px"><col style="width:56px"><col style="width:80px"><col style="width:80px"><col style="width:22px"></colgroup>
+          <thead>
+            <tr>
+              <th></th>
+              <th style="padding-bottom:1px"><span id="cap-warn" style="font-size:9px;color:var(--muted);font-weight:600;letter-spacing:0">capitals only</span></th>
+              <th></th><th></th><th></th>
+            </tr>
+            <tr><th>#</th><th>Name</th><th>Necessary?</th><th>Necessity level</th><th></th></tr>
+          </thead>
+          <tbody id="cond-body"></tbody>
+        </table>
+        <div style="margin-top:8px">
+          <button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="addCond()">+ Condition</button>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Configurations (intermediate solution)</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">
+          Use <code>*</code> ("and") between conditions, <code>¬X</code> or <code>~X</code> for absence.
+        </p>
+        <table class="cfg-table">
+          <colgroup><col style="width:28px"><col style="width:120px"><col style="width:120px"><col style="width:22px"></colgroup>
+          <thead><tr><th>#</th><th>Core</th><th>Contributory</th><th></th></tr></thead>
+          <tbody id="cfg-body"></tbody>
+        </table>
+        <div style="margin-top:8px">
+          <button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="addCfg()">+ Configuration</button>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Configuration fit</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Comma-separated, one value per S1, S2, …</p>
+        <div class="field"><label>Consistency</label><input type="text" id="g-con" value="0.990, 0.965, 1.000, 0.964" oninput="buildAll()"></div>
+        <div class="field"><label>Raw coverage</label><input type="text" id="g-rawcov" value="0.402, 0.277, 0.354, 0.297" oninput="buildAll()"></div>
+        <div class="field"><label>Unique coverage</label><input type="text" id="g-uniqcov" value="0.152, 0.041, 0.027, 0.138" oninput="buildAll()"></div>
+      </div>
+
+      <div class="s-section">
+        <h3>Solution fit</h3>
+        <div class="field-row">
+          <div class="field"><label>Solution consistency</label><input type="number" id="g-solcon" value="0.965" step="0.001" min="0" max="1" oninput="buildAll()"></div>
+          <div class="field"><label>Solution coverage</label><input type="number" id="g-solcov" value="0.877" step="0.001" min="0" max="1" oninput="buildAll()"></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="btn-group">
+      <button class="btn primary" onclick="buildAll()">&#9654; Generate</button>
+      <button class="btn ghost" onclick="resetDemo()">Reset demo data</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="action-row">
+      <button class="btn" onclick="copyR()">Copy .R</button>
+      <button class="btn" onclick="downloadR()">Download .R</button>
+      <button class="btn" onclick="downloadHTML()">Download .html</button>
+      <button class="btn" onclick="downloadPNG()">Download .png</button>
+    </div>
+    <div id="preview-wrap"></div>
+  </main>
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+var condCount = 0, cfgCount = 0;
+var captionManual = false;
+var _initialising = false;
+
+var SYM = {
+  core_present : '\u26AB',
+  core_absent  : '\u2297',
+  cont_present : '\u25CF',
+  cont_absent  : '<span style="font-size:0.6em;vertical-align:middle">\u2297</span>',
+  nec_present  : '\u25E2',
+  nec_absent   : '\u25FF'
+};
+
+var EXAMPLE_CONDS = [
+  {name:'S', nec:false, score:''},
+  {name:'C', nec:false, score:''},
+  {name:'L', nec:true,  score:'0.29'},
+  {name:'R', nec:true,  score:'0.20'},
+  {name:'P', nec:true,  score:'0.20'},
+  {name:'V', nec:false, score:''}
+];
+var EXAMPLE_CFGS = [
+  {core:'S*R',    contrib:'¬V'},
+  {core:'S*R',    contrib:'C*P'},
+  {core:'S*R*L*P',contrib:''},
+  {core:'L*P',    contrib:'C*¬V'}
+];
+
+/* ── Toast ── */
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 4000);
+}
+
+function validateCondName(input) {
+  var val = input.value;
+  var warn = document.getElementById('cap-warn');
+  if (val && !/^[A-Z]+$/.test(val)) {
+    input.style.borderColor = 'var(--danger)';
+    input.style.background  = '#fff0f0';
+    warn.style.color = 'var(--danger)';
+    warn.textContent = 'capitals only \u26a0';
+  } else {
+    input.style.borderColor = '';
+    input.style.background  = '#fff';
+    warn.style.color = 'var(--muted)';
+    warn.textContent = 'capitals only';
+  }
+}
+
+/* ── Default caption ── */
+function makeDefaultCaption() {
+  var dir  = getDir();
+  var name = document.getElementById('g-outname').value.trim() || 'Y';
+  return 'NEST table: NCA-Extended Solution Table. Outcome analyzed: ' +
+    dir + ' of ' + name +
+    '. NEST combines NCA necessity results with fsQCA sufficiency results.';
+}
+
+/* sync caption field when outname or direction changes, unless user has manually edited it */
+function syncCaption() {
+  if (!captionManual) {
+    document.getElementById('g-caption').value = makeDefaultCaption();
+  }
+}
+
+/* ── Direction toggle ── */
+function dirClick(btn) {
+  Array.from(document.querySelectorAll('#dir-toggle button')).forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  syncCaption();
+  buildAll();
+}
+function getDir() {
+  var a = document.querySelector('#dir-toggle button.active');
+  return a ? a.dataset.val : 'presence';
+}
+
+/* ── Necessity toggle — also enables/disables the score input ── */
+function necClick(btn) {
+  var wrap = btn.closest('.nec-toggle');
+  Array.from(wrap.querySelectorAll('button')).forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  wrap.dataset.value = btn.dataset.val;
+  var scoreInput = wrap.closest('tr').querySelector('.c-score');
+  var isYes = btn.dataset.val === 'yes';
+  scoreInput.disabled = !isYes;
+  scoreInput.placeholder = isYes ? 'e.g. 0.29' : '';
+  if (!isYes) scoreInput.value = '';
+  buildAll();
+}
+
+/* ── Condition rows ── */
+function makeCondRow(d) {
+  condCount++;
+  var id  = condCount;
+  var nv  = (d && d.nec) ? 'yes' : 'no';
+  var sc  = (d && d.score) ? d.score : '';
+  var isY = nv === 'yes';
+  var tr  = document.createElement('tr');
+  tr.id   = 'cond-' + id;
+  tr.innerHTML =
+    '<td class="row-num">' + id + '</td>' +
+    '<td><input type="text" class="c-name" maxlength="4" value="' + (d&&d.name||'') + '" style="text-align:center;font-weight:600" oninput="validateCondName(this)"></td>' +
+    '<td><div class="nec-toggle c-nec" data-value="' + nv + '">' +
+      '<button type="button" class="' + (isY ? 'active' : '') + '" data-val="yes" onclick="necClick(this)">yes</button>' +
+      '<button type="button" class="' + (!isY ? 'active' : '') + '" data-val="no"  onclick="necClick(this)">no</button>' +
+    '</div></td>' +
+    '<td><input type="text" class="c-score" value="' + sc + '"' + (isY ? ' placeholder="e.g. 0.29"' : ' disabled') + '></td>' +
+    '<td><button class="del-btn" onclick="delCond(' + id + ')">&#215;</button></td>';
+  return tr;
+}
+function addCond(d) { document.getElementById('cond-body').appendChild(makeCondRow(d)); if (!_initialising) buildAll(); }
+function delCond(id) { var el = document.getElementById('cond-' + id); if (el) el.remove(); if (!_initialising) buildAll(); }
+
+/* ── Configuration rows ── */
+function makeCfgRow(d) {
+  cfgCount++;
+  var id = cfgCount;
+  var tr = document.createElement('tr');
+  tr.id  = 'cfg-' + id;
+  tr.innerHTML =
+    '<td class="row-num" style="font-weight:600;color:var(--accent)">S' + id + '</td>' +
+    '<td><input type="text" class="cf-core"    value="' + (d&&d.core||'')    + '" placeholder="e.g. S*R"></td>' +
+    '<td><input type="text" class="cf-contrib" value="' + (d&&d.contrib||'') + '" placeholder="e.g. ¬V*¬P"></td>' +
+    '<td><button class="del-btn" onclick="delCfg(' + id + ')">&#215;</button></td>';
+  return tr;
+}
+function addCfg(d)  { document.getElementById('cfg-body').appendChild(makeCfgRow(d)); if (!_initialising) buildAll(); }
+function delCfg(id) { var el = document.getElementById('cfg-' + id); if (el) el.remove(); if (!_initialising) buildAll(); }
+
+/* ── Readers ── */
+function getConds() {
+  return Array.from(document.querySelectorAll('#cond-body tr')).map(function(tr){
+    return {
+      name:  tr.querySelector('.c-name').value.trim(),
+      nec:   tr.querySelector('.c-nec').dataset.value === 'yes',
+      score: tr.querySelector('.c-score').value.trim()
+    };
+  }).filter(function(c){ return c.name; });
+}
+function getCfgs() {
+  return Array.from(document.querySelectorAll('#cfg-body tr')).map(function(tr, i){
+    return {
+      idx:     i + 1,
+      core:    tr.querySelector('.cf-core').value.trim(),
+      contrib: tr.querySelector('.cf-contrib').value.trim()
+    };
+  });
+}
+function parseFloats(str) {
+  return str.split(',').map(function(s){ return parseFloat(s.trim()); }).filter(function(n){ return !isNaN(n); });
+}
+
+/* ── Load / reset ── */
+function resetDemo() {
+  _initialising = true;
+  document.getElementById('cond-body').innerHTML = ''; condCount = 0;
+  document.getElementById('cfg-body').innerHTML  = ''; cfgCount  = 0;
+  EXAMPLE_CONDS.forEach(function(d){ addCond(d); });
+  EXAMPLE_CFGS.forEach(function(d){ addCfg(d); });
+  _initialising = false;
+  document.getElementById('g-outname').value  = 'JSR';
+  document.getElementById('g-con').value      = '0.990, 0.965, 1.000, 0.964';
+  document.getElementById('g-rawcov').value   = '0.402, 0.277, 0.354, 0.297';
+  document.getElementById('g-uniqcov').value  = '0.152, 0.041, 0.027, 0.138';
+  document.getElementById('g-solcon').value   = '0.965';
+  document.getElementById('g-solcov').value   = '0.877';
+  Array.from(document.querySelectorAll('#dir-toggle button')).forEach(function(b){
+    b.classList.toggle('active', b.dataset.val === 'presence');
+  });
+  captionManual = false;
+  document.getElementById('g-caption').value = makeDefaultCaption();
+  buildAll();
+}
+
+/* ── Symbol matrix ── */
+function buildMatrix(conds, cfgs, direction) {
+  var nec_sym = direction === 'presence' ? SYM.nec_present : SYM.nec_absent;
+  var mat = {};
+  conds.forEach(function(c){
+    mat[c.name] = {};
+    cfgs.forEach(function(cf){ mat[c.name][cf.idx] = ''; });
+  });
+  /* normalise \neg and ~ to ¬ */
+  function normLit(lit) {
+    lit = lit.trim();
+    if (lit.startsWith('\\neg ')) return '\u00AC' + lit.slice(5);
+    if (lit.startsWith('\\neg'))  return '\u00AC' + lit.slice(4);
+    if (lit.charAt(0) === '~')     return '\u00AC' + lit.slice(1);
+    return lit;
+  }
+  cfgs.forEach(function(cf){
+    if (cf.core) cf.core.split('*').forEach(function(lit){
+      lit = normLit(lit); if (!lit) return;
+      var isNeg = lit.charAt(0) === '\u00AC';
+      var nm = (isNeg ? lit.slice(1) : lit).toUpperCase();
+      if (mat[nm] !== undefined) mat[nm][cf.idx] = isNeg ? SYM.core_absent : SYM.core_present;
+    });
+    if (cf.contrib) cf.contrib.split('*').forEach(function(lit){
+      lit = normLit(lit); if (!lit) return;
+      var isNeg = lit.charAt(0) === '\u00AC';
+      var nm = (isNeg ? lit.slice(1) : lit).toUpperCase();
+      if (mat[nm] !== undefined && mat[nm][cf.idx] === '')
+        mat[nm][cf.idx] = isNeg ? SYM.cont_absent : SYM.cont_present;
+    });
+    conds.forEach(function(c){
+      if (c.nec && mat[c.name][cf.idx] === '') mat[c.name][cf.idx] = nec_sym;
+    });
+  });
+  return mat;
+}
+
+function collectInputs() {
+  return {
+    direction : getDir(),
+    outname   : document.getElementById('g-outname').value.trim() || 'Y',
+    caption   : document.getElementById('g-caption').value.trim(),
+    conds     : getConds(),
+    cfgs      : getCfgs(),
+    con       : parseFloats(document.getElementById('g-con').value),
+    rawcov    : parseFloats(document.getElementById('g-rawcov').value),
+    uniqcov   : parseFloats(document.getElementById('g-uniqcov').value),
+    solcon    : parseFloat(document.getElementById('g-solcon').value),
+    solcov    : parseFloat(document.getElementById('g-solcov').value)
+  };
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Preview ── */
+function buildPreview(inp) {
+  var direction = inp.direction, outname = inp.outname, caption = inp.caption;
+  var conds = inp.conds, cfgs = inp.cfgs;
+  var con = inp.con, rawcov = inp.rawcov, uniqcov = inp.uniqcov;
+  var solcon = inp.solcon, solcov = inp.solcov;
+  var mat = buildMatrix(conds, cfgs, direction);
+  var dir_sign = direction === 'presence' ? '\u2265' : '\u2264';
+  var n = cfgs.length;
+
+  var h = '<table class="nest-preview"><caption>' + esc(caption) + '</caption><thead><tr>';
+  h += '<th class="lh"></th>';
+  for (var j = 0; j < n; j++) h += '<th>S' + (j+1) + '</th>';
+  h += '<th>N</th></tr></thead><tbody>';
+
+  conds.forEach(function(c, ci) {
+    var last = ci === conds.length - 1;
+    h += '<tr class="' + (last ? 'last-cond' : '') + '">';
+    h += '<td class="lh">' + esc(c.name) + '</td>';
+    cfgs.forEach(function(cf) { h += '<td>' + (mat[c.name][cf.idx] || '') + '</td>'; });
+    var ncol = (c.nec && c.score) ? dir_sign + '\u00A0' + parseFloat(c.score).toFixed(2) : '';
+    h += '<td style="font-size:13px">' + esc(ncol) + '</td></tr>';
+  });
+
+  var fits = [
+    {label:'Consistency',     vals:con},
+    {label:'Raw coverage',    vals:rawcov},
+    {label:'Unique coverage', vals:uniqcov}
+  ];
+  fits.forEach(function(f, fi) {
+    h += '<tr class="' + (fi===0 ? 'sep' : '') + '">';
+    h += '<td class="fit-lh">' + f.label + '</td>';
+    for (var j = 0; j < n; j++)
+      h += '<td class="fit-val">' + (f.vals[j] !== undefined ? f.vals[j].toFixed(3) : '') + '</td>';
+    h += '<td></td></tr>';
+  });
+
+  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution consistency: ' + solcon.toFixed(3) + '</td></tr>';
+  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution coverage: '    + solcov.toFixed(3) + '</td></tr>';
+  h += '</tbody></table>';
+  h += '<div class="footnote">' +
+    'S1, \u2026 = Sufficient configurations<br>' +
+    'N = Minimum required membership score according to NCA<br>' +
+    SYM.core_present + '/' + SYM.cont_present + ' = Presence of core/contributory condition<br>' +
+    SYM.core_absent + '/<span style="font-size:0.6em">\u2297</span> = Absence of core/contributory condition<br>' +
+    SYM.nec_present + '/' + SYM.nec_absent + ' = \u2018Don\u2019t care\u2019 according to QCA; high/low level required according to NCA' +
+  '</div>';
+  return h;
+}
+
+/* ── R script ── */
+function makeR(inp) {
+  var direction = inp.direction, outname = inp.outname, caption = inp.caption;
+  var conds = inp.conds, cfgs = inp.cfgs;
+  var con = inp.con, rawcov = inp.rawcov, uniqcov = inp.uniqcov;
+  var solcon = inp.solcon, solcov = inp.solcov;
+  var q = function(s){ return '"' + s + '"'; };
+  var condNames = conds.map(function(c){ return c.name; });
+  var necParts  = conds.map(function(c){ return c.name + ' = ' + (c.nec && c.score ? c.score : 'NA'); });
+  var cfgLines  = cfgs.map(function(cf, i){
+    function splitLits(s){
+      if (!s) return 'character(0)';
+      return 'c(' + s.split('*').map(function(l){ var t=l.trim().replace(/\\neg\s*/g,'~').replace(/\u00AC/g,'~'); return q(t); }).join(', ') + ')';
+    }
+    return '  S'+(i+1)+' = list(\n    core         = '+splitLits(cf.core)+',\n    contributory = '+splitLits(cf.contrib)+'\n  )';
+  });
+  var capLine = caption ? q(caption) : 'NULL';
+
+  return [
+'## =============================================================',
+'##  NEST Table Builder - generated by NEST Tool',
+'##  NCA-Extended Solution Table (NCA + fsQCA combined)',
+'## =============================================================',
+'',
+'library(knitr)',
+'library(kableExtra)',
+'',
+'## 1. Outcome',
+'outcome_direction <- ' + q(direction),
+'outcome_name      <- ' + q(outname),
+'',
+'## 2. Conditions',
+'conditions <- c(' + condNames.map(q).join(', ') + ')',
+'',
+'## 3. Necessity (NA = not necessary)',
+'necessity <- c(',
+'  ' + necParts.join(',\n  '),
+')',
+'',
+'## 4. Configurations',
+'configurations <- list(',
+cfgLines.join(',\n'),
+')',
+'',
+'## 5. Term-level fit',
+'consistency     <- c(' + con.join(', ') + ')',
+'raw_coverage    <- c(' + rawcov.join(', ') + ')',
+'unique_coverage <- c(' + uniqcov.join(', ') + ')',
+'',
+'## 6. Solution-level fit',
+'solution_consistency <- ' + solcon,
+'solution_coverage    <- ' + solcov,
+'',
+'## 7. Caption',
+'caption_input <- ' + capLine,
+'',
+'## --- END USER INPUT ---',
+'',
+'sym <- list(',
+'  core_present  = "\\u26AB",',
+'  core_absent   = "\\u2297",',
+'  cont_present  = "\\u25CF",',
+'  cont_absent   = "\\u2297",',
+'  nec_present   = "\\u25E2",',
+'  nec_absent    = "\\u25FF"',
+')',
+'nec_sym  <- if (outcome_direction == "presence") sym$nec_present else sym$nec_absent',
+'dir_sign <- if (outcome_direction == "presence") "\\u2265" else "\\u2264"',
+'n_cond    <- length(conditions)',
+'n_sol     <- length(configurations)',
+'sol_names <- paste0("S", seq_len(n_sol))',
+'mat <- matrix("", nrow = n_cond, ncol = n_sol, dimnames = list(conditions, sol_names))',
+'for (j in seq_along(configurations)) {',
+'  cfg <- configurations[[j]]',
+'  assign_sym <- function(lits, is_core) {',
+'    for (lit in lits) {',
+'      is_neg <- startsWith(lit, "~")',
+'      cond   <- if (is_neg) substring(lit, 2) else lit',
+'      if (!cond %in% conditions) next',
+'      s <- if (is_core) { if (is_neg) sym$core_absent else sym$core_present',
+'           } else       { if (is_neg) sym$cont_absent  else sym$cont_present }',
+'      mat[cond, j] <<- s',
+'    }',
+'  }',
+'  assign_sym(cfg$core, TRUE)',
+'  assign_sym(cfg$contributory, FALSE)',
+'  for (cond in conditions)',
+'    if (!is.na(necessity[cond]) && mat[cond, j] == "") mat[cond, j] <- nec_sym',
+'}',
+'N_col <- ifelse(is.na(necessity[conditions]), "",',
+'  paste0(dir_sign, "\\u00A0", sprintf("%.2f", necessity[conditions])))',
+'display <- as.data.frame(mat, stringsAsFactors = FALSE)',
+'display$N <- N_col',
+'empty_row <- function(label) {',
+'  r <- setNames(rep("", ncol(display)), names(display))',
+'  as.data.frame(t(r), stringsAsFactors = FALSE, row.names = label)',
+'}',
+'fit_row <- function(label, vals) { r <- empty_row(label); r[1, sol_names] <- sprintf("%.3f", vals); r }',
+'fit_rows <- rbind(',
+'  fit_row("Consistency",      consistency),',
+'  fit_row("Raw coverage",     raw_coverage),',
+'  fit_row("Unique coverage",  unique_coverage),',
+'  empty_row(paste0("Solution consistency: ", sprintf("%.3f", solution_consistency))),',
+'  empty_row(paste0("Solution coverage: ",    sprintf("%.3f", solution_coverage)))',
+')',
+'final_df <- rbind(display, fit_rows)',
+'note_lines <- c(',
+'  "S1, \\u2026 = Sufficient configurations",',
+'  "N = Minimum required membership score according to NCA",',
+'  paste0(sym$core_present, "/", sym$cont_present, " = Presence of core/contributory condition"),',
+'  paste0(sym$core_absent, "/", sym$cont_absent, " = Absence of core/contributory condition"),',
+'  paste0(sym$nec_present, "/", sym$nec_absent, " = \'Don\\u2019t care\' according to QCA; high/low level required according to NCA")',
+')',
+'table_caption <- if (is.null(caption_input)) paste0(',
+'  "NEST table: NCA-Extended Solution Table. Outcome analyzed: ", outcome_direction,',
+'  " of ", outcome_name, ". NEST combines NCA necessity results with fsQCA sufficiency results."',
+') else caption_input',
+'tbl <- knitr::kable(final_df, format = "html", align = "c",',
+'  caption = table_caption, escape = FALSE, linesep = "") %>%',
+'  kable_styling(position = "left", full_width = FALSE, font_size = 14) %>%',
+'  row_spec(n_cond, extra_css = "border-bottom: 2px solid #aaa;") %>%',
+'  footnote(general = note_lines, general_title = "", escape = FALSE)',
+'tbl'
+  ].join('\n');
+}
+
+/* ── Generate ── */
+function buildAll() {
+  var inp = collectInputs();
+  if (!inp.conds.length) { toast('Add at least one condition'); return; }
+  if (!inp.cfgs.length)  { toast('Add at least one configuration'); return; }
+
+  // Validate: condition names must consist of capital letters only — stop update silently
+  var invalid = inp.conds.filter(function(c){ return c.name && !/^[A-Z]+$/.test(c.name); });
+  if (invalid.length) return;
+
+  document.getElementById('preview-wrap').innerHTML = buildPreview(inp);
+  window._rScript = makeR(inp);
+}
+
+/* ── Copy / Download ── */
+function copyR() {
+  if (!window._rScript) buildAll();
+  if (!window._rScript) return;
+  navigator.clipboard.writeText(window._rScript)
+    .then(function(){ toast('Copied to clipboard'); })
+    .catch(function(){ toast('Copy failed — use Download .R'); });
+}
+function downloadR() {
+  if (!window._rScript) buildAll();
+  if (!window._rScript) return;
+  var blob = new Blob([window._rScript], {type:'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'nest_table.R'; a.click();
+}
+
+function downloadHTML() {
+  var inp = collectInputs();
+  if (!inp.conds.length || !inp.cfgs.length) { toast('Add conditions and configurations first'); return; }
+  var preview = document.getElementById('preview-wrap').innerHTML;
+  var outname = inp.outname || 'Y';
+  var html = [
+'<!DOCTYPE html>',
+'<html lang="en">',
+'<head>',
+'<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>NEST Table \u2014 ' + outname + '</title>',
+'<style>',
+'body { font-family: system-ui, -apple-system, sans-serif; padding: 32px; max-width: 900px; margin: 0 auto; color: #1a1a18; background: #faf9f7; }',
+'table { border-collapse: collapse; font-size: 13px; margin-top: 8px; }',
+'caption { text-align: left; font-size: 12px; color: #6b6b68; padding: 0 0 10px 0; caption-side: top; font-style: italic; line-height: 1.5; }',
+'th { padding: 6px 14px; text-align: center; font-weight: 600; font-size: 12px; border-bottom: 2px solid #ccc; color: #6b6b68; }',
+'th.lh { text-align: left; min-width: 120px; }',
+'td { padding: 5px 14px; text-align: center; vertical-align: middle; border-bottom: 1px solid #eeece6; font-size: 16px; }',
+'td.lh { text-align: left; font-weight: 600; font-size: 13px; padding-left: 4px; color: #1a1a18; }',
+'td.fit-lh { text-align: left; font-size: 12px; color: #6b6b68; padding-left: 4px; font-style: italic; }',
+'td.fit-val { font-size: 12px; color: #1a1a18; }',
+'.last-cond td { border-bottom: 2px solid #aaa; }',
+'.sep td { border-top: 2px solid #ccc; border-bottom: none; }',
+'.sol-row td { font-size: 11px; color: #6b6b68; font-style: italic; text-align: left; padding: 3px 4px; border-bottom: none; }',
+'.footnote { font-size: 11px; color: #6b6b68; margin-top: 10px; line-height: 1.9; border-top: 1px solid #eeece6; padding-top: 8px; }',
+'</style>',
+'</head>',
+'<body>',
+preview,
+'</body>',
+'</html>'
+  ].join('\n');
+  var blob = new Blob([html], {type:'text/html'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'nest_table.html'; a.click();
+}
+
+/* ── Shared: render table to canvas via html2canvas ── */
+function renderToCanvas(callback) {
+  var el = document.getElementById('preview-wrap');
+  if (!el || !el.innerHTML.trim()) { toast('Generate the table first'); return; }
+  if (typeof html2canvas === 'undefined') { toast('Loading library…'); return; }
+  html2canvas(el, {
+    backgroundColor: '#ffffff',
+    scale: 3,
+    useCORS: true,
+    logging: false
+  }).then(function(canvas){ callback(canvas); });
+}
+
+function downloadPNG() {
+  renderToCanvas(function(canvas){
+    var a = document.createElement('a');
+    a.download = 'nest_table.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+}
+
+function downloadPDF() {
+  if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+    toast('Loading library…'); return;
+  }
+  renderToCanvas(function(canvas){
+    var imgData = canvas.toDataURL('image/png');
+    var PDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
+    var imgW = canvas.width  / 3;   // undo scale:3, now in CSS px
+    var imgH = canvas.height / 3;
+    // convert px → mm (96dpi → mm: px * 25.4 / 96)
+    var mmW = imgW * 25.4 / 96;
+    var mmH = imgH * 25.4 / 96;
+    var pdf = new PDFLib({ orientation: mmW > mmH ? 'l' : 'p', unit: 'mm', format: [mmW, mmH] });
+    pdf.addImage(imgData, 'PNG', 0, 0, mmW, mmH);
+    pdf.save('nest_table.pdf');
+  });
+}
+
+/* ── Drag to resize ── */
+(function(){
+  var handle = document.getElementById('drag-handle');
+  var app = document.querySelector('.app');
+  var dragging = false, startX, startW;
+  handle.addEventListener('mousedown', function(e){
+    dragging = true; startX = e.clientX;
+    startW = document.querySelector('.sidebar').offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e){
+    if (!dragging) return;
+    var w = Math.max(320, Math.min(900, startW + (e.clientX - startX)));
+    app.style.setProperty('--sw', w + 'px');
+  });
+  document.addEventListener('mouseup', function(){
+    if (!dragging) return;
+    dragging = false; handle.classList.remove('dragging');
+    document.body.style.cursor = ''; document.body.style.userSelect = '';
+  });
+})();
+
+/* ── Live update from table row inputs ── */
+document.getElementById('cond-body').addEventListener('input', function(){ buildAll(); });
+document.getElementById('cfg-body').addEventListener('input',  function(){ buildAll(); });
+
+/* ── Mobile tab switching ── */
+function mobTab(btn, panel) {
+  Array.from(document.querySelectorAll('.mob-tabs button')).forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelector('.sidebar').classList.toggle('mob-visible', panel === 'sidebar');
+  document.querySelector('.main').classList.toggle('mob-visible', panel === 'main');
+}
+
+/* ── Init ── */
+(function(){
+  _initialising = true;
+  EXAMPLE_CONDS.forEach(function(d){ addCond(d); });
+  EXAMPLE_CFGS.forEach(function(d){ addCfg(d); });
+  _initialising = false;
+  document.getElementById('g-caption').value = makeDefaultCaption();
+  buildAll();
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
