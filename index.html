@@ -271,9 +271,15 @@
     }
     function checkPassword() {
       var pwd = prompt("This area is for members only. Please enter the password:");
-      if (pwd === null) return; // cancelled
+      if (pwd === null) return;
       if (pwd === "members") { // replace "members" with the actual password
-        window.open("/NCA/ai-score/AI SCoRe.pdf", "_blank");
+        var a = document.createElement('a');
+        a.href = "/NCA/ai-score/AI%20SCoRe.pdf";
+        a.target = "_blank";
+        a.rel = "noopener";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
       } else {
         alert("Incorrect password. Access denied.");
       }
