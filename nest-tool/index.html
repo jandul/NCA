@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEST Tool</title>
+<title>NEST Tool </title>
 <style>
 :root {
   --bg:#faf9f7;--surface:#fff;--border:#e2e0da;--border-light:#eeece6;
@@ -92,6 +92,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 .nest-preview .last-cond td{border-bottom:2px solid #aaa}
 .nest-preview .sep td{border-top:2px solid #ccc;border-bottom:none}
 .nest-preview .sol-row td{font-size:11px;color:var(--muted);font-style:italic;text-align:left;padding:3px 4px;border-bottom:none}
+.nest-preview .sol-row td span{font-style:normal}
 .footnote{font-size:11px;color:var(--muted);margin-top:10px;line-height:1.9;border-top:1px solid var(--border-light);padding-top:8px}
 #toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999}
 #toast.show{opacity:1}
@@ -115,6 +116,14 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
     <div class="sidebar-scroll">
 
       <div class="s-section">
+        <h3>Caption</h3>
+        <div class="field">
+          <input type="text" id="g-caption" oninput="captionManual=true;buildAll()">
+          <p style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5">Background of NEST tool: <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        </div>
+      </div>
+
+      <div class="s-section">
         <h3>Outcome</h3>
         <div class="field-row">
           <div class="field">
@@ -129,11 +138,6 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
             </div>
           </div>
         </div>
-        <div class="field">
-          <label>Caption</label>
-          <input type="text" id="g-caption" oninput="captionManual=true;buildAll()">
-          <p style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5">Background of NEST tool: <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
-        </div>
       </div>
 
       <div class="s-section">
@@ -146,7 +150,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
               <th style="padding-bottom:1px"><span id="cap-warn" style="font-size:9px;color:var(--muted);font-weight:600;letter-spacing:0">capitals only</span></th>
               <th></th><th></th><th></th>
             </tr>
-            <tr><th>#</th><th>Name</th><th>Necessary?</th><th>Necessity level</th><th></th></tr>
+            <tr><th>#</th><th>Name</th><th>Necessary (NCA)?</th><th>Necessity level</th><th></th></tr>
           </thead>
           <tbody id="cond-body"></tbody>
         </table>
@@ -191,7 +195,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <button class="btn primary" onclick="buildAll()">&#9654; Generate</button>
       <button class="btn ghost" onclick="resetDemo()">Reset demo data</button>
     </div>
-    <div style="padding:0 20px 12px 20px;font-size:10px;color:var(--muted);line-height:1.5">Demo data from: Emmenegger, P. (2011). Job security regulations in western democracies: A fuzzy set analysis. <em>European Journal of Political Research</em>, 50(3), 336&ndash;364.</div>
+    <div style="padding:0 20px 12px 20px;font-size:10px;color:var(--muted);line-height:1.5">Demo data from: Emmenegger, P. (2011). Job security regulations in Western democracies: A fuzzy set analysis. <em>European Journal of Political Research</em>, 50(3), 336&ndash;364.</div>
   </aside>
 
   <main class="main">
@@ -480,8 +484,8 @@ function buildPreview(inp) {
     h += '<td></td></tr>';
   });
 
-  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution consistency: ' + solcon.toFixed(3) + '</td></tr>';
-  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution coverage: '    + solcov.toFixed(3) + '</td></tr>';
+  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution consistency: <span>' + solcon.toFixed(3) + '</span></td></tr>';
+  h += '<tr class="sol-row"><td colspan="' + (n+2) + '">Solution coverage: <span>'    + solcov.toFixed(3) + '</span></td></tr>';
   h += '</tbody></table>';
   h += '<div class="footnote">' +
     'S1, \u2026 = Sufficient configurations<br>' +
@@ -674,6 +678,7 @@ function downloadHTML() {
 '.last-cond td { border-bottom: 2px solid #aaa; }',
 '.sep td { border-top: 2px solid #ccc; border-bottom: none; }',
 '.sol-row td { font-size: 11px; color: #6b6b68; font-style: italic; text-align: left; padding: 3px 4px; border-bottom: none; }',
+'.sol-row td span { font-style: normal; }',
 '.footnote { font-size: 11px; color: #6b6b68; margin-top: 10px; line-height: 1.9; border-top: 1px solid #eeece6; padding-top: 8px; }',
 '</style>',
 '</head>',
