@@ -225,6 +225,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <button class="btn" id="btn-png" onclick="runAndDownload('png')" disabled>&#8615; PNG</button>
     </div>
 
+    <div id="download-preview" style="display:none;margin-bottom:14px"></div>
     <div id="preview-wrap">
       <div id="preview-spinner"><div class="spinner"></div> <span id="preview-msg">Running R…</span></div>
       <img id="preview-img" alt="BIPMA preview">
@@ -783,11 +784,19 @@ async function runAndDownload(fmt) {
     var blob = new Blob([bytes], {type: mime});
     var filename = (G.fname||'bipma')+'.'+fmt;
     var url = URL.createObjectURL(blob);
-    // iOS: open in new tab so user can use long-press > Save / Share sheet
     var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (isIOS) {
-      window.open(url, '_blank');
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+      // Show inline so user can save via Safari share button
+      var dp = document.getElementById('download-preview');
+      dp.style.display = 'block';
+      if (fmt === 'png') {
+        dp.innerHTML = '<p style="font-size:12px;color:var(--muted);margin-bottom:6px">Long-press the image below to save it:</p>' +
+          '<img src="'+url+'" style="max-width:100%;border:1px solid var(--border);border-radius:6px">';
+      } else {
+        dp.innerHTML = '<p style="font-size:12px;color:var(--muted);margin-bottom:6px">Tap the link below to open and save the PDF:</p>' +
+          '<a href="'+url+'" target="_blank" style="font-size:13px;color:var(--accent)">Open '+filename+'</a>';
+      }
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 60000);
     } else {
       var a = document.createElement('a');
       a.href = url; a.download = filename;
