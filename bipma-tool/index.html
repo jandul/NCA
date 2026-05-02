@@ -778,17 +778,24 @@ async function runAndDownload(fmt) {
     var mime = fmt === 'pdf' ? 'application/pdf' : 'image/png';
     var blob = new Blob([bytes], {type: mime});
     var filename = (G.fname||'bipma')+'.'+fmt;
-    // Use Web Share API if available (iOS Safari) — triggers native share sheet with save option
-    if (navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob], filename, {type: blob.type})]})) {
+    var url = URL.createObjectURL(blob);
+    // iOS Safari: use Web Share API with file sharing
+    try {
       var file = new File([blob], filename, {type: blob.type});
-      navigator.share({files: [file], title: filename})
-        .catch(function(e){ if (e.name !== 'AbortError') console.error(e); });
-    } else {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-    }
+      if (navigator.share && navigator.canShare({files:[file]})) {
+        navigator.share({files:[file], title:filename})
+          .catch(function(e){ if (e.name !== 'AbortError') console.error(e); });
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+        return;
+      }
+    } catch(e) {}
+    // All other browsers: direct download
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
     setStatus(fmt.toUpperCase() + ' downloaded', 'done');
     setTimeout(hideStatus, 3000);
     toast(fmt.toUpperCase() + ' downloaded');
