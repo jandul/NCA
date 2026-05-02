@@ -49,9 +49,53 @@
     .disabled { opacity: 0.6; cursor: not-allowed; }
     footer { margin-top: 22px; font-size: 13px; color:#666; }
 
-    /* Optional styling for subgroup header */
     .subgroup { border-top: 1px dashed #ddd; padding-top: 10px; margin-top: 6px; }
     .subheading { font-weight: 800; font-size: 14px; color:#333; margin: 0 0 6px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 28px 22px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .modal h2 { font-size: 18px; font-weight: 800; margin: 0 0 10px; }
+    .modal p { font-size: 14px; color: #555; line-height: 1.6; margin: 0 0 20px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    a.modal-download {
+      display: inline-block;
+      text-decoration: none;
+      color: #111;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    a.modal-download:hover { border-color: #999; }
+    button.modal-close {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+      color: #111;
+    }
+    button.modal-close:hover { border-color: #999; }
   </style>
 </head>
 
@@ -60,61 +104,182 @@
   <p class="lead">Book links and supporting materials.</p>
 
   <div class="grid">
-  <!-- New book -->
-  <div class="card">
-    <div class="title">New book</div>
-    <p class="desc">Dul, J. (2026). Necessary Condition Analysis (NCA): Principles and Application. Chapman & Hall / CRC Press.</p>
-    <!--<a class="btn disabled" href="#" onclick="return false;">Preview</a>-->
-    <!-- <a class="btn" href="/NCA/New book/">Preview</a>-->
-    <a class="btn" href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">Preview</a>
-  </div>
 
+    <!-- New book -->
+    <div class="card">
+      <div class="title">New book</div>
+      <p class="desc">Dul, J. (2026). Necessary Condition Analysis (NCA): Principles and Application. Chapman &amp; Hall / CRC Press.</p>
+      <a class="btn" href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">Preview</a>
+    </div>
 
-  <!-- Archived book  -->
+    <!-- Archived book -->
     <div class="card">
       <div class="title">Archived book</div>
-      <p class="desc"> “Legacy” version (2021-2026). Previously on bookdown.com. Replaced by new book.</p>
+      <p class="desc">"Legacy" version (2021-2026). Previously on bookdown.com. Replaced by new book.</p>
       <a class="btn" href="https://jandul.github.io/archived-nca-book/" target="_blank" rel="noopener">Open</a>
     </div>
 
-
-    <!-- Extras -->
+    <!-- Extra's -->
     <div class="card">
       <div class="title">Extra's</div>
-      <!-- <p class="desc">Supporting material.</p> -->
 
       <div class="subrow">
-        <!-- Order: Score, Quick, Additional -->
-        <!--<a class="subbtn disabled" href="#" onclick="return false;">SCoRe checklist</a>-->
-        <a class="subbtn" href="/NCA/score-checklist/">SCoRe checklist</a>
 
-         <!-- <a class="subbtn disabled" href="#" onclick="return false;">Quick Start guide</a>-->
-        <a class="subbtn" href="/NCA/quick-start-guide/Quick Start Guide NCA 5.0.0 March 2026.pdf" download>Quick Start guide</a>
-
-
-        <!-- R code group -->
+        <!-- Tools -->
         <div class="subgroup">
-          <div class="subheading">R code (download)</div>
-
-          <!-- Button to your scripts index page -->
-          <a class="subbtn disabled" href="#" onclick="return false;">R code in book</a>
-          <!--<a class="subbtn" href="/NCA/script/">R code in book</a>-->
-
-          <!-- Other buttons (still disabled placeholders) -->
-          <!-- <a class="subbtn disabled" href="#" onclick="return false;">Demonstration NCA</a>-->
-          <a class="subbtn" href="/NCA/script/Demonstration NCA.R">Demonstration NCA</a>
-
-          <a class="subbtn disabled" href="#" onclick="return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
-
-          <a class="subbtn disabled" href="#" onclick="return false;">BIPMA tool <span style="font-size: 12px;">(figure for NCA with SEM)</span></a>
-
-           <!--<a class="subbtn disabled" href="#" onclick="return false;">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>-->
-           <a class="subbtn" href="/NCA/nest-tool/">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>
-          
+          <div class="subheading">Tools</div>
+          <div style="display:grid;gap:10px;">
+            <a class="subbtn" href="#" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
+            <a class="subbtn" href="#" onclick="checkAIScore();return false;">AI-SCoRe</a>
+            <a class="subbtn" href="#" onclick="document.getElementById('nert-modal').classList.add('open');return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
+            <a class="subbtn" href="#" onclick="document.getElementById('nest-modal').classList.add('open');return false;">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>
+            <a class="subbtn" href="#" onclick="document.getElementById('bipma-modal').classList.add('open');return false;">BIPMA tool <span style="font-size: 12px;">(figure for NCA with SEM)</span></a>
+          </div>
         </div>
+
+        <!-- NCA software -->
+        <div class="subgroup">
+          <div class="subheading">NCA software</div>
+          <div style="display:grid;gap:10px;">
+            <a class="subbtn" href="#" onclick="document.getElementById('qsg-modal').classList.add('open');return false;">Quick Start Guide NCA with R</a>
+            <a class="subbtn" href="#" onclick="document.getElementById('demo-modal').classList.add('open');return false;">Demonstration NCA with R</a>
+            <a class="subbtn" href="#" onclick="document.getElementById('stata-modal').classList.add('open');return false;">Quick Start Guide NCA with Stata</a>
+          </div>
+        </div>
+
+        <!-- R code -->
+        <div class="subgroup">
+          <div class="subheading">R code</div>
+          <div style="display:grid;gap:10px;">
+            <a class="subbtn disabled" href="#" onclick="return false;">R code from book</a>
+            <a class="subbtn disabled" href="#" onclick="return false;">Conduct NCA with SEM in R</a>
+            <a class="subbtn disabled" href="#" onclick="return false;">Conduct NCA with QCA in R</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+  <!-- NERT modal -->
+  <div class="modal-overlay" id="nert-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>NERT tool</h2>
+      <p>The NCA-Extended Regression Table (NERT) is a tool for combining NCA results with regression-based results in a causal-pluralism multimethod study. It extends the conventional regression table by adding two columns: the necessity effect size and its <em>p</em>-value for those predictors hypothesized and shown to operate as necessary conditions. NERT allows the results of NCA and regression-based methods (e.g., multiple linear regression, SEM) to be compared and interpreted jointly. See corresponding <a href="https://jandul.github.io/nca-book/#combining-nca-and-regression-based-methods" target="_blank" rel="noopener">Section 11.3.4</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('nert-modal').classList.remove('open')">Close</button>
+        <a class="modal-download disabled" href="#" onclick="return false;">NERT tool</a>
       </div>
     </div>
   </div>
+
+  <!-- NEST modal -->
+  <div class="modal-overlay" id="nest-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>NEST tool</h2>
+      <p>The NCA-Extended Solution Table (NEST) is a tool for combining NCA results with QCA results in a causal-pluralism multimethod study. It extends QCA's solution table by adding the required membership score of necessary conditions identified by NCA to each sufficient configuration. This allows the combined interpretation of NCA's necessity results and QCA's sufficiency results. See corresponding <a href="https://jandul.github.io/nca-book/#necessitysufficiencyanalysisncaqca" target="_blank" rel="noopener">Section 11.6.3</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('nest-modal').classList.remove('open')">Close</button>
+        <a class="modal-download" href="/NCA/nest-tool/" target="_blank" rel="noopener">NEST tool</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BIPMA modal -->
+  <div class="modal-overlay" id="bipma-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>BIPMA tool</h2>
+      <p>The Bottleneck Importance Performance Map Analysis (BIPMA) is a tool for providing evidence-based practical advice on prioritizing actions and resources, based on the combined results of NCA and SEM. It displays predictor variables as points in a map combining their necessity (NCA) and average effect (SEM) results, helping practitioners identify which conditions to address first to achieve a target outcome. See corresponding <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" rel="noopener">Section 11.4.1.7</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('bipma-modal').classList.remove('open')">Close</button>
+        <a class="modal-download disabled" href="#" onclick="return false;">BIPMA tool</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCoRe checklist modal -->
+  <div class="modal-overlay" id="score-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>SCoRe checklist</h2>
+      <p>The SCoRe checklist can be used to evaluate the quality of conducting and reporting NCA. A minimum SCoRe-score of 60 is required for a publishable study. In addition, the checklist provides targeted recommendations for improvement. See corresponding <a href="https://jandul.github.io/nca-book/#review" target="_blank" rel="noopener">Section 10.3</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('score-modal').classList.remove('open')">Close</button>
+        <a class="modal-download" href="/NCA/score-checklist/" target="_blank" rel="noopener">Interactive SCoRe checklist</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI-SCoRe modal -->
+  <div class="modal-overlay" id="aiscore-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>AI-SCoRe</h2>
+      <p>AI-SCoRe is a series of prompts that can be used to get AI-generated feedback on the quality of conducting and reporting NCA. Application of the tool requires that the publication is uploaded to a GenAI model like Claude or ChatGPT. Always check the AI-generated feedback.</p>
+      <p>Reviewers of publications need permission of authors/publisher to upload a publication. Without such permission, the SCoRe checklist for human evaluation can be used.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('aiscore-modal').classList.remove('open')">Close</button>
+        <a class="modal-download" href="/NCA/score-checklist/" target="_blank" rel="noopener">SCoRe checklist</a>
+        <span style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <a class="modal-download" href="#" onclick="checkPassword();return false;">AI-SCoRe</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Start Guide NCA with Stata modal -->
+  <div class="modal-overlay" id="stata-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>Quick Start Guide NCA with Stata</h2>
+      <p>This guide helps you get started with performing Necessary Condition Analysis (NCA) in Stata using the <strong>nca</strong> package. It covers installing the <strong>nca</strong> package, running the core analysis functions, and interpreting the results. Please note that access to the <strong>Stata software</strong> is required to use the <strong>nca</strong> package. See <a href="https://jandul.github.io/nca-book/#appendixb" target="_blank" rel="noopener">Appendix B</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('stata-modal').classList.remove('open')">Close</button>
+        <a class="modal-download disabled" href="#" onclick="return false;">Download</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Start Guide NCA with R modal -->
+  <div class="modal-overlay" id="qsg-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>Quick Start Guide NCA with R</h2>
+      <p>This guide helps you get started quickly with the <em>NCA</em> package in R (version 5.0.0). It covers installing and loading the package, running the core functions such as <code>nca_analysis</code> and <code>nca_output</code>, and interpreting the results. No prior experience with R is required to follow the guide. See <a href="https://jandul.github.io/nca-book/#appendixb" target="_blank" rel="noopener">Appendix B</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('qsg-modal').classList.remove('open')">Close</button>
+        <a class="modal-download" href="/NCA/quick-start-guide/Quick Start Guide NCA 5.0.0 March 2026.pdf" download>Download</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demonstration NCA modal -->
+  <div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h2>Demonstration NCA with R</h2>
+      <p>This R script demonstrates how to perform the data analysis of Necessary Condition Analysis (NCA) using the <em>NCA</em> package in R. It walks through a complete example — loading data, running the analysis, and interpreting the output — and can be used as a hands-on starting point for your own NCA applications. For more details, see the corresponding <a href="https://jandul.github.io/nca-book/#dataanalysis" target="_blank" rel="noopener">Chapter 9</a> in the book.</p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('demo-modal').classList.remove('open')">Close</button>
+        <a class="modal-download" href="/NCA/script/Demonstration NCA.R" download>Download</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function checkAIScore() {
+      var pwd = prompt("Under development. Only for developers. Please enter the developer password:");
+      if (pwd === null) return;
+      if (pwd !== "developer") { // replace "developer" with actual developer password
+        alert("Incorrect password. Access denied.");
+        return;
+      }
+      document.getElementById('aiscore-modal').classList.add('open');
+    }
+    function checkPassword() {
+      var pwd = prompt("This area is for members only. Please enter the password:");
+      if (pwd === null) return; // cancelled
+      if (pwd === "members") { // replace "members" with the actual password
+        window.open("/NCA/ai-score/", "_blank");
+      } else {
+        alert("Incorrect password. Access denied.");
+      }
+    }
+  </script>
+
 </body>
 </html>
-
