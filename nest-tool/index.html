@@ -116,18 +116,15 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
     <div class="sidebar-scroll">
 
       <div class="s-section">
-        <h3>Caption</h3>
-        <div class="field">
-          <input type="text" id="g-caption" oninput="captionManual=true;buildAll()">
-          <p style="font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5">Background of NEST tool: <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
-        </div>
+        <h3>Instruction</h3>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and QCA analyses as input to the tool. The tool produces the NEST table. An internet connection is required for downloading as PNG or PDF. The backgrounds of the NEST tool are described in <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
       </div>
 
       <div class="s-section">
         <h3>Outcome</h3>
         <div class="field-row">
           <div class="field">
-            <label>Outcome name</label>
+            <label>Outcome name (in title)</label>
             <input type="text" id="g-outname" value="JSR" oninput="syncCaption();buildAll()">
           </div>
           <div class="field">
@@ -137,6 +134,13 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
               <button data-val="absence" onclick="dirClick(this)">absence</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Table title</h3>
+        <div class="field">
+          <input type="text" id="g-caption" oninput="captionManual=true;buildAll()">
         </div>
       </div>
 
@@ -204,6 +208,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <button class="btn" onclick="downloadR()">Download .R</button>
       <button class="btn" onclick="downloadHTML()">Download .html</button>
       <button class="btn" onclick="downloadPNG()">Download .png</button>
+      <button class="btn" onclick="downloadPDF()">Download .pdf</button>
     </div>
     <div id="preview-wrap"></div>
   </main>
@@ -270,7 +275,7 @@ function makeDefaultCaption() {
   var name = document.getElementById('g-outname').value.trim() || 'Y';
   return 'NEST table: NCA-Extended Solution Table. Outcome analyzed: ' +
     dir + ' of ' + name +
-    '. NEST combines NCA necessity results with fsQCA sufficiency results.';
+    '.';
 }
 
 /* sync caption field when outname or direction changes, unless user has manually edited it */
@@ -460,7 +465,7 @@ function buildPreview(inp) {
   var h = '<table class="nest-preview"><caption>' + esc(caption) + '</caption><thead><tr>';
   h += '<th class="lh"></th>';
   for (var j = 0; j < n; j++) h += '<th>S' + (j+1) + '</th>';
-  h += '<th>N</th></tr></thead><tbody>';
+  h += '<th>NiD</th></tr></thead><tbody>';
 
   conds.forEach(function(c, ci) {
     var last = ci === conds.length - 1;
@@ -489,7 +494,7 @@ function buildPreview(inp) {
   h += '</tbody></table>';
   h += '<div class="footnote">' +
     'S1, \u2026 = Sufficient configurations<br>' +
-    'N = Minimum required membership score according to NCA<br>' +
+    'NiD = Necessity in Degree: Required membership score according to NCA<br>' +
     SYM.core_present + '/' + SYM.cont_present + ' = Presence of core/contributory condition<br>' +
     SYM.core_absent + '/<span style="font-size:0.6em">\u2297</span> = Absence of core/contributory condition<br>' +
     SYM.nec_present + '/' + SYM.nec_absent + ' = \u2018Don\u2019t care\u2019 according to QCA; high/low level required according to NCA' +
@@ -605,14 +610,14 @@ cfgLines.join(',\n'),
 'final_df <- rbind(display, fit_rows)',
 'note_lines <- c(',
 '  "S1, \\u2026 = Sufficient configurations",',
-'  "N = Minimum required membership score according to NCA",',
+'  "NiD = Necessity in Degree: Required membership score according to NCA",',
 '  paste0(sym$core_present, "/", sym$cont_present, " = Presence of core/contributory condition"),',
 '  paste0(sym$core_absent, "/", sym$cont_absent, " = Absence of core/contributory condition"),',
 '  paste0(sym$nec_present, "/", sym$nec_absent, " = \'Don\\u2019t care\' according to QCA; high/low level required according to NCA")',
 ')',
 'table_caption <- if (is.null(caption_input)) paste0(',
 '  "NEST table: NCA-Extended Solution Table. Outcome analyzed: ", outcome_direction,',
-'  " of ", outcome_name, ". NEST combines NCA necessity results with fsQCA sufficiency results."',
+'  " of ", outcome_name, "."',
 ') else caption_input',
 'tbl <- knitr::kable(final_df, format = "html", align = "c",',
 '  caption = table_caption, escape = FALSE, linesep = "") %>%',
