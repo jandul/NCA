@@ -130,7 +130,7 @@
           <div class="subheading">Tools</div>
           <div style="display:grid;gap:10px;">
             <a class="subbtn" href="#" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
-            <a class="subbtn" href="#" onclick="checkAIScore();return false;">AI-SCoRe</a>
+            <a class="subbtn" href="#" onclick="document.getElementById('aiscore-modal').classList.add('open');return false;">AI-SCoRe</a>
             <a class="subbtn" href="#" onclick="document.getElementById('nert-modal').classList.add('open');return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
             <a class="subbtn" href="#" onclick="document.getElementById('nest-modal').classList.add('open');return false;">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>
             <a class="subbtn" href="#" onclick="document.getElementById('bipma-modal').classList.add('open');return false;">BIPMA tool <span style="font-size: 12px;">(figure for NCA with SEM)</span></a>
@@ -165,7 +165,7 @@
   <div class="modal-overlay" id="nert-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>NERT tool</h2>
-      <p>The NCA-Extended Regression Table (NERT) is a tool for combining NCA results with regression-based results in a causal-pluralism multimethod study. It extends the conventional regression table by adding two columns: the necessity effect size and its <em>p</em>-value for those predictors hypothesized and shown to operate as necessary conditions. NERT allows the results of NCA and regression-based methods (e.g., multiple linear regression, SEM) to be compared and interpreted jointly. See <a href="https://jandul.github.io/nca-book/#combining-nca-and-regression-based-methods" target="_blank" rel="noopener">Section 11.3.4</a> in the book.</p>
+      <p>The NCA-Extended Regression Table (NERT) is a tool for combining NCA results with regression-based results in a causal-pluralism multimethod study. It extends the conventional regression table by adding two columns: the necessity effect size and its <em>p</em>-value for those predictors hypothesized and shown to operate as necessary conditions. NERT allows the results of NCA and regression-based methods (e.g., multiple linear regression, SEM) to be compared and interpreted jointly. See corresponding <a href="https://jandul.github.io/nca-book/#combining-nca-and-regression-based-methods" target="_blank" rel="noopener">Section 11.3.4</a> in the book.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('nert-modal').classList.remove('open')">Close</button>
         <a class="modal-download disabled" href="#" onclick="return false;">NERT tool</a>
@@ -177,7 +177,7 @@
   <div class="modal-overlay" id="nest-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>NEST tool</h2>
-      <p>The NCA-Extended Solution Table (NEST) is a tool for combining NCA results with QCA results in a causal-pluralism multimethod study. It extends QCA's solution table by adding the required membership score of necessary conditions identified by NCA to each sufficient configuration. This allows the combined interpretation of NCA's necessity results and QCA's sufficiency results. See <a href="https://jandul.github.io/nca-book/#necessitysufficiencyanalysisncaqca" target="_blank" rel="noopener">Section 11.6.3</a> in the book.</p>
+      <p>The NCA-Extended Solution Table (NEST) is a tool for combining NCA results with QCA results in a causal-pluralism multimethod study. It extends QCA's solution table by adding the required membership score of necessary conditions identified by NCA to each sufficient configuration. This allows the combined interpretation of NCA's necessity results and QCA's sufficiency results. See corresponding <a href="https://jandul.github.io/nca-book/#necessitysufficiencyanalysisncaqca" target="_blank" rel="noopener">Section 11.6.3</a> in the book.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('nest-modal').classList.remove('open')">Close</button>
         <a class="modal-download" href="/NCA/nest-tool/" target="_blank" rel="noopener">NEST tool</a>
@@ -189,11 +189,10 @@
   <div class="modal-overlay" id="bipma-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>BIPMA tool</h2>
-      <p>The Bottleneck Importance Performance Map Analysis (BIPMA) is a tool for providing evidence-based practical advice on prioritizing actions and resources, based on the combined results of NCA and SEM. It displays predictor variables as points in a map combining their necessity (NCA) and average effect (SEM) results, helping practitioners identify which conditions to address first to achieve a target outcome. See <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" rel="noopener">Section 11.4.1.7</a> in the book.</p>
+      <p>The Bottleneck Importance Performance Map Analysis (BIPMA) is a tool for providing evidence-based practical advice on prioritizing actions and resources, based on the combined results of NCA and SEM. It displays predictor variables as points in a map combining their necessity (NCA) and average effect (SEM) results, helping practitioners identify which conditions to address first to achieve a target outcome. See corresponding <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" rel="noopener">Section 11.4.1.7</a> in the book.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('bipma-modal').classList.remove('open')">Close</button>
-        <!--<a class="modal-download disabled" href="#" onclick="return false;">BIPMA tool</a>-->
-        <a class="modal-download" href="/NCA/bipma-tool/" target="_blank" rel="noopener">BIPMA tool</a>
+        <a class="modal-download disabled" href="#" onclick="return false;">BIPMA tool</a>
       </div>
     </div>
   </div>
@@ -202,7 +201,7 @@
   <div class="modal-overlay" id="score-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>SCoRe checklist</h2>
-      <p>The SCoRe checklist can be used to evaluate the quality of conducting and reporting an NCA study. A minimum SCoRe-score of 60 is required for a publishable study. In addition, the checklist provides targeted recommendations for improvement. See <a href="https://jandul.github.io/nca-book/#review" target="_blank" rel="noopener">Section 10.3</a> in the book.</p>
+      <p>The SCoRe checklist can be used to evaluate the quality of conducting and reporting an NCA study. A minimum SCoRe-score of 60 is required for a publishable study. In addition, the checklist provides targeted recommendations for improvement. See corresponding <a href="https://jandul.github.io/nca-book/#review" target="_blank" rel="noopener">Section 10.3</a> in the book.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('score-modal').classList.remove('open')">Close</button>
         <a class="modal-download" href="/NCA/score-checklist/" target="_blank" rel="noopener">Interactive SCoRe checklist</a>
@@ -214,11 +213,15 @@
   <div class="modal-overlay" id="aiscore-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>AI-SCoRe</h2>
+      <!-- for later use:
       <p>AI-SCoRe is a series of prompts that can be used to get AI-generated feedback on the quality of conducting and reporting an NCA study. Application of the tool requires that a publication about the study (e.g., a draft article for a journal) is uploaded to a GenAI model like Claude or ChatGPT. Permission of author(s)/publisher is needed to upload a publication. Without such permission, the Interactive SCoRe checklist for human evaluation can be used. Always check the AI-generated results.</p>
+      -->
+      <p style="color:#c0392b;font-size:13px;margin-top:-10px;">This tool is currently under development.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('aiscore-modal').classList.remove('open')">Close</button>
-        <a class="modal-download" href="/NCA/score-checklist/" target="_blank" rel="noopener">Interactive SCoRe checklist</a>
-        <a class="modal-download" href="#" onclick="checkPassword();return false;">AI-SCoRe</a>
+        <!-- members only — enable when ready:
+        <a class="modal-download" href="/NCA/ai-score/AI-SCoRe-Tool.pdf" target="_blank" rel="noopener">AI-SCoRe</a>
+        -->
       </div>
     </div>
   </div>
@@ -251,7 +254,7 @@
   <div class="modal-overlay" id="demo-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>Demonstration NCA with R</h2>
-      <p>This R script demonstrates how to perform the data analysis of Necessary Condition Analysis (NCA) using the <em>NCA</em> package in R. It walks through a complete example — loading data, running the analysis, and interpreting the output — and can be used as a hands-on starting point for your own NCA applications. See <a href="https://jandul.github.io/nca-book/#dataanalysis" target="_blank" rel="noopener">Chapter 9</a> in the book.</p>
+      <p>This R script demonstrates how to perform the data analysis of Necessary Condition Analysis (NCA) using the <em>NCA</em> package in R. It walks through a complete example — loading data, running the analysis, and interpreting the output — and can be used as a hands-on starting point for your own NCA applications. For more details, see the corresponding <a href="https://jandul.github.io/nca-book/#dataanalysis" target="_blank" rel="noopener">Chapter 9</a> in the book.</p>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('demo-modal').classList.remove('open')">Close</button>
         <a class="modal-download" href="/NCA/script/Demonstration NCA.R" download>Download</a>
@@ -259,32 +262,7 @@
     </div>
   </div>
 
-  <script>
-    function checkAIScore() {
-      var pwd = prompt("Under development. Only for developers. Please enter the developer password:");
-      if (pwd === null) return;
-      if (pwd !== "developer") { // replace "developer" with actual developer password
-        alert("Incorrect password. Access denied.");
-        return;
-      }
-      document.getElementById('aiscore-modal').classList.add('open');
-    }
-    function checkPassword() {
-      var pwd = prompt("This area is for members only. Please enter the password:");
-      if (pwd === null) return;
-      if (pwd === "members") { // replace "members" with the actual password
-        var a = document.createElement('a');
-        a.href = "/NCA/ai-score/AI-SCoRe-Tool.pdf";
-        a.target = "_blank";
-        a.rel = "noopener";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        alert("Incorrect password. Access denied.");
-      }
-    }
-  </script>
+
 
 </body>
 </html>
