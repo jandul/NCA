@@ -126,7 +126,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
   <header class="topbar">
     <h1>BIPMA Tool</h1>
     <span>Bottleneck Importance–Performance Map Analysis</span>
-    <span style="margin-left:auto;font-size:11px;opacity:.5">Dul (2026) · NCA · WebR</span>
+    <span style="margin-left:auto;font-size:11px;opacity:.5">Dul, J. (2026) · NCA · WebR</span>
   </header>
 
   <nav class="mob-tabs">
@@ -138,10 +138,12 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
     <div id="drag-handle" title="Drag to resize"></div>
     <div class="sidebar-scroll">
       <div class="s-section">
-        <h3>Global settings</h3>
-        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Background of BIPMA tool: <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
-        <div class="field"><label>Target outcome Y</label><input type="number" id="g-target" value="85" step="1"></div>
-        <div class="field"><label>Sample size N</label><input type="number" id="g-n" value="174" step="1" min="1"></div>
+
+        <h3>Instruction</h3>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The backgrounds of the BIPMA tool are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+
+        <h3>Plot settings</h3>
+        
         <div class="field-row">
           <div class="field"><label>Y min</label><input type="number" id="g-ymin" value="0" step="5"></div>
           <div class="field"><label>Y max</label><input type="number" id="g-ymax" value="100" step="5"></div>
@@ -154,7 +156,16 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
           <div class="field"><label>Dot size range min</label><input type="number" id="g-smin" value="0.5" step="0.5" min="0.1"></div>
           <div class="field"><label>Dot size range max</label><input type="number" id="g-smax" value="50" step="1" min="1"></div>
         </div>
-        <div class="field"><label>Figure title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4">Leave blank to use auto-generated title</p></div>
+
+        <h3>Plot title settings</h3>
+        <div class="field-row">
+          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="85" step="1"></div>
+          <div class="field"><label>Sample size n (for plot title)</label><input type="number" id="g-n" value="174" step="1" min="1"></div>
+        </div>
+
+<div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
+
+        <h3>Output settings</h3>
         <div class="field-row">
           <div class="field"><label>Filename</label><input type="text" id="g-fname" value="bipma"></div>
           <div class="field"><label>PDF width (in)</label><input type="number" id="g-pw" value="5" step="0.5" min="1"></div>
