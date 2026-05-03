@@ -54,6 +54,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 /* Sidebar sections */
 .s-section{border-bottom:1px solid var(--border-light);padding:16px 20px}
 .s-section h3{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.s-section h3 + * ~ h3, .s-section p + h3, .s-section div + h3{border-top:1px solid var(--border-light);padding-top:14px;margin-top:6px}
 
 /* Form */
 .field{margin-bottom:10px}
@@ -140,7 +141,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <div class="s-section">
 
         <h3>Instruction</h3>
-        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The backgrounds of the BIPMA tool are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> in Dul (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The backgrounds of the BIPMA tool are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
 
         <h3>Plot settings</h3>
         
@@ -177,8 +178,9 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       </div>
 
       <div class="s-section">
-        <h3>Predictors</h3>
-        <div class="pred-wrap">
+        <h3>Predictors settings</h3>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:6px;line-height:1.5">Obtained from the NCA and SEM results.</p>
+        <div class="pred-wrap" style="margin-top:-6px">
           <table class="pred-table">
             <colgroup>
               <col style="width:24px">
@@ -450,7 +452,8 @@ function delRow(id) {
 
 function makeDefaultTitle() {
   var target = document.getElementById('g-target').value || '85';
-  return 'BIPMA plot for target outcome Y = ' + target;
+  var n = document.getElementById('g-n').value || '174';
+  return 'BIPMA plot for target outcome Y = ' + target + '; n = ' + n;
 }
 
 var titleManual = false;
@@ -939,6 +942,7 @@ document.getElementById('g-n').addEventListener('input', function() {
     syncBnFromN(tr, 'p-bnn');
   });
   validateBN();
+  syncTitle();
   buildRScript();
 });
 
