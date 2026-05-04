@@ -160,8 +160,8 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 
         <h3>Plot title settings</h3>
         <div class="field-row">
-          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="85" step="1"></div>
-          <div class="field"><label>Sample size n (for plot title)</label><input type="number" id="g-n" value="174" step="1" min="1"></div>
+          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="90" step="1"></div>
+          <div class="field"><label>Sample size n (for plot title)</label><input type="number" id="g-n" value="204" step="1" min="1"></div>
         </div>
 
 <div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
@@ -272,10 +272,10 @@ var webRFailed = false;
 var rowCount = 0;
 
 var EXAMPLE = [
-  {name:'Predictor A', imp:0.15,  perf:30, nec:'no',  suf:'no',  bnp:14.9425287, bnn:26, cor:1},
-  {name:'Predictor B', imp:0.20,  perf:60, nec:'yes', suf:'yes', bnp:17.2,        bnn:30, cor:1},
-  {name:'Predictor C', imp:0.05,  perf:70, nec:'yes', suf:'no',  bnp:6.90,        bnn:12, cor:1},
-  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnp:1.72,        bnn:3,  cor:2},
+  {name:'Predictor A', imp:0.15,  perf:30, nec:'no',  suf:'no',  bnp:14.9,        bnn:26, cor:1},
+  {name:'Predictor B', imp:0.17,  perf:60, nec:'yes', suf:'yes', bnp:13.72,       bnn:28, cor:1},
+  {name:'Predictor C', imp:0.05,  perf:70, nec:'yes', suf:'no',  bnp:6.372,       bnn:13, cor:1},
+  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnp:1.96,        bnn:4,  cor:2},
   {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnp:9.20,        bnn:16, cor:1},
 ];
 
