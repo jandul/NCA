@@ -162,6 +162,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
         <div class="field-row">
           <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="90" step="1"></div>
           <div class="field"><label>Sample size n (for plot title)</label><input type="number" id="g-n" value="204" step="1" min="1"></div>
+
         </div>
 
 <div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
@@ -257,13 +258,6 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════════
-   ALL application logic in one plain <script>.
-   WebR is loaded dynamically — failure is caught
-   and handled gracefully without breaking anything.
-   ═══════════════════════════════════════════════ */
-
-/* ── State ── */
 var webR = null;
 var webRReady = false;
 var webRRendering = false;
@@ -272,14 +266,13 @@ var webRFailed = false;
 var rowCount = 0;
 
 var EXAMPLE = [
-  {name:'Predictor A', imp:0.15,  perf:30, nec:'no',  suf:'no',  bnp:14.9,        bnn:26, cor:1},
-  {name:'Predictor B', imp:0.17,  perf:60, nec:'yes', suf:'yes', bnp:13.72,       bnn:28, cor:1},
-  {name:'Predictor C', imp:0.05,  perf:70, nec:'yes', suf:'no',  bnp:6.372,       bnn:13, cor:1},
-  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnp:1.96,        bnn:4,  cor:2},
-  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnp:9.20,        bnn:16, cor:1},
+  {name:'Predictor A', imp:0.18,  perf:30, nec:'no',  suf:'no',  bnp:9.804,  bnn:20, cor:1},
+  {name:'Predictor B', imp:0.25,  perf:60, nec:'yes', suf:'yes', bnp:13.725, bnn:28, cor:1},
+  {name:'Predictor C', imp:0.10,  perf:70, nec:'yes', suf:'no',  bnp:6.373,  bnn:13, cor:1},
+  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnp:1.961,  bnn:4,  cor:2},
+  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnp:7.353,  bnn:15, cor:1},
 ];
 
-/* ── Status bar ── */
 function setStatus(msg, state) {
   var bar = document.getElementById('status-bar');
   var sp  = document.getElementById('sp');
@@ -291,14 +284,12 @@ function setStatus(msg, state) {
 }
 function hideStatus() { document.getElementById('status-bar').style.display = 'none'; }
 
-/* ── Toast ── */
 function toast(msg) {
   var el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
   setTimeout(function(){ el.classList.remove('show'); }, 2800);
 }
 
-/* ── Yes/No toggle ── */
 function syncPerfField(tr) {
   var nec = tr.querySelector('.p-nec').dataset.value;
   var suf = tr.querySelector('.p-suf').dataset.value;
@@ -306,10 +297,8 @@ function syncPerfField(tr) {
   if (nec === 'no' && suf === 'no') {
     perf.value = '';
     perf.disabled = true;
-
   } else {
     perf.disabled = false;
-
   }
 }
 
@@ -319,10 +308,8 @@ function syncSufImp(tr) {
   if (suf === 'no') {
     imp.value = '';
     imp.disabled = true;
-
   } else {
     imp.disabled = false;
-
   }
 }
 
@@ -335,13 +322,9 @@ function syncNecBN(tr) {
     bnn.value = '';
     bnp.disabled = true;
     bnn.disabled = true;
-
-
   } else {
     bnp.disabled = false;
     bnn.disabled = false;
-
-
   }
 }
 
@@ -362,7 +345,6 @@ function ynClick(btn) {
   buildRScript();
 }
 
-/* ── Row management ── */
 function makeRow(d) {
   rowCount++;
   var id = rowCount;
@@ -402,7 +384,7 @@ function validateBN() {
   var totalBnn = 0;
   document.querySelectorAll('#pred-body tr').forEach(function(tr) {
     var nec = tr.querySelector('.p-nec').dataset.value;
-    if (nec === 'no') return;  // BN fields are empty/disabled for nec=no rows
+    if (nec === 'no') return;
     var bnp = parseFloat(tr.querySelector('.p-bnp').value) || 0;
     var bnn = parseInt(tr.querySelector('.p-bnn').value)   || 0;
     var name = tr.querySelector('.p-name').value || 'row';
@@ -507,7 +489,6 @@ function getG() {
   };
 }
 
-/* ── R script builder ── */
 function makeScript(rows, G, outPath, fmt) {
   var q  = function(s){ return '"'+s+'"'; };
   var fv = function(arr, fn){ return 'c('+arr.map(fn).join(', ')+')'; };
@@ -590,6 +571,7 @@ function makeScript(rows, G, outPath, fmt) {
 '\n'+
 'library(ggplot2)\n'+
 'library(ggrepel)\n'+
+'library(stringr)\n'+
 '\n'+
 'bipma_df <- bipma_df[order(bipma_df$Single_bottleneck_cases_num, decreasing = TRUE), ]\n'+
 '\n'+
@@ -649,15 +631,16 @@ function makeScript(rows, G, outPath, fmt) {
 '  ) +\n'+
 '  coord_cartesian(xlim = x_range_adj, ylim = y_range) +\n'+
 '  scale_x_continuous(breaks = x_breaks, limits = x_range_adj) +\n'+
-'  scale_y_continuous(limits = y_range,breaks = y_breaks) +\n' +
+'  scale_y_continuous(limits = y_range,breaks = y_breaks) +\n'+
 '  scale_size_continuous(limits = size_limits, range = size_range) +\n'+
 '  labs(\n'+
-'    title = name_plot,\n'+
+'    title = stringr::str_wrap(name_plot, width = 50),\n'+
 '    x = "Importance",\n'+
 '    y = "Performance"\n'+
 '  ) +\n'+
 '  theme_minimal() +\n'+
 '  theme(\n'+
+'    plot.title = element_text(size = 11, lineheight = 1.2),\n'+
 '    axis.text.x = element_text(),\n'+
 '    axis.ticks.x = element_line(),\n'+
 '    panel.grid.minor = element_blank()\n'+
@@ -683,37 +666,31 @@ function makeScript(rows, G, outPath, fmt) {
 saveCmd+'\n';
 }
 
-/* ── Build R script + trigger preview ── */
 function buildR() {
   var rows = getRows();
   if (!rows.length) { toast('Add at least one predictor'); return; }
   if (!validateBN()) { toast('Fix invalid BN values first'); return; }
   var G = getG();
 
-  // Store for later use by download buttons
   window._rows = rows;
   window._G = G;
   window._rScript = makeScript(rows, G, null, null);
 
-  // Show preview area, hide empty state
   showPreviewArea();
   document.getElementById('preview-img').style.display = 'none';
 
   if (webRFailed) {
-    // Offline — show offline message immediately
     document.getElementById('preview-spinner').style.display = 'none';
     document.getElementById('offline-msg').style.display = 'block';
     return;
   }
 
-  // Show spinner
   document.getElementById('preview-spinner').style.display = 'flex';
   document.getElementById('preview-msg').textContent = webRReady ? 'Running R…' : 'Waiting for R to load…';
 
   if (webRReady) {
     renderPreview(rows, G);
   } else {
-    // Poll until ready or failed
     var iv = setInterval(function() {
       if (webRReady) {
         clearInterval(iv);
@@ -729,7 +706,7 @@ function buildR() {
 }
 
 async function renderPreview(rows, G) {
-  if (webRRendering) return;  // skip if already rendering
+  if (webRRendering) return;
   webRRendering = true;
   document.getElementById('preview-spinner').style.display = 'flex';
   document.getElementById('preview-msg').textContent = 'Running R…';
@@ -754,7 +731,6 @@ async function renderPreview(rows, G) {
   }
 }
 
-/* ── Download / copy R script ── */
 function downloadR() {
   if (!window._rScript) { buildR(); return; }
   var G = window._G || getG();
@@ -772,13 +748,11 @@ function copyR() {
     .catch(function(){ toast('Copy failed — use Download .R'); });
 }
 
-/* ── Run R and download output ── */
 async function runAndDownload(fmt) {
   if (!webRReady) { toast('R not ready — check status bar'); return; }
   var rows = window._rows, G = window._G;
   if (!rows || !G) { toast('Click Generate first'); return; }
 
-  // Wait for any in-progress preview render to finish
   webRRendering = false;
   clearTimeout(buildRTimer);
 
@@ -800,7 +774,6 @@ async function runAndDownload(fmt) {
     var url = URL.createObjectURL(blob);
     var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (isIOS) {
-      // Show inline so user can save via Safari share button
       var dp = document.getElementById('download-preview');
       dp.style.display = 'block';
       if (fmt === 'png') {
@@ -831,7 +804,6 @@ async function runAndDownload(fmt) {
   }
 }
 
-/* ── WebR — loaded dynamically so offline failure is isolated ── */
 async function initWebR() {
   setStatus('Loading R (first load ~30 s)…', 'spin');
   try {
@@ -839,13 +811,12 @@ async function initWebR() {
     webR = new module.WebR();
     await webR.init();
     setStatus('Installing ggplot2 and ggrepel…', 'spin');
-    await webR.installPackages(['ggplot2', 'ggrepel']);
+    await webR.installPackages(['ggplot2', 'ggrepel', 'stringr']);
     webRReady = true;
     document.getElementById('btn-pdf').disabled = false;
     document.getElementById('btn-png').disabled = false;
     setStatus('R ready', 'done');
     setTimeout(hideStatus, 2000);
-    // Auto-render on first load
     var rows = window._rows || getRows();
     var G    = window._G   || getG();
     showPreviewArea();
@@ -854,7 +825,6 @@ async function initWebR() {
     webRFailed = true;
     var msg = 'No internet connection. Use R-script to produce plot.';
     setStatus(msg, 'error');
-    // If preview was already requested (user clicked Generate while loading), show offline msg
     if (document.getElementById('preview-wrap').style.display === 'block') {
       document.getElementById('preview-spinner').style.display = 'none';
       document.getElementById('offline-msg').style.display = 'block';
@@ -862,9 +832,6 @@ async function initWebR() {
   }
 }
 
-/* ── Init ── */
-
-// Sidebar drag-to-resize
 (function() {
   var handle = document.getElementById('drag-handle');
   var app    = document.querySelector('.app');
@@ -896,14 +863,12 @@ async function initWebR() {
   });
 })();
 
-/* ── Show preview area (spinner, hide empty state) ── */
 function showPreviewArea() {
   document.getElementById('empty-state').style.display = 'none';
   document.getElementById('preview-wrap').style.display = 'block';
   document.getElementById('offline-msg').style.display = 'none';
 }
 
-/* ── R-script only (no WebR preview) — used for live updates ── */
 function buildRScript() {
   var rows = getRows();
   if (!rows.length) return;
@@ -914,7 +879,6 @@ function buildRScript() {
   if (!validateBN()) return;
   showPreviewArea();
 
-  // Re-render preview whenever WebR is ready (debounced)
   if (webRReady) {
     clearTimeout(buildRTimer);
     buildRTimer = setTimeout(function() { renderPreview(rows, G); }, 600);
@@ -924,19 +888,16 @@ function buildRScript() {
 loadExample();
 syncTitle();
 buildRScript();
-// Show spinner immediately so user sees something while WebR loads
 showPreviewArea();
 document.getElementById('preview-spinner').style.display = 'flex';
 document.getElementById('preview-msg').textContent = 'Loading R…';
 initWebR();
 
-/* ── Live update: sidebar global-settings inputs ── */
 ['g-ymin','g-ymax','g-xmax','g-ystep','g-smin','g-smax','g-fname','g-pw','g-ph','g-dpi'].forEach(function(id) {
   var el = document.getElementById(id);
   if (el) el.addEventListener('input', buildRScript);
 });
 
-// When N changes, recalculate all BN% from BN n
 document.getElementById('g-n').addEventListener('input', function() {
   document.querySelectorAll('#pred-body tr').forEach(function(tr) {
     syncBnFromN(tr, 'p-bnn');
@@ -946,23 +907,19 @@ document.getElementById('g-n').addEventListener('input', function() {
   buildRScript();
 });
 
-// g-target also syncs the auto title
 document.getElementById('g-target').addEventListener('input', function() {
   syncTitle();
   buildRScript();
 });
 
-// g-title: mark as manually edited when user types
 document.getElementById('g-title').addEventListener('input', function() {
   titleManual = this.value.trim() !== '';
   buildRScript();
 });
 
-/* ── Live update: predictor table ── */
 document.getElementById('pred-body').addEventListener('input',  buildRScript);
 document.getElementById('pred-body').addEventListener('change', buildRScript);
 
-/* -- Mobile tab switching -- */
 function mobTab(btn, panel) {
   Array.from(document.querySelectorAll('.mob-tabs button')).forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
