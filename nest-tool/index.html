@@ -117,7 +117,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 
       <div class="s-section">
         <h3>Instruction</h3>
-        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and QCA analyses as input to the tool. The tool produces the NEST table. An internet connection is required for downloading as PNG or PDF. The backgrounds of NEST are described in <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and QCA analyses as input to the tool. The tool produces the NEST table. An internet connection is required for downloading as PNG or PDF. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of the NEST tool are described in <a href="https://jandul.github.io/nca-book/#ncaqca" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.5 &ldquo;NCA with QCA&rdquo;</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
       </div>
 
       <div class="s-section">
@@ -226,7 +226,7 @@ var SYM = {
   core_present : '\u26AB',
   core_absent  : '\u2297',
   cont_present : '\u25CF',
-  cont_absent  : '<span style="font-size:0.6em;vertical-align:middle">\u2297</span>',
+  cont_absent  : '<span style="font-size:7px;vertical-align:middle">\u2297</span>',
   nec_present  : '\u25E2',
   nec_absent   : '\u25FF'
 };
@@ -406,9 +406,9 @@ function buildMatrix(conds, cfgs, direction) {
   /* normalise \neg and ~ to ¬ */
   function normLit(lit) {
     lit = lit.trim();
-    if (lit.startsWith('\\neg ')) return '\u00AC' + lit.slice(5);
-    if (lit.startsWith('\\neg'))  return '\u00AC' + lit.slice(4);
-    if (lit.charAt(0) === '~')     return '\u00AC' + lit.slice(1);
+    if (lit.startsWith('\\neg ')) return '\u00AC' + lit.slice(5).trim();
+    if (lit.startsWith('\\neg'))  return '\u00AC' + lit.slice(4).trim();
+    if (lit.charAt(0) === '~')    return '\u00AC' + lit.slice(1).trim();
     return lit;
   }
   cfgs.forEach(function(cf){
@@ -496,8 +496,8 @@ function buildPreview(inp) {
     'S1, \u2026 = Sufficient configurations<br>' +
     'NiD = Necessity in Degree: Required membership score according to NCA<br>' +
     SYM.core_present + '/' + SYM.cont_present + ' = Presence of core/contributory condition<br>' +
-    SYM.core_absent + '/<span style="font-size:0.6em">\u2297</span> = Absence of core/contributory condition<br>' +
-    SYM.nec_present + '/' + SYM.nec_absent + ' = \u2018Don\u2019t care\u2019 according to QCA; high/low level required according to NCA' +
+    SYM.core_absent + '/' + SYM.cont_absent + ' = Absence of core/contributory condition<br>' +
+    SYM.nec_present + '/' + SYM.nec_absent + ' = \u2018Don\u2019t care\u2019 according to QCA; necessary according to NCA' +
   '</div>';
   return h;
 }
