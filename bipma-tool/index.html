@@ -141,10 +141,17 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <div class="s-section">
 
         <h3>Instruction</h3>
-        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The backgrounds of BIPMA are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> and in <a href="https://jandul.github.io/nca-book/#appendixe" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of BIPMA are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> and in <a href="https://jandul.github.io/nca-book/#appendixe" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
 
         <h3>Plot settings</h3>
-        
+
+        <div class="field-row">
+          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="90" step="1"></div>
+          <div class="field"><label>Sample size n (for plot title and % bottlenecks)</label><input type="number" id="g-n" value="204" step="1" min="1"></div>
+        </div>
+
+        <div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
+
         <div class="field-row">
           <div class="field"><label>Y min</label><input type="number" id="g-ymin" value="0" step="5"></div>
           <div class="field"><label>Y max</label><input type="number" id="g-ymax" value="100" step="5"></div>
@@ -157,15 +164,6 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
           <div class="field"><label>Dot size range min</label><input type="number" id="g-smin" value="0.5" step="0.5" min="0.1"></div>
           <div class="field"><label>Dot size range max</label><input type="number" id="g-smax" value="50" step="1" min="1"></div>
         </div>
-
-        <h3>Plot title settings</h3>
-        <div class="field-row">
-          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="90" step="1"></div>
-          <div class="field"><label>Sample size n (for plot title)</label><input type="number" id="g-n" value="204" step="1" min="1"></div>
-
-        </div>
-
-<div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
 
         <h3>Output settings</h3>
         <div class="field-row">
@@ -197,7 +195,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
             <thead>
               <tr>
                 <th colspan="9" style="padding:0 0 4px 0;border-bottom:none;background:transparent">
-                  <span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:0">BN = number of single bottleneck cases (percentage is computed from BN and n)</span>
+                  <span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:0">BN = number of single bottleneck cases</span>
                   <span id="bn-warn" style="font-size:10px;font-weight:600;letter-spacing:0;display:none"></span>
                 </th>
               </tr>
@@ -223,7 +221,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 
     <div class="btn-group">
       <button class="btn primary" onclick="buildR()">&#9654; Generate</button>
-      <button class="btn ghost" onclick="loadExample()">Reset demo data</button>
+      <button class="btn ghost" onclick="loadExample();buildR()">Reset demo data</button>
     </div>
   </aside>
 
@@ -264,11 +262,11 @@ var webRFailed = false;
 var rowCount = 0;
 
 var EXAMPLE = [
-  {name:'Predictor A', imp:0.18,  perf:30, nec:'no',  suf:'no',  bnn:20, cor:1},
+  {name:'Predictor A', imp:0.18,  perf:30, nec:'no',  suf:'no',  bnn:0,  cor:1},
   {name:'Predictor B', imp:0.17,  perf:60, nec:'yes', suf:'yes', bnn:28, cor:1},
   {name:'Predictor C', imp:0.10,  perf:70, nec:'yes', suf:'no',  bnn:13, cor:1},
   {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnn:4,  cor:2},
-  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnn:15, cor:1},
+  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnn:0,  cor:1},
 ];
 
 function setStatus(msg, state) {
@@ -330,7 +328,11 @@ function ynClick(btn) {
   btn.classList.add(btn.dataset.val === 'yes' ? 'active-yes' : 'active-no');
   wrap.dataset.value = btn.dataset.val;
   if (wrap.classList.contains('p-nec')) {
-    syncNecBN(btn.closest('tr'));
+    var tr2 = btn.closest('tr');
+    if (btn.dataset.val === 'no') {
+      tr2.querySelector('.p-bnn').value = '';
+    }
+    syncNecBN(tr2);
   }
   if (wrap.classList.contains('p-suf')) {
     syncSufImp(btn.closest('tr'));
@@ -432,12 +434,25 @@ function syncTitle() {
 function loadExample() {
   document.getElementById('pred-body').innerHTML = '';
   rowCount = 0;
+  document.getElementById('g-n').value = 204;
+  document.getElementById('g-target').value = 90;
+  document.getElementById('g-ymin').value = 0;
+  document.getElementById('g-ymax').value = 100;
+  document.getElementById('g-xmax').value = 0.6;
+  document.getElementById('g-ystep').value = 25;
+  document.getElementById('g-smin').value = 0.5;
+  document.getElementById('g-smax').value = 50;
+  document.getElementById('g-fname').value = 'bipma';
+  document.getElementById('g-pw').value = 5;
+  document.getElementById('g-ph').value = 5;
+  document.getElementById('g-dpi').value = 300;
   EXAMPLE.forEach(function(d){ addRow(d); });
   document.querySelectorAll('#pred-body tr').forEach(syncNecBN);
   document.querySelectorAll('#pred-body tr').forEach(syncSufImp);
   document.querySelectorAll('#pred-body tr').forEach(syncPerfField);
   titleManual = false;
   syncTitle();
+  buildRScript();
 }
 
 function getRows() {
