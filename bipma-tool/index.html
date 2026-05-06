@@ -185,20 +185,19 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
           <table class="pred-table">
             <colgroup>
               <col style="width:24px">
-              <col style="width:140px">
+              <col style="width:150px">
               <col style="width:62px">
-              <col style="width:56px">
-              <col style="width:52px">
+              <col style="width:60px">
+              <col style="width:55px">
               <col style="width:62px">
               <col style="width:58px">
               <col style="width:62px">
-              <col style="width:54px">
               <col style="width:24px">
             </colgroup>
             <thead>
               <tr>
-                <th colspan="10" style="padding:0 0 4px 0;border-bottom:none;background:transparent">
-                  <span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:0">BN% / BN n = percentage / number of single bottleneck cases</span>
+                <th colspan="9" style="padding:0 0 4px 0;border-bottom:none;background:transparent">
+                  <span style="font-size:10px;color:var(--muted);font-weight:400;letter-spacing:0">BN = number of single bottleneck cases (percentage is computed from BN and n)</span>
                   <span id="bn-warn" style="font-size:10px;font-weight:600;letter-spacing:0;display:none"></span>
                 </th>
               </tr>
@@ -209,8 +208,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
                 <th title="Performance 0–100">Perf.</th>
                 <th>Nec.</th>
                 <th title="NCA ceiling corner: 1=upper-left (default), 2=upper-right, 3=lower-right, 4=lower-left">Corner</th>
-                <th title="Single bottleneck cases %">BN%</th>
-                <th title="Single bottleneck cases n">BN n</th>
+                <th title="Single bottleneck cases n">BN</th>
                 <th></th>
               </tr>
             </thead>
@@ -266,11 +264,11 @@ var webRFailed = false;
 var rowCount = 0;
 
 var EXAMPLE = [
-  {name:'Predictor A', imp:0.18,  perf:30, nec:'no',  suf:'no',  bnp:9.804,  bnn:20, cor:1},
-  {name:'Predictor B', imp:0.17,  perf:60, nec:'yes', suf:'yes', bnp:13.725, bnn:28, cor:1},
-  {name:'Predictor C', imp:0.10,  perf:70, nec:'yes', suf:'no',  bnp:6.373,  bnn:13, cor:1},
-  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnp:1.961,  bnn:4,  cor:2},
-  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnp:7.353,  bnn:15, cor:1},
+  {name:'Predictor A', imp:0.18,  perf:30, nec:'no',  suf:'no',  bnn:20, cor:1},
+  {name:'Predictor B', imp:0.17,  perf:60, nec:'yes', suf:'yes', bnn:28, cor:1},
+  {name:'Predictor C', imp:0.10,  perf:70, nec:'yes', suf:'no',  bnn:13, cor:1},
+  {name:'Predictor D', imp:-0.4,  perf:30, nec:'yes', suf:'yes', bnn:4,  cor:2},
+  {name:'Predictor E', imp:0.5,   perf:50, nec:'no',  suf:'yes', bnn:15, cor:1},
 ];
 
 function setStatus(msg, state) {
@@ -315,15 +313,11 @@ function syncSufImp(tr) {
 
 function syncNecBN(tr) {
   var nec = tr.querySelector('.p-nec').dataset.value;
-  var bnp = tr.querySelector('.p-bnp');
   var bnn = tr.querySelector('.p-bnn');
   if (nec === 'no') {
-    bnp.value = '';
     bnn.value = '';
-    bnp.disabled = true;
     bnn.disabled = true;
   } else {
-    bnp.disabled = false;
     bnn.disabled = false;
   }
 }
@@ -371,8 +365,7 @@ function makeRow(d) {
       '<button type="button" class="'+(nv==='no'?'active-no':'')+'" data-val="no" onclick="ynClick(this)">no</button>'+
     '</div></td>'+
     '<td><select class="p-cor">'+cors+'</select></td>'+
-    '<td><input type="number" class="p-bnp" value="'+(d&&d.bnp!=null?d.bnp:0)+'" step="0.01" min="0" oninput="syncBnFromN(this.closest(&apos;tr&apos;),&apos;p-bnp&apos;);buildRScript()"></td>'+
-    '<td><input type="number" class="p-bnn" value="'+(d&&d.bnn!=null?d.bnn:0)+'" step="1" min="0" oninput="syncBnFromN(this.closest(&apos;tr&apos;),&apos;p-bnn&apos;);buildRScript()"></td>'+
+    '<td><input type="number" class="p-bnn" value="'+(d&&d.bnn!=null?d.bnn:0)+'" step="1" min="0" oninput="syncBnFromN(this.closest(&apos;tr&apos;));buildRScript()"></td>'+
     '<td><button class="del-btn" onclick="delRow('+id+')">&#215;</button></td>';
   return tr;
 }
@@ -385,16 +378,13 @@ function validateBN() {
   document.querySelectorAll('#pred-body tr').forEach(function(tr) {
     var nec = tr.querySelector('.p-nec').dataset.value;
     if (nec === 'no') return;
-    var bnp = parseFloat(tr.querySelector('.p-bnp').value) || 0;
     var bnn = parseInt(tr.querySelector('.p-bnn').value)   || 0;
     var name = tr.querySelector('.p-name').value || 'row';
-    if (bnp > 100)  errors.push(name + ': BN% > 100');
-    if (bnn > N)    errors.push(name + ': BN n > N');
-    if (bnp < 0)    errors.push(name + ': BN% < 0');
-    if (bnn < 0)    errors.push(name + ': BN n < 0');
+    if (bnn > N)    errors.push(name + ': BN > N');
+    if (bnn < 0)    errors.push(name + ': BN < 0');
     totalBnn += bnn;
   });
-  if (totalBnn > N) errors.push('Total BN n (' + totalBnn + ') exceeds N (' + N + ')');
+  if (totalBnn > N) errors.push('Total BN (' + totalBnn + ') exceeds N (' + N + ')');
   if (errors.length) {
     warn.textContent = ' ⚠ ' + errors.join('; ');
     warn.style.color = 'var(--danger)';
@@ -406,16 +396,9 @@ function validateBN() {
   }
 }
 
-function syncBnFromN(tr, changedClass) {
+function syncBnFromN(tr) {
   var N = parseInt(document.getElementById('g-n').value) || 0;
   if (!N) return;
-  if (changedClass === 'p-bnn') {
-    var bnn = parseFloat(tr.querySelector('.p-bnn').value) || 0;
-    tr.querySelector('.p-bnp').value = (bnn / N * 100).toFixed(4);
-  } else {
-    var bnp = parseFloat(tr.querySelector('.p-bnp').value) || 0;
-    tr.querySelector('.p-bnn').value = Math.round(bnp / 100 * N);
-  }
   validateBN();
 }
 
@@ -458,15 +441,18 @@ function loadExample() {
 }
 
 function getRows() {
+  var N = parseInt(document.getElementById('g-n').value) || 0;
   return Array.from(document.querySelectorAll('#pred-body tr')).map(function(tr){
+    var bnn = parseInt(tr.querySelector('.p-bnn').value) || 0;
+    var bnp = N > 0 ? bnn / N * 100 : 0;
     return {
       name: tr.querySelector('.p-name').value.trim() || 'Predictor',
       imp:  parseFloat(tr.querySelector('.p-imp').value)  || 0,
       perf: parseFloat(tr.querySelector('.p-perf').value) || 0,
       nec:  tr.querySelector('.p-nec').dataset.value || 'no',
       suf:  tr.querySelector('.p-suf').dataset.value || 'yes',
-      bnp:  parseFloat(tr.querySelector('.p-bnp').value) || 0,
-      bnn:  parseInt(tr.querySelector('.p-bnn').value)   || 0,
+      bnp:  bnp,
+      bnn:  bnn,
       cor:  parseInt(tr.querySelector('.p-cor').value)   || 1,
     };
   });
@@ -900,7 +886,7 @@ initWebR();
 
 document.getElementById('g-n').addEventListener('input', function() {
   document.querySelectorAll('#pred-body tr').forEach(function(tr) {
-    syncBnFromN(tr, 'p-bnn');
+    syncBnFromN(tr);
   });
   validateBN();
   syncTitle();
