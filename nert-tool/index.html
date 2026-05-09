@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NERT Tool</title>
+<style>
+:root {
+  --bg:#faf9f7;--surface:#fff;--border:#e2e0da;--border-light:#eeece6;
+  --text:#1a1a18;--muted:#6b6b68;--accent:#2a4d8f;--danger:#c0392b;
+  --mono:'Courier New',monospace;--ui:system-ui,-apple-system,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--text);font-size:14px}
+
+/* Layout */
+.app{display:grid;grid-template-columns:var(--sw,660px) 1fr;grid-template-rows:auto 1fr;height:100vh;height:100dvh;overflow:hidden}
+.topbar{grid-column:1/-1;background:var(--text);color:#f5f4f0;padding:14px 24px;display:flex;align-items:baseline;gap:16px;flex-shrink:0}
+.mob-tabs{display:none}
+.topbar h1{font-size:16px;font-weight:600}
+.topbar span{font-size:12px;color:#aaa;font-family:var(--mono)}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-height:0;position:relative}
+#drag-handle{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:10}
+#drag-handle::after{content:'';display:block;width:2px;height:40px;background:var(--border);border-radius:2px;margin:auto;transition:background .15s}
+#drag-handle:hover::after,#drag-handle.dragging::after{background:var(--accent)}
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:auto;min-height:0}
+.main{overflow-y:auto;overflow-x:auto;display:flex;flex-direction:column;padding:24px;min-height:0}
+@media screen and (max-width:768px){
+  html,body{overflow:hidden}
+  .app{display:flex;flex-direction:column;height:100vh;height:100dvh;width:100%;grid-template-columns:none}
+  .topbar{position:sticky;top:0;z-index:100;padding:10px 14px;flex-shrink:0}
+  .topbar span{display:none}
+  .mob-tabs{display:flex;flex-shrink:0;background:var(--surface);border-bottom:2px solid var(--border);position:sticky;top:44px;z-index:99}
+  .mob-tabs button{flex:1;padding:10px 0;font-size:13px;font-weight:600;border:none;background:none;color:var(--muted);cursor:pointer;font-family:inherit;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .15s,border-color .15s}
+  .mob-tabs button.active{color:var(--accent);border-bottom-color:var(--accent)}
+  #drag-handle{display:none}
+  .sidebar{display:none;flex:1;width:100%;min-width:0;border-right:none;overflow-y:auto;overflow-x:hidden;min-height:0}
+  .sidebar.mob-visible{display:flex;flex-direction:column}
+  .main{display:none;flex:1;width:100%;min-width:0;padding:12px;overflow-y:auto;overflow-x:auto;min-height:0}
+  .main.mob-visible{display:flex;flex-direction:column}
+  .pred-wrap{overflow-x:auto;max-width:100%}
+  .pred-table{min-width:0;font-size:11px;table-layout:fixed;width:100%}
+  .pred-table th{font-size:9px;padding:3px 2px;white-space:normal}
+  .pred-table td{padding:2px 2px}
+  .pred-table td input{font-size:11px;padding:3px 2px}
+  .s-section{padding:10px 10px}
+  .btn-group{padding:10px 10px;gap:6px}
+  .btn{font-size:12px;padding:7px 10px}
+  .action-row{gap:6px}
+  .field input,.field select{font-size:16px}
+  .sidebar-scroll{overflow-x:auto}
+}
+
+/* Sidebar sections */
+.s-section{border-bottom:1px solid var(--border-light);padding:16px 20px}
+.s-section h3{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+
+/* Form */
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:5px;background:var(--bg);font-size:13px;color:var(--text);outline:none;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);background:#fff}
+.field textarea{resize:vertical;min-height:52px;font-size:12px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* Toggle (table type) */
+.toggle-group{display:flex;border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-bottom:10px}
+.toggle-group button{flex:1;padding:7px 8px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:#f5f4f0;color:var(--muted);font-family:inherit;transition:background .12s,color .12s}
+.toggle-group button.active{background:var(--accent);color:#fff}
+.toggle-group button:not(:last-child){border-right:1px solid var(--border)}
+
+/* Predictor table */
+.pred-wrap{overflow-x:visible}
+.pred-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.pred-table th{font-size:10px;font-weight:600;color:var(--muted);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border);white-space:nowrap;background:#f5f4f0}
+.pred-table td{padding:3px 4px;border-bottom:1px solid var(--border-light);vertical-align:middle}
+.pred-table td input{width:100%;padding:4px 5px;border:1px solid var(--border-light);border-radius:4px;background:#fff;font-size:12px;color:#1a1a18;font-family:inherit;outline:none}
+.pred-table td input:focus{border-color:var(--accent)}
+.del-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:0 2px}
+.del-btn:hover{color:var(--danger)}
+.row-num{font-size:10px;color:var(--muted);text-align:center;min-width:16px}
+
+/* Buttons */
+.btn-group{display:flex;gap:8px;padding:14px 20px;flex-wrap:wrap;flex-shrink:0}
+.btn{padding:8px 16px;border-radius:5px;cursor:pointer;font-size:13px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:all .15s;font-family:inherit}
+.btn:hover{background:var(--bg);border-color:#bbb}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#1e3a6e}
+.btn.ghost{border-color:transparent;color:var(--muted);font-size:12px;padding:6px 12px}
+.btn.ghost:hover{background:var(--bg);color:var(--text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* Status */
+#status-bar{display:none;align-items:center;gap:10px;padding:10px 14px;background:#f0f4ea;border:1px solid #c5d9a8;border-radius:6px;margin-bottom:14px;font-size:12px;color:#3a5a1a;line-height:1.5}
+#status-bar.error{background:#fdf0f0;border-color:#f0b8b8;color:#8b1a1a}
+.spinner{width:16px;height:16px;border:2px solid #c5d9a8;border-top-color:#3a5a1a;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner.done{animation:none;border-color:#3a5a1a;border-top-color:#3a5a1a;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%233a5a1a' d='M13.5 3.5L6 11 2.5 7.5 1 9l5 5 9-9z'/%3E%3C/svg%3E") center/12px no-repeat}
+
+.action-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+
+/* Preview */
+#preview-wrap{display:none;margin-bottom:18px;overflow:visible}
+#preview-spinner{display:none;align-items:center;gap:10px;padding:30px 0;font-size:13px;color:var(--muted)}
+#preview-img{display:none;max-width:100%;border:1px solid var(--border);border-radius:6px;background:#fff}
+#offline-msg{display:none;padding:20px;background:#fdf0f0;border:1px solid #f0b8b8;border-radius:6px;font-size:13px;color:#8b1a1a;line-height:1.7}
+
+/* Empty state */
+.empty-state{display:flex;align-items:center;justify-content:center;height:200px;color:var(--muted);font-size:13px}
+#r-code{display:none}
+
+/* Toast */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999}
+#toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <h1>NERT Tool</h1>
+    <span>NCA-Extended Regression Table</span>
+    <span style="margin-left:auto;font-size:11px;opacity:.5">NCA + regression · multimethod</span>
+  </header>
+
+  <nav class="mob-tabs">
+    <button class="active" onclick="mobTab(this,'sidebar')">&#9998; Input</button>
+    <button onclick="mobTab(this,'main')">&#128202; Output</button>
+  </nav>
+
+  <aside class="sidebar mob-visible">
+    <div id="drag-handle" title="Drag to resize"></div>
+    <div class="sidebar-scroll">
+
+      <div class="s-section">
+        <h3>Instruction</h3>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and regression (or SEM) analyses as input to the tool. The tool produces the NERT table. An internet connection is required for downloading as PNG or PDF. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of the NERT tool are described in <a href="https://jandul.github.io/nca-book/#ncasem" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4 &ldquo;NCA with SEM&rdquo;</a> and <a href="https://jandul.github.io/nca-book/#appendixh" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+      </div>
+
+      <div class="s-section">
+        <h3>Table type</h3>
+        <div class="toggle-group">
+          <button id="tab-direct" class="active" onclick="setMode('direct')">Direct only</button>
+          <button id="tab-total" onclick="setMode('total')">Direct + Total (SEM)</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+          <p style="font-size:10px;color:var(--muted);line-height:1.5;margin:0" id="mode-desc-left">For standard regression or SEM with direct effects only.</p>
+          <p style="font-size:10px;color:var(--muted);line-height:1.5;margin:0" id="mode-desc-right"></p>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Table title</h3>
+        <div class="field">
+          <input type="text" id="g-caption" oninput="buildRScript()" value="NERT tool for combining NCA results with regression-based results in a causal-pluralism multimethod study. NERT = NCA-Extended Regression Table.">
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Variables / predictors / conditions</h3>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.5">Enter values as character strings (e.g. <code>0.23</code>, <code>&lt; 0.001</code>). Leave a cell blank if not applicable.</p>
+        <div class="pred-wrap">
+          <table class="pred-table" id="pred-table">
+            <thead id="pred-head"></thead>
+            <tbody id="pred-body"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:8px">
+          <button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="addRow()">+ Row</button>
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Table footnote</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Model fit: R²</label>
+            <input type="number" id="g-r2" value="0.28" step="0.01" min="0" max="1">
+          </div>
+          <div class="field">
+            <label>Model fit: R²(adj.)</label>
+            <input type="text" id="g-r2adj" value="" placeholder="blank if N/A">
+          </div>
+        </div>
+        <div class="field">
+          <label>Note</label>
+          <input type="text" id="g-note" value="n = 132. NCA ceiling line: CR-FDH.">
+        </div>
+      </div>
+
+      <div class="s-section">
+        <h3>Output settings</h3>
+        <div class="field-row">
+          <div class="field"><label>Filename</label><input type="text" id="g-fname" value="nert"></div>
+          <div class="field"><label>PDF width (in)</label><input type="number" id="g-pw" value="7" step="0.5" min="1"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>PDF height (in)</label><input type="number" id="g-ph" value="4" step="0.5" min="1"></div>
+          <div class="field"><label>PNG dpi</label><input type="number" id="g-dpi" value="300" step="100" min="72" max="600"></div>
+        </div>
+      </div>
+
+    </div><!-- /sidebar-scroll -->
+
+    <div class="btn-group">
+      <button class="btn primary" onclick="buildR()">&#9654; Generate</button>
+      <button class="btn ghost" onclick="loadExample();buildR()">Reset demo data</button>
+    </div>
+    <div style="padding:0 20px 12px 20px;font-size:10px;color:var(--muted);line-height:1.5">Demo data from: Schubring, S., &amp; Richter, N. (2023). Extended TAM (Version V4). <em>Mendeley Data</em>.</div>
+  </aside>
+
+  <main class="main">
+    <div id="status-bar"><div class="spinner" id="sp"></div><span id="status-msg"></span></div>
+
+    <div class="action-row">
+      <button class="btn" onclick="copyR()">Copy .R</button>
+      <button class="btn" onclick="downloadR()">Download .R</button>
+      <button class="btn" onclick="downloadHTML()">Download .html</button>
+      <button class="btn" onclick="downloadPNG()">Download .png</button>
+      <button class="btn" onclick="downloadPDF()">Download .pdf</button>
+    </div>
+
+    <div id="download-preview" style="display:none;margin-bottom:14px"></div>
+    <div id="preview-wrap">
+      <div id="preview-spinner"><div class="spinner"></div> <span id="preview-msg">Running R…</span></div>
+      <img id="preview-img" alt="NERT preview">
+      <div id="offline-msg">No internet connection. Use the R script in RStudio to produce the table.</div>
+    </div>
+    <div class="empty-state" id="empty-state">Fill in the form and click Generate</div>
+    <pre id="r-code"></pre>
+  </main>
+</div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+var webR = null;
+var webRReady = false;
+var webRRendering = false;
+var buildRTimer = null;
+var webRFailed = false;
+var rowCount = 0;
+var currentMode = 'direct'; // 'direct' | 'total'
+var currentRowLabel = 'Variable/Predictor/Condition';
+var currentCoefLabel = 'Regression coefficient';
+var currentDirLabel = 'Direct';
+var currentTotLabel = 'Total';
+
+/* ─── Example data ─── */
+var EXAMPLE_DIRECT = [
+  {name:'Perceived usefulness',     reg:'0.227', reg_p:'0.026',    nec:'0.12', nec_p:'0.002'},
+  {name:'Compatibility',            reg:'0.045', reg_p:'0.686',    nec:'0.08', nec_p:'0.010'},
+  {name:'Perceived ease of use',    reg:'0.088', reg_p:'0.253',    nec:'0.15', nec_p:'0.007'},
+  {name:'Emotional value',          reg:'0.515', reg_p:'< 0.001',  nec:'0.21', nec_p:'< 0.001'},
+];
+var EXAMPLE_TOTAL = [
+  {name:'Perceived usefulness',  dir:'0.050', dir_p:'0.608',    tot:'0.149', tot_p:'0.166',    nec:'0.24', nec_p:'0.001'},
+  {name:'Compatibility',         dir:'0.107', dir_p:'0.393',    tot:'0.127', tot_p:'0.304',    nec:'0.21', nec_p:'< 0.001'},
+  {name:'Perceived ease of use', dir:'0.010', dir_p:'0.911',    tot:'0.049', tot_p:'0.520',    nec:'0.24', nec_p:'0.015'},
+  {name:'Emotional value',       dir:'0.137', dir_p:'0.139',    tot:'0.362', tot_p:'< 0.001',  nec:'0.33', nec_p:'< 0.001'},
+  {name:'Adoption intention',    dir:'0.437', dir_p:'< 0.001',  tot:'0.437', tot_p:'< 0.001',  nec:'0.29', nec_p:'< 0.001'},
+];
+
+/* ─── Mode switching ─── */
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tab-direct').classList.toggle('active', mode === 'direct');
+  document.getElementById('tab-total').classList.toggle('active', mode === 'total');
+  if (mode === 'direct') {
+    document.getElementById('mode-desc-left').innerHTML = 'For standard regression or SEM with direct effects only.';
+    document.getElementById('mode-desc-right').innerHTML = '';
+  } else {
+    document.getElementById('mode-desc-left').innerHTML = '';
+    document.getElementById('mode-desc-right').innerHTML = 'For SEM with direct and total effects.';
+  }
+  document.getElementById('g-caption').value = mode === 'direct'
+    ? 'Summary of the SEM and NCA results for outcome Adoption intention.'
+    : 'Summary of the SEM and NCA results for outcome Technology use.';
+  renderTableHead();
+  clearBody();
+  loadExampleData(mode === 'direct' ? EXAMPLE_DIRECT : EXAMPLE_TOTAL);
+  buildRScript();
+}
+
+/* ─── Table header ─── */
+function renderTableHead() {
+  var thead = document.getElementById('pred-head');
+  if (currentMode === 'direct') {
+    thead.innerHTML =
+      '<tr>' +
+        '<th style="width:20px">#</th>' +
+        '<th style="width:160px;padding:2px 4px"><input type="text" id="row-label-input" value="' + currentRowLabel + '" ' +
+        'oninput="currentRowLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
+        '<th style="width:72px;padding:2px 4px"><input type="text" id="coef-label-input" value="' + currentCoefLabel + '" ' +
+        'oninput="currentCoefLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
+        '<th style="width:72px"><em>p</em>-value</th>' +
+        '<th style="width:72px">NEC effect size</th>' +
+        '<th style="width:72px"><em>p</em>-value</th>' +
+        '<th style="width:20px"></th>' +
+      '</tr>';
+  } else {
+    thead.innerHTML =
+      '<tr>' +
+        '<th style="width:20px">#</th>' +
+        '<th style="width:150px;padding:2px 4px"><input type="text" id="row-label-input" value="' + currentRowLabel + '" ' +
+        'oninput="currentRowLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
+        '<th style="width:62px;padding:2px 4px"><input type="text" id="dir-label-input" value="' + currentDirLabel + '" ' +
+        'oninput="currentDirLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
+        '<th style="width:56px"><em>p</em></th>' +
+        '<th style="width:62px;padding:2px 4px"><input type="text" id="tot-label-input" value="' + currentTotLabel + '" ' +
+        'oninput="currentTotLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
+        '<th style="width:56px"><em>p</em></th>' +
+        '<th style="width:60px">NEC effect</th>' +
+        '<th style="width:56px"><em>p</em></th>' +
+        '<th style="width:20px"></th>' +
+      '</tr>';
+  }
+}
+
+/* ─── Row creation ─── */
+function makeRow(d) {
+  rowCount++;
+  var id = rowCount;
+  var tr = document.createElement('tr');
+  tr.id = 'row-' + id;
+
+  if (currentMode === 'direct') {
+    tr.innerHTML =
+      '<td class="row-num">' + id + '</td>' +
+      '<td><input type="text" class="p-name" value="' + esc(d && d.name || 'Variable ' + id) + '"></td>' +
+      '<td><input type="text" class="p-reg"  value="' + esc(d && d.reg  || '') + '" placeholder="0.00"></td>' +
+      '<td><input type="text" class="p-regp" value="' + esc(d && d.reg_p || '') + '" placeholder="0.000"></td>' +
+      '<td><input type="text" class="p-nec"  value="' + esc(d && d.nec  || '') + '" placeholder="0.00"></td>' +
+      '<td><input type="text" class="p-necp" value="' + esc(d && d.nec_p || '') + '" placeholder="0.000"></td>' +
+      '<td><button class="del-btn" onclick="delRow(' + id + ')">&#215;</button></td>';
+  } else {
+    tr.innerHTML =
+      '<td class="row-num">' + id + '</td>' +
+      '<td><input type="text" class="p-name" value="' + esc(d && d.name || 'Variable ' + id) + '"></td>' +
+      '<td><input type="text" class="p-dir"  value="' + esc(d && d.dir  || '') + '" placeholder="0.00"></td>' +
+      '<td><input type="text" class="p-dirp" value="' + esc(d && d.dir_p || '') + '" placeholder="0.000"></td>' +
+      '<td><input type="text" class="p-tot"  value="' + esc(d && d.tot  || '') + '" placeholder="0.00"></td>' +
+      '<td><input type="text" class="p-totp" value="' + esc(d && d.tot_p || '') + '" placeholder="0.000"></td>' +
+      '<td><input type="text" class="p-nec"  value="' + esc(d && d.nec  || '') + '" placeholder="0.00"></td>' +
+      '<td><input type="text" class="p-necp" value="' + esc(d && d.nec_p || '') + '" placeholder="0.000"></td>' +
+      '<td><button class="del-btn" onclick="delRow(' + id + ')">&#215;</button></td>';
+  }
+  return tr;
+}
+
+function esc(s) { return String(s).replace(/"/g, '&quot;'); }
+function addRow(d) { document.getElementById('pred-body').appendChild(makeRow(d)); }
+function delRow(id) { var el = document.getElementById('row-' + id); if (el) el.remove(); }
+function clearBody() { document.getElementById('pred-body').innerHTML = ''; rowCount = 0; }
+
+function loadExampleData(data) {
+  clearBody();
+  data.forEach(function(d){ addRow(d); });
+}
+
+function loadExample() {
+  document.getElementById('g-r2').value    = currentMode === 'direct' ? '0.539' : '0.539';
+  document.getElementById('g-r2adj').value = currentMode === 'direct' ? '0.528' : '0.528';
+  document.getElementById('g-note').value  = 'n = 174. NCA ceiling line: CE-FDH.';
+  document.getElementById('g-caption').value = currentMode === 'direct'
+    ? 'Summary of the SEM and NCA results for outcome Adoption intention.'
+    : 'Summary of the SEM and NCA results for outcome Technology use.';
+  loadExampleData(currentMode === 'direct' ? EXAMPLE_DIRECT : EXAMPLE_TOTAL);
+}
+
+/* ─── Read rows ─── */
+function getRows() {
+  return Array.from(document.querySelectorAll('#pred-body tr')).map(function(tr) {
+    if (currentMode === 'direct') {
+      return {
+        name:  tr.querySelector('.p-name').value.trim(),
+        reg:   tr.querySelector('.p-reg').value.trim(),
+        reg_p: tr.querySelector('.p-regp').value.trim(),
+        nec:   tr.querySelector('.p-nec').value.trim(),
+        nec_p: tr.querySelector('.p-necp').value.trim(),
+      };
+    } else {
+      return {
+        name:  tr.querySelector('.p-name').value.trim(),
+        dir:   tr.querySelector('.p-dir').value.trim(),
+        dir_p: tr.querySelector('.p-dirp').value.trim(),
+        tot:   tr.querySelector('.p-tot').value.trim(),
+        tot_p: tr.querySelector('.p-totp').value.trim(),
+        nec:   tr.querySelector('.p-nec').value.trim(),
+        nec_p: tr.querySelector('.p-necp').value.trim(),
+      };
+    }
+  });
+}
+
+function getG() {
+  return {
+    caption:   document.getElementById('g-caption').value.trim(),
+    note:      document.getElementById('g-note').value.trim(),
+    rowgroup:  currentRowLabel,
+    fitlabel:  currentMode === 'direct' ? 'Model fit (regression)' : 'Model fit (SEM)',
+    r2:        document.getElementById('g-r2').value.trim(),
+    r2adj:     document.getElementById('g-r2adj').value.trim(),
+    fname:     document.getElementById('g-fname').value.trim() || 'nert',
+    pw:        parseFloat(document.getElementById('g-pw').value) || 7,
+    ph:        parseFloat(document.getElementById('g-ph').value) || 4,
+    dpi:       parseFloat(document.getElementById('g-dpi').value) || 300,
+  };
+}
+
+/* ─── R script generation ─── */
+function rStr(s) { return '"' + s.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'; }
+function rVec(arr) { return 'c(' + arr.map(rStr).join(', ') + ')'; }
+
+function makeScript(rows, G, outPath, fmt) {
+  var n_vars = rows.length;
+
+  // row labels
+  var r2line = 'sprintf("$R^2$ = %.2f", r2)';
+  var r2adj_code = G.r2adj !== '' ? 'sprintf("$R^2$(adj.) = %.2f", r2_adj)' : null;
+
+  // R vectors
+  var varsVec = rVec(rows.map(function(r){ return r.name; }));
+
+  var saveCmd;
+  if (fmt === 'preview') {
+    saveCmd = 'kable_save(kbl_obj, file="' + outPath + '", vwidth=900, zoom=2)';
+  } else if (fmt === 'png') {
+    saveCmd = outPath
+      ? 'kable_save(kbl_obj, file="' + outPath + '", vwidth=900, zoom=2)'
+      : 'kable_save(kbl_obj, file="' + G.fname + '.png", vwidth=900, zoom=2)';
+  } else {
+    saveCmd = outPath
+      ? 'kable_save(kbl_obj, file="' + outPath + '", vwidth=900)'
+      : 'kable_save(kbl_obj, file="' + G.fname + '.pdf", vwidth=900)';
+  }
+
+  var script = '## =============================================================\n' +
+'##  NERT Table Builder - generated by NERT Tool\n' +
+'##  NCA-Extended Regression Table (NCA + regression/SEM combined)\n' +
+'## =============================================================\n' +
+'\n' +
+'library(knitr)\n' +
+'library(kableExtra)\n' +
+'\n' +
+'# ── User-editable inputs ──────────────────────────────────────────────\n' +
+'\n' +
+'# Variable names\n' +
+'vars <- ' + varsVec + '\n' +
+'n_vars <- length(vars)\n' +
+'\n';
+
+  if (currentMode === 'direct') {
+    script +=
+'# Regression coefficients and p-values\n' +
+'reg   <- ' + rVec(rows.map(function(r){ return r.reg; })) + '\n' +
+'reg_p <- ' + rVec(rows.map(function(r){ return r.reg_p; })) + '\n' +
+'\n' +
+'# Necessity effect sizes and p-values\n' +
+'nec   <- ' + rVec(rows.map(function(r){ return r.nec; })) + '\n' +
+'nec_p <- ' + rVec(rows.map(function(r){ return r.nec_p; })) + '\n' +
+'\n';
+  } else {
+    script +=
+'# Direct path coefficients and p-values\n' +
+'direct_coef <- ' + rVec(rows.map(function(r){ return r.dir; })) + '\n' +
+'direct_p    <- ' + rVec(rows.map(function(r){ return r.dir_p; })) + '\n' +
+'\n' +
+'# Total path coefficients and p-values\n' +
+'total_coef  <- ' + rVec(rows.map(function(r){ return r.tot; })) + '\n' +
+'total_p     <- ' + rVec(rows.map(function(r){ return r.tot_p; })) + '\n' +
+'\n' +
+'# Necessity effect sizes and p-values\n' +
+'nec_es <- ' + rVec(rows.map(function(r){ return r.nec; })) + '\n' +
+'nec_p  <- ' + rVec(rows.map(function(r){ return r.nec_p; })) + '\n' +
+'\n';
+  }
+
+  script +=
+'# Model fit\n' +
+'r2     <- ' + (G.r2 !== '' ? G.r2 : 'NA') + '\n' +
+'r2_adj <- ' + (G.r2adj !== '' ? G.r2adj : 'NULL') + '\n' +
+'\n' +
+'# Caption and footnote\n' +
+'caption   <- ' + rStr(G.caption) + '\n' +
+'note_text <- ' + rStr(G.note) + '\n' +
+'\n' +
+'# ── Build table ───────────────────────────────────────────────────────\n' +
+'\n' +
+'# Row labels\n' +
+'row_labels <- c(vars, sprintf("$R^2$ = %.2f", r2))\n' +
+'if (!is.null(r2_adj) && !is.na(r2_adj)) {\n' +
+'  row_labels <- c(row_labels, sprintf("$R^2$(adj.) = %.2f", r2_adj))\n' +
+'}\n' +
+'\n' +
+'pad_to <- function(x, n) c(x, rep("", max(0, n - length(x))))\n' +
+'n_rows <- length(row_labels)\n' +
+'\n';
+
+  if (currentMode === 'direct') {
+    script +=
+'nert <- data.frame(\n' +
+'  Row         = row_labels,\n' +
+'  reg_coef    = pad_to(reg,   n_rows),\n' +
+'  reg_p_value = pad_to(reg_p, n_rows),\n' +
+'  nec_es      = pad_to(nec,   n_rows),\n' +
+'  nec_p_value = pad_to(nec_p, n_rows),\n' +
+'  check.names = FALSE\n' +
+')\n' +
+'\n' +
+'kbl_obj <- kbl(\n' +
+'  nert,\n' +
+'  format    = "latex",\n' +
+'  escape    = FALSE,\n' +
+'  booktabs  = TRUE,\n' +
+'  linesep   = "",\n' +
+'  longtable = FALSE,\n' +
+'  caption   = caption,\n' +
+'  col.names = c("",\n' +
+('                "' + currentCoefLabel + '",\n') +
+'                "\\\\emph{p}-value",\n' +
+'                linebreak("Necessity\\neffect size", align = "c"),\n' +
+'                "\\\\emph{p}-value"),\n' +
+'  align = c("l", "c", "c", "c", "c")\n' +
+') %>%\n' +
+'  kable_styling(full_width = FALSE,\n' +
+'                latex_options = c("HOLD_position", "scale_down")) %>%\n' +
+'  column_spec(1, width = "9em") %>%\n' +
+'  column_spec(2, width = "8em") %>%\n' +
+'  column_spec(3, width = "6em") %>%\n' +
+'  column_spec(4, width = "6em", border_left = TRUE) %>%\n' +
+'  column_spec(5, width = "6em") %>%\n' +
+'  pack_rows(' + rStr(G.rowgroup) + ', 1, n_vars) %>%\n' +
+'  pack_rows(' + rStr(G.fitlabel) + ', n_vars + 1, n_rows, hline_before = TRUE) %>%\n' +
+'  footnote(general = note_text, escape = FALSE)\n';
+  } else {
+    script +=
+'nert <- data.frame(\n' +
+'  Row         = row_labels,\n' +
+'  direct_coef = pad_to(direct_coef, n_rows),\n' +
+'  direct_p    = pad_to(direct_p,    n_rows),\n' +
+'  total_coef  = pad_to(total_coef,  n_rows),\n' +
+'  total_p     = pad_to(total_p,     n_rows),\n' +
+'  nec_es      = pad_to(nec_es,      n_rows),\n' +
+'  nec_p_v     = pad_to(nec_p,       n_rows),\n' +
+'  check.names = FALSE\n' +
+')\n' +
+'\n' +
+'kbl_obj <- kbl(\n' +
+'  nert,\n' +
+'  format    = "latex",\n' +
+'  escape    = FALSE,\n' +
+'  booktabs  = TRUE,\n' +
+'  linesep   = "",\n' +
+'  longtable = FALSE,\n' +
+'  caption   = caption,\n' +
+'  col.names = c(" ",\n' +
+('                linebreak("' + currentDirLabel + '\\npath coefficient", align = "c"),\n') +
+'                "\\\\emph{p}-value",\n' +
+('                linebreak("' + currentTotLabel + '\\npath coefficient", align = "c"),\n') +
+'                "\\\\emph{p}-value",\n' +
+'                linebreak("Necessity\\neffect size", align = "c"),\n' +
+'                "\\\\emph{p}-value"),\n' +
+'  align = c("l", "c", "c", "c", "c", "c", "c")\n' +
+') %>%\n' +
+'  kable_styling(full_width = FALSE,\n' +
+'                latex_options = c("HOLD_position", "scale_down")) %>%\n' +
+'  column_spec(1, width = "9em") %>%\n' +
+'  column_spec(2, width = "5em") %>%\n' +
+'  column_spec(3, width = "4em") %>%\n' +
+'  column_spec(4, width = "5em") %>%\n' +
+'  column_spec(5, width = "4em") %>%\n' +
+'  column_spec(6, width = "4em", border_left = TRUE) %>%\n' +
+'  column_spec(7, width = "4em") %>%\n' +
+'  pack_rows(' + rStr(G.rowgroup) + ', 1, n_vars) %>%\n' +
+'  pack_rows(' + rStr(G.fitlabel) + ', n_vars + 1, n_rows, hline_before = TRUE) %>%\n' +
+'  footnote(general = note_text, escape = FALSE)\n';
+  }
+
+  script += '\nkbl_obj\n';
+  return script;
+}
+
+/* ─── WebR preview ─── */
+function makePreviewScript(rows, G, outPath) {
+  var base = makeScript(rows, G, null, null);
+  // For preview we render the HTML version using kableExtra's HTML output
+  var previewScript = base
+    .replace('format    = "latex"', 'format    = "html"')
+    .replace(/\\\\emph\{p\}-value/g, '<em>p</em>-value')
+    .replace(/linebreak\("Necessity\\neffect size", align = "c"\)/g, '"Necessity<br>effect size"')
+      .replace(/linebreak\("([^"]+)\\npath coefficient", align = "c"\)/g, '"$1<br>path coefficient"')
+    .replace('latex_options = c("HOLD_position", "scale_down")', 'bootstrap_options = c("striped","condensed"), full_width = FALSE')
+    .replace(/column_spec\((\d+), width = "[^"]+"\)/g, 'column_spec($1)')
+    .replace(/column_spec\((\d+), width = "[^"]+", border_left = TRUE\)/g, 'column_spec($1, border_left = TRUE)')
+    .replace('kbl_obj\n', '');
+
+  previewScript += '\n' +
+'svg_out <- paste0(capture.output(kbl_obj), collapse="\\n")\n' +
+'cat(svg_out, file="' + outPath + '")\n';
+  return previewScript;
+}
+
+/* ─── Status helpers ─── */
+function setStatus(msg, state) {
+  var bar = document.getElementById('status-bar');
+  var sp  = document.getElementById('sp');
+  bar.style.display = 'flex';
+  bar.className = state === 'error' ? 'error' : '';
+  document.getElementById('status-msg').textContent = msg;
+  sp.style.display = (state === 'error') ? 'none' : 'block';
+  sp.className = state === 'done' ? 'spinner done' : 'spinner';
+}
+function hideStatus() { document.getElementById('status-bar').style.display = 'none'; }
+function toast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 2800);
+}
+
+/* ─── Build / copy / download .R ─── */
+function buildRScript() {
+  var rows = getRows();
+  if (!rows.length) return;
+  var G = getG();
+  window._rows = rows;
+  window._G    = G;
+  window._rScript = makeScript(rows, G, null, null);
+
+  showPreviewArea();
+  if (webRReady) {
+    clearTimeout(buildRTimer);
+    buildRTimer = setTimeout(function(){ renderPreview(rows, G); }, 700);
+  }
+}
+
+function buildR() {
+  var rows = getRows();
+  if (!rows.length) { toast('Add at least one variable'); return; }
+  var G = getG();
+  window._rows = rows;
+  window._G    = G;
+  window._rScript = makeScript(rows, G, null, null);
+
+  showPreviewArea();
+  document.getElementById('preview-img').style.display = 'none';
+
+  if (webRFailed) {
+    document.getElementById('preview-spinner').style.display = 'none';
+    document.getElementById('offline-msg').style.display = 'block';
+    return;
+  }
+  document.getElementById('preview-spinner').style.display = 'flex';
+  document.getElementById('preview-msg').textContent = webRReady ? 'Running R…' : 'Waiting for R to load…';
+  if (webRReady) {
+    renderPreview(rows, G);
+  } else {
+    var iv = setInterval(function() {
+      if (webRReady) {
+        clearInterval(iv);
+        document.getElementById('preview-msg').textContent = 'Running R…';
+        renderPreview(rows, G);
+      } else if (webRFailed) {
+        clearInterval(iv);
+        document.getElementById('preview-spinner').style.display = 'none';
+        document.getElementById('offline-msg').style.display = 'block';
+      }
+    }, 300);
+  }
+}
+
+function copyR() {
+  var s = window._rScript || makeScript(getRows(), getG(), null, null);
+  navigator.clipboard.writeText(s)
+    .then(function(){ toast('Copied to clipboard'); })
+    .catch(function(){ toast('Copy failed — use Download'); });
+}
+
+function downloadR() {
+  var G = window._G || getG();
+  var s = window._rScript || makeScript(getRows(), G, null, null);
+  var blob = new Blob([s], {type:'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (G.fname || 'nert') + '.R';
+  a.click();
+}
+
+/* ─── WebR rendering ─── */
+/* Shared helper: latex script -> HTML-mode R script + write to outPath */
+function makeHtmlScript(rows, G, outPath) {
+  var s = makeScript(rows, G, null, null)
+    .replace('format    = "latex"', 'format    = "html"')
+    .replace(/\\\\emph\{p\}-value/g, '<em>p</em>-value')
+    .replace(/linebreak\("Necessity\\neffect size", align = "c"\)/g, '"Necessity<br>effect size"')
+      .replace(/linebreak\("([^"]+)\\npath coefficient", align = "c"\)/g, '"$1<br>path coefficient"')
+    .replace(/kable_styling\(full_width = FALSE,\s*latex_options = c\([^)]+\)\)/g,
+             'kable_styling(full_width = FALSE, bootstrap_options = c("striped","condensed"))')
+    .replace(/column_spec\((\d+), width = "[^"]+", border_left = TRUE\)/g, 'column_spec($1, border_left = TRUE)')
+    .replace(/column_spec\((\d+), width = "[^"]+"\)/g, 'column_spec($1)')
+    .replace(/sprintf\("\$R\^2\$ = %\.2f", r2\)/g, 'sprintf("R<sup>2</sup> = %.2f", r2)')
+    .replace(/sprintf\("\$R\^2\$\(adj\.\) = %\.2f", r2_adj\)/g, 'sprintf("R<sup>2</sup>(adj.) = %.2f", r2_adj)');
+  var writeCmd = '\n\nhtml_out <- as.character(kbl_obj)\n' +
+    'full_html <- paste0(\n' +
+    '  "<!DOCTYPE html><html><head><meta charset=\\"UTF-8\\">",\n' +
+    '  "<link rel=\\"stylesheet\\" href=\\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\\">",\n' +
+    '  "<style>\n' +
+    '  body{padding:24px 32px;font-size:13px;background:#fff}\n' +
+    '  table{font-size:12px}\n' +
+    '  thead th{white-space:nowrap}\n' +
+    '  caption{text-align:left;font-size:12px;color:#6b6b68;padding:0 0 10px 0;caption-side:top;font-style:italic;line-height:1.5}\n' +
+    '  </style>",\n' +
+    '  "</head><body>", html_out, "</body></html>")\n' +
+    'cat(full_html, file="' + outPath + '")\n';
+  return s + writeCmd;
+}
+
+async function renderPreview(rows, G) {
+  if (webRRendering) return;
+  webRRendering = true;
+  document.getElementById('preview-spinner').style.display = 'flex';
+  document.getElementById('preview-msg').textContent = 'Running R…';
+  document.getElementById('preview-img').style.display = 'none';
+  try {
+    var tmp = '/tmp/nert_preview.html';
+    var script = makeHtmlScript(rows, G, tmp);
+
+    await webR.evalRVoid(script);
+    var raw  = await webR.evalR('readBin("' + tmp + '", "raw", file.info("' + tmp + '")$size)');
+    var bytes = await raw.toTypedArray();
+    var html = new TextDecoder().decode(bytes);
+    window._lastHtmlStr = html;  // store for PNG/PDF export
+
+    // Wrap in minimal HTML for the iframe
+    var full = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+      '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">' +
+      '<style>body{padding:20px 24px;font-size:13px}table{font-size:12px}thead th{white-space:nowrap}</style></head>' +
+      '<body>' + html + '</body></html>';
+
+    var blob = new Blob([full], {type:'text/html'});
+    var url  = URL.createObjectURL(blob);
+
+    // Use iframe for HTML table preview
+    var wrap = document.getElementById('preview-wrap');
+    var existing = document.getElementById('preview-iframe');
+    if (!existing) {
+      existing = document.createElement('iframe');
+      existing.id = 'preview-iframe';
+      existing.style.cssText = 'width:100%;height:600px;border:1px solid #e2e0da;border-radius:6px;background:#fff;display:block';
+      wrap.appendChild(existing);
+    }
+    if (existing._url) URL.revokeObjectURL(existing._url);
+    existing._url = url;
+    existing.onload = function() {
+      try {
+        var doc = existing.contentDocument;
+        var h = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight);
+        existing.style.height = (h + 32) + 'px';
+      } catch(ignored) {}
+    };
+    existing.src = url;
+    existing.style.display = 'block';
+    document.getElementById('preview-spinner').style.display = 'none';
+    document.getElementById('preview-img').style.display = 'none';
+  } catch(e) {
+    document.getElementById('preview-msg').textContent = 'Preview error: ' + e.message;
+    console.error(e);
+  } finally {
+    webRRendering = false;
+  }
+}
+
+/* ─── Browser-side exports (from iframe preview) ─── */
+function getPreviewHTML() {
+  if (!window._lastHtmlStr) return null;
+  return window._lastHtmlStr;
+}
+
+function makeExportHTML() {
+  if (!window._lastHtmlStr) return null;
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">' +
+    '<style>body{padding:24px 32px;font-size:13px;background:#fff}table{font-size:12px}thead th{white-space:nowrap}</style>' +
+    '</head><body>' + window._lastHtmlStr + '</body></html>';
+}
+
+function downloadHTML() {
+  var html = makeExportHTML();
+  if (!html) { toast('Generate the table first'); return; }
+  var G = window._G || getG();
+  var blob = new Blob([html], {type:'text/html'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (G.fname || 'nert') + '.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+  toast('HTML downloaded');
+}
+
+function downloadPNG() {
+  var iframe = document.getElementById('preview-iframe');
+  if (!iframe) { toast('Generate the table first'); return; }
+  var G = window._G || getG();
+  setStatus('Generating PNG…', 'spin');
+
+  function doCapture() {
+    if (!window._lastHtmlStr) { setStatus('Generate the table first', 'error'); return; }
+    var div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:960px;background:#fff;padding:24px 32px;font-size:13px;font-family:sans-serif';
+    div.innerHTML = window._lastHtmlStr;
+    document.body.appendChild(div);
+    setTimeout(function() {
+      var pngScale = Math.round((G.dpi || 300) / 96 * 10) / 10;
+      window.html2canvas(div, {
+        scale: pngScale,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        width: 960,
+        windowWidth: 960
+      }).then(function(canvas) {
+        document.body.removeChild(div);
+        var fname = (G.fname || 'nert') + '.png';
+        var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+          var url = canvas.toDataURL('image/png');
+          var dp = document.getElementById('download-preview');
+          dp.style.display = 'block';
+          dp.innerHTML = '<p style="font-size:12px;color:var(--muted);margin-bottom:6px">Long-press to save PNG:</p>' +
+            '<img src="' + url + '" style="max-width:100%;border:1px solid var(--border);border-radius:6px">';
+        } else {
+          canvas.toBlob(function(blob) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = fname;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(function(){ URL.revokeObjectURL(a.href); }, 5000);
+          }, 'image/png');
+        }
+        setStatus('PNG downloaded', 'done');
+        setTimeout(hideStatus, 3000);
+        toast('PNG downloaded');
+      }).catch(function(e){
+        document.body.removeChild(div);
+        setStatus('PNG error: ' + e.message, 'error');
+      });
+    }, 100);
+  }
+
+  if (window.html2canvas) { doCapture(); return; }
+  var s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+  s.onload = doCapture;
+  s.onerror = function(){ setStatus('Failed to load html2canvas', 'error'); };
+  document.head.appendChild(s);
+}
+
+function downloadPDF() {
+  var iframe = document.getElementById('preview-iframe');
+  if (!iframe) { toast('Generate the table first'); return; }
+  var G = window._G || getG();
+  setStatus('Generating PDF…', 'spin');
+
+  function doCapture() {
+    if (!window._lastHtmlStr) { setStatus('Generate the table first', 'error'); return; }
+    var div = document.createElement('div');
+    div.style.cssText = 'position:fixed;left:-9999px;top:0;width:960px;background:#fff;padding:24px 32px;font-size:13px;font-family:sans-serif';
+    div.innerHTML = window._lastHtmlStr;
+    document.body.appendChild(div);
+    setTimeout(function() {
+      var pdfScale = Math.round((G.dpi || 300) / 96 * 10) / 10;
+      window.html2canvas(div, {
+        scale: pdfScale,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        width: 960,
+        windowWidth: 960
+      }).then(function(canvas) {
+        document.body.removeChild(div);
+        var imgData = canvas.toDataURL('image/png');
+        var PDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
+        var mmW = (G.pw || 7) * 25.4;
+        var mmH = (G.ph || 4) * 25.4;
+        var pdf = new PDFLib({ orientation: mmW > mmH ? 'l' : 'p', unit: 'mm', format: [mmW, mmH] });
+        pdf.addImage(imgData, 'PNG', 0, 0, mmW, mmH);
+        var fname = (G.fname || 'nert') + '.pdf';
+        var isIOS = /ipad|iphone|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+          var pdfBlob = pdf.output('blob');
+          var url = URL.createObjectURL(pdfBlob);
+          var dp = document.getElementById('download-preview');
+          dp.style.display = 'block';
+          dp.innerHTML = '<p style="font-size:12px;color:var(--muted);margin-bottom:6px">Tap to open and save PDF:</p>' +
+            '<a href="' + url + '" target="_blank" style="font-size:13px;color:var(--accent)">Open ' + fname + '</a>';
+        } else {
+          pdf.save(fname);
+        }
+        setStatus('PDF downloaded', 'done');
+        setTimeout(hideStatus, 3000);
+        toast('PDF downloaded');
+      }).catch(function(e){
+        document.body.removeChild(div);
+        setStatus('PDF error: ' + e.message, 'error');
+      });
+    }, 100);
+  }
+
+  function loadjsPDF(cb) {
+    if (window.jspdf || window.jsPDF) { cb(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    s.onload = cb;
+    s.onerror = function(){ setStatus('Failed to load jsPDF', 'error'); };
+    document.head.appendChild(s);
+  }
+
+  if (window.html2canvas) {
+    loadjsPDF(doCapture);
+  } else {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = function(){ loadjsPDF(doCapture); };
+    s.onerror = function(){ setStatus('Failed to load html2canvas', 'error'); };
+    document.head.appendChild(s);
+  }
+}
+
+
+async function initWebR() {
+  setStatus('Loading R (first load ~30 s)…', 'spin');
+  try {
+    var module = await import('https://webr.r-wasm.org/latest/webr.mjs');
+    webR = new module.WebR();
+    await webR.init();
+    setStatus('Installing kableExtra…', 'spin');
+    await webR.installPackages(['kableExtra']);
+    webRReady = true;
+    setStatus('R ready', 'done');
+    setTimeout(hideStatus, 2000);
+    var rows = window._rows || getRows();
+    var G    = window._G   || getG();
+    showPreviewArea();
+    renderPreview(rows, G);
+  } catch(e) {
+    webRFailed = true;
+    setStatus('No internet connection. Use R-script to produce table.', 'error');
+    if (document.getElementById('preview-wrap').style.display === 'block') {
+      document.getElementById('preview-spinner').style.display = 'none';
+      document.getElementById('offline-msg').style.display = 'block';
+    }
+  }
+}
+
+function showPreviewArea() {
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('preview-wrap').style.display = 'block';
+  document.getElementById('offline-msg').style.display = 'none';
+}
+
+/* ─── Drag-to-resize sidebar ─── */
+(function() {
+  var handle = document.getElementById('drag-handle');
+  var app    = document.querySelector('.app');
+  var dragging = false, startX, startW;
+  handle.addEventListener('mousedown', function(e) {
+    dragging = true; startX = e.clientX;
+    startW = document.querySelector('.sidebar').offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    var newW = Math.max(320, Math.min(900, startW + (e.clientX - startX)));
+    app.style.setProperty('--sw', newW + 'px');
+  });
+  document.addEventListener('mouseup', function() {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+})();
+
+function mobTab(btn, panel) {
+  Array.from(document.querySelectorAll('.mob-tabs button')).forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelector('.sidebar').classList.toggle('mob-visible', panel === 'sidebar');
+  document.querySelector('.main').classList.toggle('mob-visible', panel === 'main');
+}
+
+/* ─── Live rebuild on input change ─── */
+document.getElementById('pred-body').addEventListener('input',  buildRScript);
+['g-caption','g-note','g-r2','g-r2adj','g-fname','g-pw','g-ph','g-dpi'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('input', buildRScript);
+});
+
+/* ─── Init ─── */
+renderTableHead();
+loadExample();
+buildRScript();
+showPreviewArea();
+document.getElementById('preview-spinner').style.display = 'flex';
+document.getElementById('preview-msg').textContent = 'Loading R…';
+initWebR();
+</script>
+</body>
+</html>
