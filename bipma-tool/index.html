@@ -147,37 +147,15 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
         <h3>Instruction</h3>
         <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5"> Use results of the NCA and SEM analyses as input to the tool. The tool produces the BIPMA plot. An internet connection is required. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of BIPMA are described in <a href="https://jandul.github.io/nca-book/#producebipma" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4.1.7</a> and in <a href="https://jandul.github.io/nca-book/#appendixe" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
 
-        <h3>Plot settings</h3>
+        <h3>Title settings</h3>
 
         <div class="field-row">
-          <div class="field"><label>Target outcome Y (for plot title)</label><input type="number" id="g-target" value="90" step="1"></div>
-          <div class="field"><label>Sample size n (for plot title and % bottlenecks)</label><input type="number" id="g-n" value="204" step="1" min="1"></div>
+          <div class="field"><label>Target outcome Y</label><input type="text" inputmode="decimal" id="g-target" value="90"></div>
+          <div class="field"><label>Sample size</label><input type="text" inputmode="numeric" id="g-n" value="204"></div>
         </div>
 
         <div class="field"><label>Plot title</label><input type="text" id="g-title" value=""><p style="font-size:10px;color:var(--muted);margin-top:3px;line-height:1.4"></p></div>
 
-        <div class="field-row">
-          <div class="field"><label>Y min</label><input type="number" id="g-ymin" value="0" step="5"></div>
-          <div class="field"><label>Y max</label><input type="number" id="g-ymax" value="100" step="5"></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>X max</label><input type="number" id="g-xmax" value="0.6" step="0.05"></div>
-          <div class="field"><label>Y tick step</label><input type="number" id="g-ystep" value="25" step="5" min="5"></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>Dot size range min</label><input type="number" id="g-smin" value="0.5" step="0.5" min="0.1"></div>
-          <div class="field"><label>Dot size range max</label><input type="number" id="g-smax" value="50" step="1" min="1"></div>
-        </div>
-
-        <h3>Output settings</h3>
-        <div class="field-row">
-          <div class="field"><label>Filename</label><input type="text" id="g-fname" value="bipma"></div>
-          <div class="field"><label>PDF width (in)</label><input type="number" id="g-pw" value="5" step="0.5" min="1"></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label>PDF height (in)</label><input type="number" id="g-ph" value="5" step="0.5" min="1"></div>
-          <div class="field"><label>PNG dpi</label><input type="number" id="g-dpi" value="300" step="100" min="72" max="600"></div>
-        </div>
       </div>
 
       <div class="s-section">
@@ -221,6 +199,34 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
           <button class="btn ghost" style="padding:4px 10px;font-size:12px" onclick="addRow()">+ Row</button>
         </div>
       </div>
+
+      <div class="s-section">
+        <h3>Plot settings</h3>
+
+        <div class="field-row">
+          <div class="field"><label>Y min</label><input type="text" inputmode="decimal" id="g-ymin" value="0"></div>
+          <div class="field"><label>Y max</label><input type="text" inputmode="decimal" id="g-ymax" value="100"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>X max</label><input type="text" inputmode="decimal" id="g-xmax" value="0.6"></div>
+          <div class="field"><label>Y tick step</label><input type="text" inputmode="decimal" id="g-ystep" value="25"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Dot size range min</label><input type="text" inputmode="decimal" id="g-smin" value="0.5"></div>
+          <div class="field"><label>Dot size range max</label><input type="text" inputmode="decimal" id="g-smax" value="50"></div>
+        </div>
+
+        <h3>Output settings</h3>
+        <div class="field-row">
+          <div class="field"><label>Filename</label><input type="text" id="g-fname" value="bipma"></div>
+          <div class="field"><label>PDF width (in)</label><input type="text" inputmode="decimal" id="g-pw" value="5"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>PDF height (in)</label><input type="text" inputmode="decimal" id="g-ph" value="5"></div>
+          <div class="field"><label>PNG dpi</label><input type="text" inputmode="numeric" id="g-dpi" value="300"></div>
+        </div>
+      </div>
+
     </div>
 
     <div class="btn-group">
@@ -364,8 +370,8 @@ function makeRow(d) {
       '<button type="button" class="'+(sv==='yes'?'active-yes':'')+'" data-val="yes" onclick="ynClick(this)">yes</button>'+
       '<button type="button" class="'+(sv==='no'?'active-no':'')+'" data-val="no" onclick="ynClick(this)">no</button>'+
     '</div></td>'+
-    '<td><input type="number" class="p-imp" value="'+(d&&d.imp!=null?d.imp:0.1)+'" step="0.01"></td>'+
-    '<td><input type="number" class="p-perf" value="'+(d&&d.perf!=null?d.perf:50)+'" step="1" min="0" max="100"></td>'+
+    '<td><input type="text" inputmode="decimal" class="p-imp" value="'+(d&&d.imp!=null?d.imp:0.1)+'"></td>'+
+    '<td><input type="text" inputmode="decimal" class="p-perf" value="'+(d&&d.perf!=null?d.perf:50)+'"></td>'+
     '<td><div class="yn-toggle p-nec" data-value="'+nv+'">'+
       '<button type="button" class="'+(nv==='yes'?'active-yes':'')+'" data-val="yes" onclick="ynClick(this)">yes</button>'+
       '<button type="button" class="'+(nv==='no'?'active-no':'')+'" data-val="no" onclick="ynClick(this)">no</button>'+
@@ -466,8 +472,8 @@ function getRows() {
     var bnp = N > 0 ? bnn / N * 100 : 0;
     return {
       name: tr.querySelector('.p-name').value.trim() || 'Predictor',
-      imp:  parseFloat(tr.querySelector('.p-imp').value)  || 0,
-      perf: parseFloat(tr.querySelector('.p-perf').value) || 0,
+      imp:  parseFloat((tr.querySelector('.p-imp').value||'').replace(',','.'))  || 0,
+      perf: parseFloat((tr.querySelector('.p-perf').value||'').replace(',','.')) || 0,
       nec:  tr.querySelector('.p-nec').dataset.value || 'no',
       suf:  tr.querySelector('.p-suf').dataset.value || 'yes',
       bnp:  bnp,
@@ -479,18 +485,18 @@ function getRows() {
 
 function getG() {
   return {
-    target: parseFloat(document.getElementById('g-target').value)||85,
-    ymin:   parseFloat(document.getElementById('g-ymin').value)||0,
-    ymax:   parseFloat(document.getElementById('g-ymax').value)||100,
-    xmax:   parseFloat(document.getElementById('g-xmax').value)||0.6,
-    ystep:  parseFloat(document.getElementById('g-ystep').value)||25,
-    smin:   parseFloat(document.getElementById('g-smin').value)||0.5,
-    smax:   parseFloat(document.getElementById('g-smax').value)||50,
+    target: parseFloat((document.getElementById('g-target').value||'').replace(',','.'))||85,
+    ymin:   parseFloat((document.getElementById('g-ymin').value||'').replace(',','.'))||0,
+    ymax:   parseFloat((document.getElementById('g-ymax').value||'').replace(',','.'))||100,
+    xmax:   parseFloat((document.getElementById('g-xmax').value||'').replace(',','.'))||0.6,
+    ystep:  parseFloat((document.getElementById('g-ystep').value||'').replace(',','.'))||25,
+    smin:   parseFloat((document.getElementById('g-smin').value||'').replace(',','.'))||0.5,
+    smax:   parseFloat((document.getElementById('g-smax').value||'').replace(',','.'))||50,
     title:  document.getElementById('g-title').value.trim(),
     fname:  document.getElementById('g-fname').value.trim()||'bipma',
-    pw:     parseFloat(document.getElementById('g-pw').value)||5,
-    ph:     parseFloat(document.getElementById('g-ph').value)||5,
-    dpi:    parseFloat(document.getElementById('g-dpi').value)||300,
+    pw:     parseFloat((document.getElementById('g-pw').value||'').replace(',','.'))||5,
+    ph:     parseFloat((document.getElementById('g-ph').value||'').replace(',','.'))||5,
+    dpi:    parseFloat((document.getElementById('g-dpi').value||'').replace(',','.'))||300,
   };
 }
 
