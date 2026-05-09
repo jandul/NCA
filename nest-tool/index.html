@@ -189,8 +189,8 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <div class="s-section">
         <h3>Solution fit</h3>
         <div class="field-row">
-          <div class="field"><label>Solution consistency</label><input type="number" id="g-solcon" value="0.965" step="0.001" min="0" max="1" oninput="buildAll()"></div>
-          <div class="field"><label>Solution coverage</label><input type="number" id="g-solcov" value="0.877" step="0.001" min="0" max="1" oninput="buildAll()"></div>
+          <div class="field"><label>Solution consistency</label><input type="text" inputmode="decimal" id="g-solcon" value="0.965" placeholder="e.g. 0.965" oninput="buildAll()"></div>
+          <div class="field"><label>Solution coverage</label><input type="text" inputmode="decimal" id="g-solcov" value="0.877" placeholder="e.g. 0.877" oninput="buildAll()"></div>
         </div>
       </div>
 
@@ -356,7 +356,7 @@ function getConds() {
     return {
       name:  tr.querySelector('.c-name').value.trim(),
       nec:   tr.querySelector('.c-nec').dataset.value === 'yes',
-      score: tr.querySelector('.c-score').value.trim()
+      score: tr.querySelector('.c-score').value.trim().replace(',', '.')
     };
   }).filter(function(c){ return c.name; });
 }
@@ -370,7 +370,10 @@ function getCfgs() {
   });
 }
 function parseFloats(str) {
-  return str.split(',').map(function(s){ return parseFloat(s.trim()); }).filter(function(n){ return !isNaN(n); });
+  // Normalise: if values use comma as decimal separator (e.g. "0,990"),
+  // detect and replace only decimal commas (not list-separator commas)
+  var parts = str.split(/[,;]+/).map(function(s){ return s.trim(); });
+  return parts.map(function(s){ return parseFloat(s.replace(',', '.')); }).filter(function(n){ return !isNaN(n); });
 }
 
 /* ── Load / reset ── */
@@ -442,8 +445,8 @@ function collectInputs() {
     con       : parseFloats(document.getElementById('g-con').value),
     rawcov    : parseFloats(document.getElementById('g-rawcov').value),
     uniqcov   : parseFloats(document.getElementById('g-uniqcov').value),
-    solcon    : parseFloat(document.getElementById('g-solcon').value),
-    solcov    : parseFloat(document.getElementById('g-solcov').value)
+    solcon    : parseFloat(document.getElementById('g-solcon').value.replace(',', '.')),
+    solcov    : parseFloat(document.getElementById('g-solcov').value.replace(',', '.'))
   };
 }
 
