@@ -276,7 +276,7 @@ function setMode(mode) {
     document.getElementById('mode-desc-right').innerHTML = 'For SEM with direct and total effects.';
   }
   document.getElementById('g-caption').value = mode === 'direct'
-    ? 'Summary of the SEM and NCA results for outcome Adoption intention.'
+    ? 'Summary of the regression/SEM and NCA results for outcome Adoption intention.'
     : 'Summary of the SEM and NCA results for outcome Technology use.';
   renderTableHead();
   clearBody();
@@ -370,7 +370,7 @@ function loadExample() {
   document.getElementById('g-r2adj').value = currentMode === 'direct' ? '0.528' : '0.528';
   document.getElementById('g-note').value  = 'n = 174. NCA ceiling line: CE-FDH.';
   document.getElementById('g-caption').value = currentMode === 'direct'
-    ? 'Summary of the SEM and NCA results for outcome Adoption intention.'
+    ? 'Summary of the regression/SEM and NCA results for outcome Adoption intention.'
     : 'Summary of the SEM and NCA results for outcome Technology use.';
   loadExampleData(currentMode === 'direct' ? EXAMPLE_DIRECT : EXAMPLE_TOTAL);
 }
