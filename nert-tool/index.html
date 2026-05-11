@@ -135,7 +135,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
 
       <div class="s-section">
         <h3>Instruction</h3>
-        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and regression (or SEM) analyses as input to the tool. The tool produces the NERT table. An internet connection is required for downloading as PNG or PDF. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of the NERT tool are described in <a href="https://jandul.github.io/nca-book/#ncasem" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4 &ldquo;NCA with SEM&rdquo;</a> and <a href="https://jandul.github.io/nca-book/#appendixh" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and regression (or SEM) analyses as input to the tool. The tool produces the NERT table. An internet connection is required for downloading as PNG or PDF. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of the NERT tool are described in <a href="https://jandul.github.io/nca-book/#ncawithregressionbasedmethods" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.3</a>, <a href="https://jandul.github.io/nca-book/#ncasem" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4</a>, and <a href="https://jandul.github.io/nca-book/#appendixh" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
       </div>
 
       <div class="s-section">
@@ -151,7 +151,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       </div>
 
       <div class="s-section">
-        <h3>Table title</h3>
+        <h3>Table title <span style="font-weight:400;font-size:9px;letter-spacing:0;text-transform:none;color:var(--muted);font-style:italic;margin-left:-.1em">(editable)</span></h3>
         <div class="field">
           <input type="text" id="g-caption" oninput="buildRScript()" value="NERT tool for combining NCA results with regression-based results in a causal-pluralism multimethod study. NERT = NCA-Extended Regression Table.">
         </div>
@@ -172,20 +172,30 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       </div>
 
       <div class="s-section">
-        <h3>Table footnote</h3>
+        <h3>Note settings</h3>
         <div class="field-row">
           <div class="field">
-            <label>Model fit: R²</label>
-            <input type="text" inputmode="decimal" id="g-r2" value="0.28" placeholder="e.g. 0.28">
+            <label>Sample size (n)</label>
+            <input type="text" inputmode="numeric" id="g-n" value="132" oninput="buildNotePreview();buildRScript()">
           </div>
           <div class="field">
-            <label>Model fit: R²(adj.)</label>
-            <input type="text" id="g-r2adj" value="" placeholder="blank if N/A">
+            <label>NCA ceiling line</label>
+            <input type="text" id="g-ceiling" value="CR-FDH" oninput="buildNotePreview();buildRScript()">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Regression R²</label>
+            <input type="text" inputmode="decimal" id="g-r2" value="0.28" placeholder="e.g. 0.28" oninput="buildNotePreview();buildRScript()">
+          </div>
+          <div class="field">
+            <label>Regression R²(adj.)</label>
+            <input type="text" id="g-r2adj" value="" placeholder="blank if N/A" oninput="buildNotePreview();buildRScript()">
           </div>
         </div>
         <div class="field">
-          <label>Note</label>
-          <input type="text" id="g-note" value="n = 132. NCA ceiling line: CR-FDH.">
+          <label>Note <span style="font-weight:400;color:var(--muted);font-size:10px;font-style:italic">(editable)</span></label>
+          <input type="text" id="g-note" oninput="buildRScript()">
         </div>
       </div>
 
@@ -244,23 +254,24 @@ var webRFailed = false;
 var rowCount = 0;
 var currentMode = 'direct'; // 'direct' | 'total'
 var currentRowLabel = 'Variable/Predictor/Condition';
-var currentCoefLabel = 'Regression coefficient';
-var currentDirLabel = 'Direct';
-var currentTotLabel = 'Total';
+var currentCoefLabel = 'Probabilistic sufficiency effect';
+var currentDirLabel = 'Direct probabilistic sufficiency effect';
+var currentTotLabel = 'Total probabilistic sufficiency effect';
+var currentNecLabel = 'Necessity effect';
 
 /* ─── Example data ─── */
 var EXAMPLE_DIRECT = [
   {name:'Perceived usefulness',     reg:'0.227', reg_p:'0.026',    nec:'0.12', nec_p:'0.002'},
   {name:'Compatibility',            reg:'0.045', reg_p:'0.686',    nec:'0.08', nec_p:'0.010'},
   {name:'Perceived ease of use',    reg:'0.088', reg_p:'0.253',    nec:'0.15', nec_p:'0.007'},
-  {name:'Emotional value',          reg:'0.515', reg_p:'< 0.001',  nec:'0.21', nec_p:'< 0.001'},
+  {name:'Emotional value',          reg:'0.515', reg_p:'\x3c 0.001',  nec:'0.21', nec_p:'\x3c 0.001'},
 ];
 var EXAMPLE_TOTAL = [
   {name:'Perceived usefulness',  dir:'0.050', dir_p:'0.608',    tot:'0.149', tot_p:'0.166',    nec:'0.24', nec_p:'0.001'},
-  {name:'Compatibility',         dir:'0.107', dir_p:'0.393',    tot:'0.127', tot_p:'0.304',    nec:'0.21', nec_p:'< 0.001'},
+  {name:'Compatibility',         dir:'0.107', dir_p:'0.393',    tot:'0.127', tot_p:'0.304',    nec:'0.21', nec_p:'\x3c 0.001'},
   {name:'Perceived ease of use', dir:'0.010', dir_p:'0.911',    tot:'0.049', tot_p:'0.520',    nec:'0.24', nec_p:'0.015'},
-  {name:'Emotional value',       dir:'0.137', dir_p:'0.139',    tot:'0.362', tot_p:'< 0.001',  nec:'0.33', nec_p:'< 0.001'},
-  {name:'Adoption intention',    dir:'0.437', dir_p:'< 0.001',  tot:'0.437', tot_p:'< 0.001',  nec:'0.29', nec_p:'< 0.001'},
+  {name:'Emotional value',       dir:'0.137', dir_p:'0.139',    tot:'0.362', tot_p:'\x3c 0.001',  nec:'0.33', nec_p:'\x3c 0.001'},
+  {name:'Adoption intention',    dir:'0.437', dir_p:'\x3c 0.001',  tot:'0.437', tot_p:'\x3c 0.001',  nec:'0.29', nec_p:'\x3c 0.001'},
 ];
 
 /* ─── Mode switching ─── */
@@ -298,7 +309,9 @@ function renderTableHead() {
         'oninput="currentCoefLabel=this.value;buildRScript()" ' +
         'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
         '<th style="width:72px"><em>p</em>-value</th>' +
-        '<th style="width:72px">NEC effect size</th>' +
+        '<th style="width:72px;padding:2px 4px"><input type="text" id="nec-label-input" value="' + currentNecLabel + '" ' +
+        'oninput="currentNecLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
         '<th style="width:72px"><em>p</em>-value</th>' +
         '<th style="width:20px"></th>' +
       '</tr>';
@@ -317,7 +330,9 @@ function renderTableHead() {
         'oninput="currentTotLabel=this.value;buildRScript()" ' +
         'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
         '<th style="width:56px"><em>p</em></th>' +
-        '<th style="width:60px">NEC effect</th>' +
+        '<th style="width:60px;padding:2px 4px"><input type="text" id="nec-label-input" value="' + currentNecLabel + '" ' +
+        'oninput="currentNecLabel=this.value;buildRScript()" ' +
+        'style="width:100%;padding:0;border:none;outline:none;font-size:10px;font-weight:600;color:var(--muted);background:#f5f4f0;font-family:inherit;white-space:nowrap;cursor:text"></th>' +
         '<th style="width:56px"><em>p</em></th>' +
         '<th style="width:20px"></th>' +
       '</tr>';
@@ -368,11 +383,13 @@ function loadExampleData(data) {
 function loadExample() {
   document.getElementById('g-r2').value    = currentMode === 'direct' ? '0.539' : '0.539';
   document.getElementById('g-r2adj').value = currentMode === 'direct' ? '0.528' : '0.528';
-  document.getElementById('g-note').value  = 'n = 174. NCA ceiling line: CE-FDH.';
+  document.getElementById('g-n').value      = '174';
+  document.getElementById('g-ceiling').value = 'CE-FDH';
   document.getElementById('g-caption').value = currentMode === 'direct'
     ? 'Summary of the regression/SEM and NCA results for outcome Adoption intention.'
     : 'Summary of the SEM and NCA results for outcome Technology use.';
   loadExampleData(currentMode === 'direct' ? EXAMPLE_DIRECT : EXAMPLE_TOTAL);
+  buildNotePreview();
 }
 
 /* ─── Read rows ─── */
@@ -404,6 +421,8 @@ function getG() {
   return {
     caption:   document.getElementById('g-caption').value.trim(),
     note:      document.getElementById('g-note').value.trim(),
+    n:         document.getElementById('g-n').value.trim(),
+    ceiling:   document.getElementById('g-ceiling').value.trim(),
     rowgroup:  currentRowLabel,
     fitlabel:  currentMode === 'direct' ? 'Model fit (regression)' : 'Model fit (SEM)',
     r2:        document.getElementById('g-r2').value.trim().replace(',', '.'),
@@ -484,24 +503,22 @@ function makeScript(rows, G, outPath, fmt) {
   }
 
   script +=
-'# Model fit\n' +
+'# Model fit (for note only)\n' +
 'r2     <- ' + (G.r2 !== '' ? G.r2 : 'NA') + '\n' +
 'r2_adj <- ' + (G.r2adj !== '' ? G.r2adj : 'NULL') + '\n' +
 '\n' +
 '# Caption and footnote\n' +
 'caption   <- ' + rStr(G.caption) + '\n' +
+'# Construct APA-style note\n' +
 'note_text <- ' + rStr(G.note) + '\n' +
 '\n' +
 '# ── Build table ───────────────────────────────────────────────────────\n' +
 '\n' +
-'# Row labels\n' +
-'row_labels <- c(vars, sprintf("$R^2$ = %.2f", r2))\n' +
-'if (!is.null(r2_adj) && !is.na(r2_adj)) {\n' +
-'  row_labels <- c(row_labels, sprintf("$R^2$(adj.) = %.2f", r2_adj))\n' +
-'}\n' +
+'# Row labels (variables only — model fit goes in note)\n' +
+'row_labels <- vars\n' +
+'n_rows <- n_vars\n' +
 '\n' +
-'pad_to <- function(x, n) c(x, rep("", max(0, n - length(x))))\n' +
-'n_rows <- length(row_labels)\n' +
+'pad_to <- function(x, n) c(x, rep("-", max(0, n - length(x))))\n' +
 '\n';
 
   if (currentMode === 'direct') {
@@ -524,11 +541,11 @@ function makeScript(rows, G, outPath, fmt) {
 '  longtable = FALSE,\n' +
 '  caption   = caption,\n' +
 '  col.names = c("",\n' +
-('                "' + currentCoefLabel + '",\n') +
+('                linebreak("' + currentCoefLabel.replace(/ /g, '\\n') + '", align = "c"),\n') +
 '                "\\\\emph{p}-value",\n' +
-'                linebreak("Necessity\\neffect size", align = "c"),\n' +
+('                linebreak("' + currentNecLabel.replace(/ /g, '\\n') + '", align = "c"),\n') +
 '                "\\\\emph{p}-value"),\n' +
-'  align = c("l", "c", "c", "c", "c")\n' +
+'  align = c("l", "c", "r", "c", "r")\n' +
 ') %>%\n' +
 '  kable_styling(full_width = FALSE,\n' +
 '                latex_options = c("HOLD_position", "scale_down")) %>%\n' +
@@ -536,10 +553,15 @@ function makeScript(rows, G, outPath, fmt) {
 '  column_spec(2, width = "8em") %>%\n' +
 '  column_spec(3, width = "6em") %>%\n' +
 '  column_spec(4, width = "6em", border_left = TRUE) %>%\n' +
-'  column_spec(5, width = "6em") %>%\n' +
-'  pack_rows(' + rStr(G.rowgroup) + ', 1, n_vars) %>%\n' +
-'  pack_rows(' + rStr(G.fitlabel) + ', n_vars + 1, n_rows, hline_before = TRUE) %>%\n' +
-'  footnote(general = note_text, escape = FALSE)\n';
+'  column_spec(5, width = "6em")\n' +
+'\n' +
+'# Post-process: insert note before \\bottomrule (APA: rule above note, nothing after)\n' +
+'kbl_str <- kbl_obj %>% as.character()\n' +
+'note_line <- paste0("\\\\multicolumn{",\n' +
+'  ncol(nert), "}{l}{\\\\textit{Note.} ", note_text, "}\\\\\\\\")\n' +
+'kbl_str  <- sub("\\\\\\\\bottomrule",\n' +
+'                paste0("\\\\bottomrule\\n", note_line), kbl_str, fixed = TRUE)\n' +
+'kbl_obj  <- structure(kbl_str, class = class(kbl_obj), format = "latex")\n';
   } else {
     script +=
 'nert <- data.frame(\n' +
@@ -562,13 +584,13 @@ function makeScript(rows, G, outPath, fmt) {
 '  longtable = FALSE,\n' +
 '  caption   = caption,\n' +
 '  col.names = c(" ",\n' +
-('                linebreak("' + currentDirLabel + '\\npath coefficient", align = "c"),\n') +
+('                linebreak("' + currentDirLabel.replace(/ /g, '\\n') + '", align = "c"),\n') +
 '                "\\\\emph{p}-value",\n' +
-('                linebreak("' + currentTotLabel + '\\npath coefficient", align = "c"),\n') +
+('                linebreak("' + currentTotLabel.replace(/ /g, '\\n') + '", align = "c"),\n') +
 '                "\\\\emph{p}-value",\n' +
-'                linebreak("Necessity\\neffect size", align = "c"),\n' +
+('                linebreak("' + currentNecLabel.replace(/ /g, '\\n') + '", align = "c"),\n') +
 '                "\\\\emph{p}-value"),\n' +
-'  align = c("l", "c", "c", "c", "c", "c", "c")\n' +
+'  align = c("l", "c", "r", "c", "r", "c", "r")\n' +
 ') %>%\n' +
 '  kable_styling(full_width = FALSE,\n' +
 '                latex_options = c("HOLD_position", "scale_down")) %>%\n' +
@@ -578,10 +600,15 @@ function makeScript(rows, G, outPath, fmt) {
 '  column_spec(4, width = "5em") %>%\n' +
 '  column_spec(5, width = "4em") %>%\n' +
 '  column_spec(6, width = "4em", border_left = TRUE) %>%\n' +
-'  column_spec(7, width = "4em") %>%\n' +
-'  pack_rows(' + rStr(G.rowgroup) + ', 1, n_vars) %>%\n' +
-'  pack_rows(' + rStr(G.fitlabel) + ', n_vars + 1, n_rows, hline_before = TRUE) %>%\n' +
-'  footnote(general = note_text, escape = FALSE)\n';
+'  column_spec(7, width = "4em")\n' +
+'\n' +
+'# Post-process: insert note before \\bottomrule (APA: rule above note, nothing after)\n' +
+'kbl_str <- kbl_obj %>% as.character()\n' +
+'note_line <- paste0("\\\\multicolumn{",\n' +
+'  ncol(nert), "}{l}{\\\\textit{Note.} ", note_text, "}\\\\\\\\")\n' +
+'kbl_str  <- sub("\\\\\\\\bottomrule",\n' +
+'                paste0("\\\\bottomrule\\n", note_line), kbl_str, fixed = TRUE)\n' +
+'kbl_obj  <- structure(kbl_str, class = class(kbl_obj), format = "latex")\n';
   }
 
   script += '\nkbl_obj\n';
@@ -590,21 +617,22 @@ function makeScript(rows, G, outPath, fmt) {
 
 /* ─── WebR preview ─── */
 function makePreviewScript(rows, G, outPath) {
-  var base = makeScript(rows, G, null, null);
+  var base = makeScript(rows, G, null, null)
+    .replace(/# Post-process[^\n]*\nkbl_str <- kbl_obj[^\n]*\nnote_line[^\n]*\n\s*ncol[^\n]*\nkbl_str[^\n]*\n\s*paste0[^\n]*\nkbl_obj[^\n]*\n/g, '');
   // For preview we render the HTML version using kableExtra's HTML output
   var previewScript = base
     .replace('format    = "latex"', 'format    = "html"')
-    .replace(/\\\\emph\{p\}-value/g, '<em>p</em>-value')
-    .replace(/linebreak\("Necessity\\neffect size", align = "c"\)/g, '"Necessity<br>effect size"')
-      .replace(/linebreak\("([^"]+)\\npath coefficient", align = "c"\)/g, '"$1<br>path coefficient"')
-    .replace('latex_options = c("HOLD_position", "scale_down")', 'bootstrap_options = c("striped","condensed"), full_width = FALSE')
+    .replace(/\\\\emph\{p\}-value/g, '<'+'em>p</em>-value')
+    .replace(/linebreak\("([^"]+)", align = "c"\)/g, function(m, t){ return '"' + t.replace(/\\n/g, '<'+'br>') + '"'; })
+    .replace('latex_options = c("HOLD_position", "scale_down")', 'bootstrap_options = c("condensed"), full_width = FALSE')
     .replace(/column_spec\((\d+), width = "[^"]+"\)/g, 'column_spec($1)')
     .replace(/column_spec\((\d+), width = "[^"]+", border_left = TRUE\)/g, 'column_spec($1, border_left = TRUE)')
     .replace('kbl_obj\n', '');
 
   previewScript += '\n' +
-'svg_out <- paste0(capture.output(kbl_obj), collapse="\\n")\n' +
-'cat(svg_out, file="' + outPath + '")\n';
+'html_out <- as.character(kbl_obj)\n' +
+'note_html <- paste0("<p style=\\\"font-size:11px;margin-top:8px\\\"><em>Note.</em> ", note_text, "</p>")\n' +
+'cat(html_out, note_html, file="' + outPath + '")\n';
   return previewScript;
 }
 
@@ -623,6 +651,24 @@ function toast(msg) {
   var el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('show');
   setTimeout(function(){ el.classList.remove('show'); }, 2800);
+}
+
+/* ─── Note preview builder ─── */
+function buildNotePreview() {
+  var n       = (document.getElementById('g-n')       || {value:''}).value.trim();
+  var ceiling = (document.getElementById('g-ceiling') || {value:''}).value.trim();
+  var r2      = (document.getElementById('g-r2')      || {value:''}).value.trim().replace(',','.');
+  var r2adj   = (document.getElementById('g-r2adj')   || {value:''}).value.trim().replace(',','.');
+
+  var parts = [];
+  if (n)       parts.push('n = ' + n);
+  if (ceiling) parts.push('NCA ceiling line = ' + ceiling);
+  if (r2)      parts.push('Regression R² = ' + r2);
+  if (r2adj)   parts.push('Regression R²(adj.) = ' + r2adj);
+
+  var note = parts.join('. ') + (parts.length ? '.' : '');
+  var el = document.getElementById('g-note');
+  if (el) el.value = note;
 }
 
 /* ─── Build / copy / download .R ─── */
@@ -697,24 +743,38 @@ function downloadR() {
 /* Shared helper: latex script -> HTML-mode R script + write to outPath */
 function makeHtmlScript(rows, G, outPath) {
   var s = makeScript(rows, G, null, null)
+    // Strip LaTeX post-processing block (not needed for HTML preview)
+    .replace(/# Post-process[^\n]*\nkbl_str <- kbl_obj[^\n]*\nnote_line[^\n]*\n\s*ncol[^\n]*\nkbl_str[^\n]*\n\s*paste0[^\n]*\nkbl_obj[^\n]*\n/g, '')
     .replace('format    = "latex"', 'format    = "html"')
-    .replace(/\\\\emph\{p\}-value/g, '<em>p</em>-value')
-    .replace(/linebreak\("Necessity\\neffect size", align = "c"\)/g, '"Necessity<br>effect size"')
-      .replace(/linebreak\("([^"]+)\\npath coefficient", align = "c"\)/g, '"$1<br>path coefficient"')
+    .replace(/\\\\emph\{p\}-value/g, '<'+'em>p</em>-value')
+    .replace(/linebreak\("([^"]+)", align = "c"\)/g, function(m, t){ return '"' + t.replace(/\\n/g, '<'+'br>') + '"'; })
     .replace(/kable_styling\(full_width = FALSE,\s*latex_options = c\([^)]+\)\)/g,
-             'kable_styling(full_width = FALSE, bootstrap_options = c("striped","condensed"))')
+             'kable_styling(full_width = FALSE, bootstrap_options = c("condensed"))')
     .replace(/column_spec\((\d+), width = "[^"]+", border_left = TRUE\)/g, 'column_spec($1, border_left = TRUE)')
     .replace(/column_spec\((\d+), width = "[^"]+"\)/g, 'column_spec($1)')
-    .replace(/sprintf\("\$R\^2\$ = %\.2f", r2\)/g, 'sprintf("R<sup>2</sup> = %.2f", r2)')
-    .replace(/sprintf\("\$R\^2\$\(adj\.\) = %\.2f", r2_adj\)/g, 'sprintf("R<sup>2</sup>(adj.) = %.2f", r2_adj)');
+    .replace(/sprintf\("\$R\^2\$ = %\.2f", r2\)/g, 'sprintf("R\x3csup>2</sup> = %.2f", r2)')
+    .replace(/sprintf\("\$R\^2\$\(adj\.\) = %\.2f", r2_adj\)/g, 'sprintf("R\x3csup>2</sup>(adj.) = %.2f", r2_adj)');
   var writeCmd = '\n\nhtml_out <- as.character(kbl_obj)\n' +
+    '# Inject note as tfoot row so it aligns with table\n' +
+    'note_row <- paste0("<tfoot><tr><td colspan=\\\"", ncol(nert), "\\\"' +
+    ' style=\\\"border:none;padding:6px 0 0 0;font-size:11px\\\">" ,\n' +
+    '  "<em>Note.</em> ", note_text, "</td></tr></tfoot>")\n' +
+    'html_out <- sub("</table>", paste0(note_row, "</table>"), html_out, fixed=TRUE)\n' +
     'full_html <- paste0(\n' +
     '  "<!DOCTYPE html><html><head><meta charset=\\"UTF-8\\">",\n' +
     '  "<link rel=\\"stylesheet\\" href=\\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\\">",\n' +
     '  "<style>\n' +
     '  body{padding:24px 32px;font-size:13px;background:#fff}\n' +
-    '  table{font-size:12px}\n' +
-    '  thead th{white-space:nowrap}\n' +
+    '  table{font-size:12px;border-collapse:collapse;border-top:1px solid #000!important;border-bottom:none!important;width:auto!important}\n' +
+    '  thead{border-top:1px solid #000!important;border-bottom:1px solid #000!important}\n' +
+    '  thead th{white-space:nowrap;border-bottom:1px solid #000!important;border-top:1px solid #000!important;color:#000}\n' +
+    '  tbody{border-bottom:1px solid #000!important}\n' +
+    '  tbody td{border:none!important;color:#000}\n' +
+    '  tbody tr{border:none!important}\n' +
+    '  tfoot td{border:none!important;color:#000;padding-top:6px}\n' +
+    '  .table{--bs-table-border-color:#000}\n' +
+    '  td[style*=border-left],th[style*=border-left]{border-left:1px dotted #000!important}\n' +
+    '  thead tr th:nth-last-child(2){border-left:1px dotted #000!important}\n' +
     '  caption{text-align:left;font-size:12px;color:#6b6b68;padding:0 0 10px 0;caption-side:top;font-style:italic;line-height:1.5}\n' +
     '  </style>",\n' +
     '  "</head><body>", html_out, "</body></html>")\n' +
@@ -999,7 +1059,7 @@ function mobTab(btn, panel) {
 
 /* ─── Live rebuild on input change ─── */
 document.getElementById('pred-body').addEventListener('input',  buildRScript);
-['g-caption','g-note','g-r2','g-r2adj','g-fname','g-pw','g-ph','g-dpi'].forEach(function(id) {
+['g-caption','g-r2','g-r2adj','g-fname','g-pw','g-ph','g-dpi'].forEach(function(id) {
   var el = document.getElementById(id);
   if (el) el.addEventListener('input', buildRScript);
 });
@@ -1007,6 +1067,7 @@ document.getElementById('pred-body').addEventListener('input',  buildRScript);
 /* ─── Init ─── */
 renderTableHead();
 loadExample();
+buildNotePreview();
 buildRScript();
 showPreviewArea();
 document.getElementById('preview-spinner').style.display = 'flex';
