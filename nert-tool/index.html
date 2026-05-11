@@ -946,7 +946,7 @@ function downloadPDF() {
     div.innerHTML = window._lastHtmlStr;
     document.body.appendChild(div);
     setTimeout(function() {
-      var pdfScale = Math.round((G.dpi || 300) / 96 * 10) / 10;
+      var pdfScale = 2;  // fixed 2x for PDF — small file, sharp on screen
       window.html2canvas(div, {
         scale: pdfScale,
         backgroundColor: '#ffffff',
@@ -958,7 +958,7 @@ function downloadPDF() {
         var imgData = canvas.toDataURL('image/png');
         var PDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
         // Derive page size from actual canvas dimensions (at 96dpi screen res)
-        var pdfScale = (G.dpi || 300) / 96;
+        var pdfScale = 2;
         var mmW = (canvas.width  / pdfScale) * 25.4 / 96;
         var mmH = (canvas.height / pdfScale) * 25.4 / 96;
         var pdf = new PDFLib({ orientation: mmW > mmH ? 'l' : 'p', unit: 'mm', format: [mmW, mmH] });
