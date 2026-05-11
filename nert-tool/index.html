@@ -136,6 +136,12 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <div class="s-section">
         <h3>Instruction</h3>
         <p style="font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5">Use results of the NCA and regression (or SEM) analyses as input to the tool. The tool produces the NERT table. An internet connection is required for downloading as PNG or PDF. The tool may not work on all platforms (<a href="mailto:jdul@rsm.nl" style="color:inherit;text-decoration:underline dotted">contact us</a> if you encounter a problem). The backgrounds of the NERT tool are described in <a href="https://jandul.github.io/nca-book/#ncawithregressionbasedmethods" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.3</a>, <a href="https://jandul.github.io/nca-book/#ncasem" target="_blank" style="color:inherit;text-decoration:underline dotted">Section 11.4</a>, and <a href="https://jandul.github.io/nca-book/#appendixh" target="_blank" style="color:inherit;text-decoration:underline dotted">Appendix H</a> in Dul, J. (2026), <em>Necessary Condition Analysis (NCA): Principles and Application</em>. Chapman &amp; Hall / CRC Press.</p>
+        <p style="font-size:10px;color:var(--muted);margin-bottom:4px;line-height:1.5">
+          <a href="#" onclick="var el=document.getElementById('pub-quality');var lnk=this;if(el.style.display==='none'){el.style.display='block';lnk.textContent='▲ Hide publication quality instructions';}else{el.style.display='none';lnk.textContent='▼ How to produce a publication-quality table';}return false;" style="color:var(--muted);text-decoration:underline dotted;font-style:italic">▼ How to produce a publication-quality table</a>
+        </p>
+        <p id="pub-quality" style="display:none;font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.5;border-left:2px solid var(--border);padding-left:8px">
+          For a publication-quality table, click <strong>Download .R</strong> and run the script in an R Markdown (.Rmd) document in RStudio. This produces a LaTeX table with vector text and correct formatting. Required packages: <code>knitr</code> and <code>kableExtra</code>. A LaTeX installation is needed (e.g. TinyTeX: <code>tinytex::install_tinytex()</code>). Paste the script as a code chunk with options <code>echo = FALSE, results = 'asis'</code>. The PNG and PDF download buttons produce raster previews only, suitable for presentations but not for journal submission.
+        </p>
       </div>
 
       <div class="s-section">
@@ -207,7 +213,7 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
         </div>
         <div class="field-row">
           <div class="field"><label>PDF height (in)</label><input type="text" inputmode="decimal" id="g-ph" value="4"></div>
-          <div class="field"><label>PNG dpi</label><input type="text" inputmode="numeric" id="g-dpi" value="300"></div>
+          <div class="field"><label>PNG dpi</label><input type="text" inputmode="numeric" id="g-dpi" value="600"></div>
         </div>
       </div>
 
@@ -755,29 +761,35 @@ function makeHtmlScript(rows, G, outPath) {
     .replace(/sprintf\("\$R\^2\$ = %\.2f", r2\)/g, 'sprintf("R\x3csup>2</sup> = %.2f", r2)')
     .replace(/sprintf\("\$R\^2\$\(adj\.\) = %\.2f", r2_adj\)/g, 'sprintf("R\x3csup>2</sup>(adj.) = %.2f", r2_adj)');
   var writeCmd = '\n\nhtml_out <- as.character(kbl_obj)\n' +
-    '# Inject note as tfoot row so it aligns with table\n' +
-    'note_row <- paste0("<tfoot><tr><td colspan=\\\"", ncol(nert), "\\\"' +
+    '# Extract caption and move it above the table as a div\n' +
+    'cap_match <- regmatches(html_out, regexpr("<caption[^>]*>.*?</caption>", html_out, perl=TRUE))\n' +
+    'cap_text  <- if (length(cap_match)>0) gsub("<caption[^>]*>|</caption>","",cap_match) else ""\n' +
+    'html_out  <- gsub("<caption[^>]*>.*?</caption>","", html_out, perl=TRUE)\n' +
+    'cap_div   <- paste0("<div style=\\\"font-size:12px;color:#333;font-style:italic;line-height:1.5;padding-bottom:6px\\\">", cap_text, "</div>")\n' +
+    '# Inject note as tfoot row\n' +
+    'note_row  <- paste0("<tfoot><tr><td colspan=\\\"", ncol(nert), "\\\"' +
     ' style=\\\"border:none;padding:6px 0 0 0;font-size:11px\\\">" ,\n' +
     '  "<em>Note.</em> ", note_text, "</td></tr></tfoot>")\n' +
-    'html_out <- sub("</table>", paste0(note_row, "</table>"), html_out, fixed=TRUE)\n' +
+    'html_out  <- sub("</table>", paste0(note_row, "</table>"), html_out, fixed=TRUE)\n' +
     'full_html <- paste0(\n' +
     '  "<!DOCTYPE html><html><head><meta charset=\\"UTF-8\\">",\n' +
     '  "<link rel=\\"stylesheet\\" href=\\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\\">",\n' +
     '  "<style>\n' +
     '  body{padding:24px 32px;font-size:13px;background:#fff}\n' +
-    '  table{font-size:12px;border-collapse:collapse;border-top:1px solid #000!important;border-bottom:none!important;width:auto!important}\n' +
-    '  thead{border-top:1px solid #000!important;border-bottom:1px solid #000!important}\n' +
-    '  thead th{white-space:nowrap;border-bottom:1px solid #000!important;border-top:1px solid #000!important;color:#000}\n' +
-    '  tbody{border-bottom:1px solid #000!important}\n' +
-    '  tbody td{border:none!important;color:#000}\n' +
-    '  tbody tr{border:none!important}\n' +
-    '  tfoot td{border:none!important;color:#000;padding-top:6px}\n' +
-    '  .table{--bs-table-border-color:#000}\n' +
+    '  table{font-size:12px;border-collapse:collapse;width:auto!important;border:none!important}\n' +
+    '  thead tr:first-child th{border-top:1px solid #000!important}\n' +
+    '  thead th{white-space:nowrap;border-bottom:1px solid #000!important;color:#000;background:#fff!important}\n' +
+    '  tbody{border-bottom:none!important}\n' +
+    '  tbody td{border:none!important;color:#000;background:#fff!important}\n' +
+    '  tbody tr{border:none!important;background:#fff!important}\n' +
+    '  tbody tr:last-child td{border-bottom:1px solid #000!important}\n' +
+    '  tfoot td{border:none!important;color:#000;padding-top:6px;background:#fff!important}\n' +
+    '  .table,.table>:not(caption)>*>*{background-color:#fff!important;border-color:#000!important}\n' +
+    '  .table-striped>tbody>tr:nth-of-type(odd)>*{background-color:#fff!important}\n' +
     '  td[style*=border-left],th[style*=border-left]{border-left:1px dotted #000!important}\n' +
     '  thead tr th:nth-last-child(2){border-left:1px dotted #000!important}\n' +
-    '  caption{text-align:left;font-size:12px;color:#6b6b68;padding:0 0 10px 0;caption-side:top;font-style:italic;line-height:1.5}\n' +
     '  </style>",\n' +
-    '  "</head><body>", html_out, "</body></html>")\n' +
+    '  "</head><body><div style=\\\"width:fit-content;margin:0 auto\\\">", cap_div, html_out, "</div></body></html>")\n' +
     'cat(full_html, file="' + outPath + '")\n';
   return s + writeCmd;
 }
@@ -945,8 +957,10 @@ function downloadPDF() {
         document.body.removeChild(div);
         var imgData = canvas.toDataURL('image/png');
         var PDFLib = window.jspdf ? window.jspdf.jsPDF : jsPDF;
-        var mmW = (G.pw || 7) * 25.4;
-        var mmH = (G.ph || 4) * 25.4;
+        // Derive page size from actual canvas dimensions (at 96dpi screen res)
+        var pdfScale = (G.dpi || 300) / 96;
+        var mmW = (canvas.width  / pdfScale) * 25.4 / 96;
+        var mmH = (canvas.height / pdfScale) * 25.4 / 96;
         var pdf = new PDFLib({ orientation: mmW > mmH ? 'l' : 'p', unit: 'mm', format: [mmW, mmH] });
         pdf.addImage(imgData, 'PNG', 0, 0, mmW, mmH);
         var fname = (G.fname || 'nert') + '.pdf';
