@@ -384,7 +384,7 @@ empirical NCA study</h3>
 <strong>Co</strong>nducting (data and analysis quality), and
 <strong>Re</strong>porting (transparency).</p>
 <p><br><br> © Jan Dul</p>
-<p>Last update: April 29, 2026</p>
+<p>Last update: May 22, 2026</p>
 <p>Reference: Dul, J. (2026). Necessary Condition Analysis. Principles
 and Application. Chapman &amp; Hall/CRC Press.</p>
 <div id="scoresWrap" style="margin: 10px 0 14px; padding: 10px 12px; border: 1px solid #ddd; border-radius: 12px;">
@@ -14809,6 +14809,7 @@ cursor: pointer;
 }
 .tick-green { accent-color: #2e7d32; }
 .tick-red { accent-color: #c62828; }
+.tick-grey { accent-color: #888888; }
 #assessments td.tickcell,
 #assessments th.tickcell {
 text-align: center;
@@ -14820,11 +14821,12 @@ font-size: 10px;
 #assessments th:nth-child(1), #assessments td:nth-child(1) { width: 10%; } 
 #assessments th:nth-child(2), #assessments td:nth-child(2) { width: 8%; } 
 #assessments th:nth-child(3), #assessments td:nth-child(3) { width: 4%; } 
-#assessments th:nth-child(4), #assessments td:nth-child(4) { width: 17%; } 
+#assessments th:nth-child(4), #assessments td:nth-child(4) { width: 15%; } 
 #assessments th:nth-child(5), #assessments td:nth-child(5) { width: 3%; } 
 #assessments th:nth-child(6), #assessments td:nth-child(6) { width: 3%; } 
-#assessments th:nth-child(7), #assessments td:nth-child(7) { width: 40%; } 
-#assessments th:nth-child(8), #assessments td:nth-child(8) { width: 15%; } 
+#assessments th:nth-child(7), #assessments td:nth-child(7) { width: 3%; } 
+#assessments th:nth-child(8), #assessments td:nth-child(8) { width: 39%; } 
+#assessments th:nth-child(9), #assessments td:nth-child(9) { width: 15%; } 
 
 #scoreBarWrap {
 width: 100%;
@@ -15480,14 +15482,15 @@ Should-have
 21
 </td>
 <td>
-Is the bounding box (empirical or theoretical scope) deliberately
+Is the bounding box (with empirical or theoretical scope) deliberately
 selected and specified?
 </td>
 <td>
-Specify and justify the selected scope (empirical or theoretical).
-Commonly, the empirical scope is selected to avoid over-estimation of
-the effect size. The theoretical scope can be considered when 𝑋 and 𝑌
-are measured on bounded scales (e.g. Likert scales, percentages).
+Specify and justify the selected bounding box (with empirical or
+theoretical scope). Commonly, the empirical scope is selected to avoid
+over-estimation of the effect size. The theoretical scope can be
+considered when 𝑋 and 𝑌 are measured on bounded scales (e.g. Likert
+scales, percentages).
 </td>
 <td>
 Book: Sections 4.3.2, 9.3.1
@@ -16034,8 +16037,13 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
         thRed.className = 'tickcell';
         thRed.textContent = '❌';
 
+        const thNA = document.createElement('th');
+        thNA.className = 'tickcell';
+        thNA.textContent = 'N/A';
+
         ths[3].after(thGreen);
         thGreen.after(thRed);
+        thRed.after(thNA);
       }
     }
 
@@ -16044,6 +16052,9 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
 
       const tds = tr.querySelectorAll('td');
       if (tds.length === 6) {
+        const itemNum = parseInt(tds[2].textContent.trim(), 10);
+        const naItems = [4, 10, 12, 15, 16, 18, 19, 27, 31, 34, 38];
+
         const greenTd = document.createElement('td');
         greenTd.className = 'tickcell';
         greenTd.innerHTML = '<input class="tickbox tick-green" type="checkbox" aria-label="Green">';
@@ -16052,8 +16063,15 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
         redTd.className = 'tickcell';
         redTd.innerHTML = '<input class="tickbox tick-red" type="checkbox" aria-label="Red">';
 
+        const naTd = document.createElement('td');
+        naTd.className = 'tickcell';
+        if (naItems.includes(itemNum)) {
+          naTd.innerHTML = '<input class="tickbox tick-grey" type="checkbox" aria-label="N/A">';
+        }
+
         tds[3].after(greenTd);
         greenTd.after(redTd);
+        redTd.after(naTd);
       }
     });
 
@@ -16144,8 +16162,14 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
           return prCell && prCell.textContent.trim() === priorityLabel;
         });
 
-        const total = group.length;
-        const green = group.filter(r => {
+        // Exclude rows marked N/A from the total count
+        const eligibleGroup = group.filter(r => {
+          const naBox = r.querySelector('input.tick-grey');
+          return !(naBox && naBox.checked);
+        });
+
+        const total = eligibleGroup.length;
+        const green = eligibleGroup.filter(r => {
           const g = r.querySelector('input.tick-green');
           return g && g.checked;
         }).length;
@@ -16217,12 +16241,19 @@ Article: <span class="citation">Köhler &amp; Cortina (<a href="#ref-kohler2023c
 
       const green = row.querySelector('input.tick-green');
       const red = row.querySelector('input.tick-red');
+      const na = row.querySelector('input.tick-grey');
 
-      if (e.target.classList.contains('tick-green') && green && green.checked && red) {
-        red.checked = false;
+      if (e.target.classList.contains('tick-green') && green && green.checked) {
+        if (red) red.checked = false;
+        if (na) na.checked = false;
       }
-      if (e.target.classList.contains('tick-red') && red && red.checked && green) {
-        green.checked = false;
+      if (e.target.classList.contains('tick-red') && red && red.checked) {
+        if (green) green.checked = false;
+        if (na) na.checked = false;
+      }
+      if (e.target.classList.contains('tick-grey') && na && na.checked) {
+        if (green) green.checked = false;
+        if (red) red.checked = false;
       }
 
       calculateScores();
@@ -16347,8 +16378,9 @@ if (headerCells[2]) headerCells[2].style.textAlign = 'left';   // Item
 if (headerCells[3]) headerCells[3].style.textAlign = 'left';   // Question
 if (headerCells[4]) headerCells[4].style.textAlign = 'left';   // ✅
 if (headerCells[5]) headerCells[5].style.textAlign = 'left';   // ❌
-if (headerCells[6]) headerCells[6].style.textAlign = 'left';   // Recommendation
-if (headerCells[7]) headerCells[7].style.textAlign = 'left';   // Further reading
+if (headerCells[6]) headerCells[6].style.textAlign = 'left';   // N/A
+if (headerCells[7]) headerCells[7].style.textAlign = 'left';   // Recommendation
+if (headerCells[8]) headerCells[8].style.textAlign = 'left';   // Further reading
         const dtExtras = dataTableClone.querySelectorAll(
           '.dt-column-order, .dt-layout-row, .dt-info, .dt-paging, .dt-length, .dt-search'
         );
