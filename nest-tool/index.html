@@ -210,6 +210,14 @@ html,body{height:100%;font-family:var(--ui);background:var(--bg);color:var(--tex
       <button class="btn" onclick="downloadPNG()">Download .png</button>
       <button class="btn" onclick="downloadPDF()">Download .pdf</button>
     </div>
+    <div style="margin-bottom:10px">
+      <p style="font-size:10px;color:var(--muted);line-height:1.5">
+        <a href="#" onclick="var el=document.getElementById('pub-quality-output');var lnk=this;if(el.style.display==='none'){el.style.display='block';lnk.textContent='▲ Hide publication quality instructions';}else{el.style.display='none';lnk.textContent='▼ How to produce a publication-quality table';}return false;" style="color:var(--muted);text-decoration:underline dotted;font-style:italic">▼ How to produce a publication-quality table</a>
+      </p>
+      <p id="pub-quality-output" style="display:none;font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5;border-left:2px solid var(--border);padding-left:8px">
+        For a publication-quality table, click <strong>Download .R</strong> and run the script in an R Markdown (.Rmd) document in RStudio. This produces a LaTeX table with vector text and correct formatting. Required packages: <code>knitr</code> and <code>kableExtra</code>. A LaTeX installation is needed (e.g. TinyTeX: <code>tinytex::install_tinytex()</code>). Paste the script as a code chunk with options <code>echo = FALSE, results = 'asis'</code>. The PNG and PDF download buttons produce raster previews only, suitable for presentations but not for journal submission.
+      </p>
+    </div>
     <div id="preview-wrap"></div>
   </main>
 </div>
