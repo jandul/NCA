@@ -210,22 +210,220 @@
     </div>
   </div>
 
-  <!-- AI-SCoRe modal -->
+  <!-- AI-SCoRe modal — Layer 2: menu -->
   <div class="modal-overlay" id="aiscore-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
       <h2>AI-SCoRe</h2>
-      <!-- for later use:
-      <p>AI-SCoRe is a series of prompts that can be used to get AI-generated feedback on the quality of conducting and reporting an NCA study. Application of the tool requires that a publication about the study (e.g., a draft article for a journal) is uploaded to a GenAI model like Claude or ChatGPT. Permission of author(s)/publisher is needed to upload a publication. Without such permission, the Interactive SCoRe checklist for human evaluation can be used. Always check the AI-generated results.</p>
-      -->
-      <p style="color:#c0392b;font-size:13px;margin-top:-10px;">This tool is currently under development.</p>
+      <p>AI-SCoRe is a series of prompts that can be used to get AI-generated feedback on a document describing an empirical NCA study (e.g., a manuscript). Select an option below.</p>
+      <div style="display:grid;gap:10px;margin-bottom:20px;">
+        <a class="subbtn" href="#" onclick="openSub('aiscore-instructions');return false;">Read about AI-SCoRe</a>
+        <a class="subbtn" href="#" onclick="openSub('aiscore-regular');return false;">Use regular AI-SCoRe</a>
+        <a class="subbtn" href="#" onclick="openSub('aiscore-system');return false;">Use system AI-SCoRe</a>
+        <a class="subbtn" href="#" onclick="openSub('aiscore-feedback');return false;">Give feedback</a>
+      </div>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('aiscore-modal').classList.remove('open')">Close</button>
-        <!-- members only — enable when ready:
-        <a class="modal-download" href="/NCA/ai-score/AI-SCoRe-Tool.pdf" target="_blank" rel="noopener">AI-SCoRe</a>
-        -->
       </div>
     </div>
   </div>
+
+  <!-- AI-SCoRe Layer 3a: Read instructions -->
+  <div class="modal-overlay" id="aiscore-instructions" onclick="if(event.target===this)closeSub('aiscore-instructions')">
+    <div class="modal" style="max-width:580px;max-height:85vh;overflow-y:auto;">
+      <h2>About AI-SCoRe</h2>
+      <p style="font-size:13px;color:#888;margin-bottom:18px;">
+        Developers: Jon Bokrantz, Gijs van Biezen, Jan Dul<br>
+        Version 0.0.1 &nbsp;·&nbsp; Date: May 30, 2026
+      </p>
+
+      <h3 class="instr-h3">What is AI-SCoRe?</h3>
+      <p>AI-SCoRe is an extension of the SCoRe checklist for Strengthening (theoretical rigor), Conducting (data and analysis quality), and Reporting (transparency) an empirical NCA study. AI-SCoRe evaluates an empirical NCA study against published guidelines for good practice using generative AI. It consists of a set of instructions for an AI platform such as Claude or ChatGPT to evaluate an uploaded NCA document (manuscript, paper, publication, etc.). The tool identifies potential points of improvement to inspire critical reflection.</p>
+
+      <h3 class="instr-h3">What is the goal of AI-SCoRe?</h3>
+      <p>This tool is intended to help authors improve the quality of their NCA work.</p>
+
+      <h3 class="instr-h3">What are the limitations of AI-SCoRe?</h3>
+      <p>The tool is not perfect and will make errors. Users should not treat its output as a final, authoritative verdict; instead they should always critically evaluate the results. The final judgment remains with the author. Since NCA is a relatively new method and is often applied/described incorrectly, an AI platform may have limited or incorrect background knowledge about NCA and may provide incorrect answers to in-depth follow-up questions. Furthermore, note that due to the stochastic and subjective nature of this tool the output may vary even across assessments of the same document, and that a user's own settings in an AI platform may also affect the output. Less advanced models may produce less reliable output.</p>
+
+      <h3 class="instr-h3">What can AI-SCoRe evaluate?</h3>
+      <p>Authors may want to upload their document (e.g., manuscript) to an AI platform for getting feedback. Following good practice of GenAI use, uploading others' work without explicit permission of the owner may not be appropriate. Users of AI-SCoRe tool upload documents at their own risk. The AI-SCoRe tool itself can be freely used under MIT licence.</p>
+
+      <h3 class="instr-h3">How to use AI-SCoRe for peer review?</h3>
+      <p>The tool can only be used for peer review when consent has been granted by the owner of the document (author, publisher). If you are requested to peer-review a document (e.g., manuscript) and consent was not provided, consider directing the authors towards the interactive checklist or this tool as a means of improving the quality of their work.</p>
+
+      <h3 class="instr-h3">What AI platform accepts AI-SCoRe?</h3>
+      <p>AI-SCoRe comes in two versions: <strong>regular AI-SCoRe</strong> which is a regular prompt for single use in a conversation, and <strong>system AI-SCoRe</strong> which is a reusable stored system prompt for multiple use. AI-SCoRe consists of a set of instructions that are read before acting. The regular prompt AI-SCoRe is fully portable to any LLM with a prompt field including ChatGPT, Claude, Google Gemini, Microsoft Copilot, Perplexity, etc. The system prompt AI-SCoRe is platform-specific. It is currently available as a Skill for Claude. Although it is formatted to be readily imported as a Claude Skill, we have found that the skill files can also be read and used by other AI platforms. (e.g., Codex of OpenAI). Both versions require that the user uploads the document to be evaluated.</p>
+
+      <h3 class="instr-h3">How did we develop AI-SCoRe?</h3>
+      <p>AI-SCoRe was first developed as a system prompt tool using Claude and the "Skills" feature of Anthropic. The SCoRe checklist (<a href="https://jandul.github.io/NCA/score-checklist/" target="_blank" rel="noopener">https://jandul.github.io/NCA/score-checklist/</a>) and the NCA book by Jan Dul (<a href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">https://jandul.github.io/nca-book/</a>) were used as primary input and to train the tool. We improved the tool by comparing AI-generated evaluations with evaluations by human NCA experts. The final system prompt version was stripped from Claude-specific instructions to make the regular prompt version.</p>
+
+      <div class="modal-actions" style="margin-top:8px;">
+        <button class="modal-close" onclick="closeSub('aiscore-instructions')">Close</button>
+        <a class="modal-download" href="/NCA/ai-score/About-AI-SCoRe.pdf" download>Download (PDF)</a>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .instr-h3 {
+      font-size: 14px;
+      font-weight: 800;
+      color: #111;
+      margin: 16px 0 4px;
+    }
+  </style>
+
+  <!-- AI-SCoRe Layer 3b: Regular AI-SCoRe -->
+  <div class="modal-overlay" id="aiscore-regular">
+    <div class="modal" style="max-width:520px;max-height:85vh;overflow-y:auto;">
+      <h2>Use regular AI-SCoRe</h2>
+      <p>The standard prompt to be pasted in the prompt field of an AI platform.</p>
+
+      <h3 class="instr-h3" style="margin-top:18px;">How to use regular AI-SCoRe</h3>
+
+      <h3 class="instr-h3">Requirements</h3>
+      <p>The regular prompt version can be used on any AI platform with a prompt field.</p>
+
+      <h3 class="instr-h3">Step 1 — Download the file</h3>
+      <p>Download the AI-SCoRe.txt file to your computer.</p>
+
+      <h3 class="instr-h3">Step 2 — Use AI-SCoRe</h3>
+      <p>Start a new conversation, upload the AI_SCoRe_prompt.txt file (or copy/paste the content of it in the prompt field), and upload the document. Request an evaluation, for example, <em>Use the file "AI_SCoRe.txt" as your instructions and evaluate the document in the document file. Follow the steps and output structure exactly as described in the prompt file.</em></p>
+      <p>After the report is provided you can request a pdf file for sharing the report with others, for example, <em>Provide a pdf of the AI-SCoRe report for downloading. Include the book links.</em></p>
+
+      <h3 class="instr-h3">Step 3 — Give feedback to development team</h3>
+      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#" onclick="closeSub('aiscore-regular');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
+
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="modal-close" onclick="closeSub('aiscore-regular')">Close</button>
+        <a class="modal-download" href="/NCA/ai-score/AI-SCoRe.txt" download>Download</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI-SCoRe Layer 3c: System AI-SCoRe -->
+  <div class="modal-overlay" id="aiscore-system">
+    <div class="modal" style="max-width:520px;max-height:85vh;overflow-y:auto;">
+      <h2>Use system AI-SCoRe</h2>
+      <p>The system prompt to be uploaded to the knowledge base of an AI platform.</p>
+
+      <h3 class="instr-h3" style="margin-top:18px;">How to use system AI-SCoRe (in Claude)</h3>
+
+      <h3 class="instr-h3">Requirements</h3>
+      <p>System prompts are called Skills in Claude and are currently available on all Claude plans.</p>
+
+      <h3 class="instr-h3">Step 1 — Download the folder</h3>
+      <p>Download the AI-SCoRe.zip folder to your computer. Do not unpack it.</p>
+
+      <h3 class="instr-h3">Step 2 — Enable Code Execution</h3>
+      <p>In Claude: Go in your Profile to Settings → Capabilities and make sure Code execution and file creation is turned on.</p>
+
+      <h3 class="instr-h3">Step 3 — Upload the Skill</h3>
+      <p>In Claude: go to Settings → Customize → Skills. Click the "+" button, then "+ Create skill" → Upload a skill, and upload the zip folder. The skill will appear in your Skills list.</p>
+
+      <h3 class="instr-h3">Step 4 — Enable the Skill</h3>
+      <p>Click on the score-nca skill and toggle the skill on. You can turn it on or off at any time.</p>
+
+      <h3 class="instr-h3">Step 5 — Use the Skill</h3>
+      <p>Start a new conversation and upload your NCA document (e.g., manuscript). Claude will automatically apply the skill when it detects a relevant request — for example, <em>"review my NCA paper"</em> or <em>"apply the SCoRe checklist"</em>.</p>
+
+      <h3 class="instr-h3">Step 6 — Give feedback to development team</h3>
+      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#" onclick="closeSub('aiscore-system');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
+
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="modal-close" onclick="closeSub('aiscore-system')">Close</button>
+        <a class="modal-download" href="/NCA/ai-score/AI-SCoRe.zip" download>Download</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI-SCoRe Layer 3d: Give feedback -->
+  <div class="modal-overlay" id="aiscore-feedback">
+    <div class="modal" style="max-width:480px;">
+      <h2>Give feedback</h2>
+      <p>Share your experience with AI-SCoRe to help improve the tool. You can skip any question.</p>
+      <form id="feedback-form" onsubmit="submitFeedback(event)">
+        <div class="feedback-field">
+          <label>1. What was good and should stay?</label>
+          <textarea id="fb-good" placeholder="Your answer…" rows="2"></textarea>
+        </div>
+        <div class="feedback-field">
+          <label>2. What was not good and should change?</label>
+          <textarea id="fb-bad" placeholder="Your answer…" rows="2"></textarea>
+        </div>
+        <div class="feedback-field">
+          <label>3. What was missing and should be added?</label>
+          <textarea id="fb-missing" placeholder="Your answer…" rows="2"></textarea>
+        </div>
+        <div style="margin-top:10px;font-size:13px;color:#555;">
+          You can also email your feedback directly to <a href="mailto:gijsvanbiezen@proton.me">gijsvanbiezen@proton.me</a>.
+        </div>
+        <div class="feedback-field">
+          <label>Your email <span style="font-weight:400;color:#999;">(optional — only if you'd like a reply)</span></label>
+          <input type="email" id="fb-email" placeholder="your@email.com" />
+        </div>
+        <div id="feedback-success" style="display:none;color:#27ae60;font-size:13px;margin-top:8px;">✓ Thank you for your feedback!</div>
+      </form>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="modal-close" onclick="closeSub('aiscore-feedback');resetFeedback()">Close</button>
+        <button class="modal-close" onclick="submitFeedback(event)" style="border-color:#ddd;font-weight:700;">Send feedback</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .feedback-field {
+      display: flex;
+      flex-direction: column;
+      margin-top: 12px;
+      gap: 4px;
+    }
+    .feedback-field label { font-size: 13px; font-weight: 600; color: #333; }
+    .feedback-field textarea,
+    .feedback-field input[type="email"] {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      color: #111;
+      background: #fafafa;
+    }
+    .feedback-field textarea:focus,
+    .feedback-field input[type="email"]:focus { outline: none; border-color: #999; background: #fff; }
+  </style>
+
+  <script>
+    function openSub(id) {
+      document.getElementById('aiscore-modal').classList.remove('open');
+      document.getElementById(id).classList.add('open');
+    }
+    function closeSub(id) {
+      document.getElementById(id).classList.remove('open');
+      document.getElementById('aiscore-modal').classList.add('open');
+    }
+    function submitFeedback(e) {
+      e.preventDefault();
+      var good    = document.getElementById('fb-good').value.trim();
+      var bad     = document.getElementById('fb-bad').value.trim();
+      var missing = document.getElementById('fb-missing').value.trim();
+      var email   = document.getElementById('fb-email').value.trim();
+      var body = '';
+      if (good)    body += '1. What was good and should stay:\n' + good + '\n\n';
+      if (bad)     body += '2. What was not good and should change:\n' + bad + '\n\n';
+      if (missing) body += '3. What was missing and should be added:\n' + missing + '\n\n';
+      if (email)   body += 'Reply to: ' + email;
+      window.location.href = 'mailto:gijsvanbiezen@proton.me'
+        + '?subject=' + encodeURIComponent('AI-SCoRe Feedback')
+        + '&body=' + encodeURIComponent(body || '(No answers provided)');
+      document.getElementById('feedback-success').style.display = 'block';
+    }
+    function resetFeedback() {
+      document.getElementById('feedback-form').reset();
+      document.getElementById('feedback-success').style.display = 'none';
+    }
+  </script>
 
   <!-- Quick Start Guide NCA with Stata modal -->
   <div class="modal-overlay" id="stata-modal" onclick="if(event.target===this)this.classList.remove('open')">
