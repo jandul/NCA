@@ -23,7 +23,6 @@ NCA software:
 - Quick Start Guide NCA with R
 - Demonstration NCA with R
 - Quick Start Guide NCA with Stata
-R code:
-- R code from book
+R script:
 - Conduct NCA with SEM in R
 - Condict NCA with QCA in R
