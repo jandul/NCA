@@ -1,5 +1,5 @@
 # Demonstration NCA
-# May 20, 2026
+# June 6, 2026
 
 # Testing three hypotheses buyer-supplier service outsourcing relationships:
 # H1: Contractual detail (X1) is necessary for innovation performance (Y)
@@ -207,7 +207,7 @@ nca_output(model6, bottlenecks = TRUE, summaries = FALSE, plots = FALSE)
 # Contrast test: effect size difference between two conditions
 
 # Min-max normalize data
-scale <- c (0,1) # unit box
+scale <- c(0, 1)
 min_max <- c(min(data$Innovation), max(data$Innovation),
              min(data$`Contractual detail`), max(data$`Contractual detail`),
              min(data$`Goodwill trust`), max(data$`Goodwill trust`),
@@ -222,6 +222,7 @@ difference_contrast <- nca_difference(data1 = data_n,
                                       x = c("Goodwill trust", "Competence trust"),
                                       y = "Innovation",
                                       ceilings = "ce_fdh",
+                                      scope = c(0,1,0,1),
                                       test.rep = 1000,  
                                       test.type = "contrast")
 print(difference_contrast)
@@ -231,7 +232,7 @@ data1 <- data[1:24, ]
 data2 <- data[25:48, ]
 
 # Min-max normalize data
-scale <- c (0,1) # unit box
+scale <- c(0, 1)
 min_max <- c(min(data1$Innovation), max(data1$Innovation),
              min(data1$`Contractual detail`), max(data1$`Contractual detail`),
              min(data1$`Goodwill trust`), max(data1$`Goodwill trust`),
@@ -254,6 +255,7 @@ difference_independent <- nca_difference(data1 = data1_n,
                                          data2 = data2_n,
                                          x = c("Contractual detail"),
                                          y = "Innovation",
+                                         scope = c(0,1,0,1),
                                          ceilings = "ce_fdh",
                                          test.rep = 1000, 
                                          test.type = "independent")
@@ -275,7 +277,7 @@ data2$`Innovation` <- pmax(1, ifelse(data2$`Innovation`
                            )
 
 # Min-max normalize data
-scale <- c (0,1) # unit box
+scale <- c(0, 1)
 min_max <- c(min(data1$Innovation), max(data1$Innovation),
              min(data1$`Contractual detail`), max(data1$`Contractual detail`)
 )
@@ -295,6 +297,7 @@ difference_paired <- nca_difference(data1=data1_n,
                                     x = "Contractual detail",
                                     y = "Innovation",
                                     ceiling = "ce_fdh",
+                                    scope = c(0,1,0,1),
                                     test.rep = 1000, 
                                     test.type = "paired")
 print(difference_paired)
