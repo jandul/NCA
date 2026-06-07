@@ -1,5 +1,5 @@
 # Demonstration NCA
-# June 6, 2026
+# June 7, 2026
 
 # Testing three hypotheses buyer-supplier service outsourcing relationships:
 # H1: Contractual detail (X1) is necessary for innovation performance (Y)
@@ -204,9 +204,10 @@ nca_output(model6, bottlenecks = TRUE, summaries = FALSE, plots = FALSE)
 
 #----Statistical difference tests
 
-# Contrast test: effect size difference between two conditions
+### Contrast test: effect size difference between two comparable conditions
 
-# Min-max normalize data
+# Common scope: normalized (for making the scales dimensionless)
+# Min-max normalize data 
 scale <- c(0, 1)
 min_max <- c(min(data$Innovation), max(data$Innovation),
              min(data$`Contractual detail`), max(data$`Contractual detail`),
@@ -217,51 +218,60 @@ data_n <- nca_util_normalize(data = data, scale = scale, min_max = min_max)
 head(data_n, 3)
 
 # Conduct test
+scope = c(0,1,0,1)
 set.seed(123)
 difference_contrast <- nca_difference(data1 = data_n,
                                       x = c("Goodwill trust", "Competence trust"),
                                       y = "Innovation",
                                       ceilings = "ce_fdh",
-                                      scope = c(0,1,0,1),
-                                      test.rep = 1000,  
+                                      scope = scope,
+                                      test.rep = 100,  
                                       test.type = "contrast")
 print(difference_contrast)
 
-# Independence test: effect size difference between two datasets
+### Independence test: effect size difference between two datasets
+
 data1 <- data[1:24, ]
 data2 <- data[25:48, ]
 
-# Min-max normalize data
-scale <- c(0, 1)
-min_max <- c(min(data1$Innovation), max(data1$Innovation),
-             min(data1$`Contractual detail`), max(data1$`Contractual detail`),
-             min(data1$`Goodwill trust`), max(data1$`Goodwill trust`),
-             min(data1$`Competence trust`), max(data1$`Competence trust`)
-             )
-data1_n <- nca_util_normalize(data = data1, scale = scale, min_max = min_max)
-head(data1_n, 3)
+# Common scope: pooled scope or common theoretical scope
 
-min_max <- c(min(data2$Innovation), max(data2$Innovation),
-             min(data2$`Contractual detail`), max(data2$`Contractual detail`),
-             min(data2$`Goodwill trust`), max(data2$`Goodwill trust`),
-             min(data2$`Competence trust`), max(data2$`Competence trust`)
-)
-data2_n <- nca_util_normalize(data = data2, scale = scale, min_max = min_max)
-head(data2_n, 3)
+# Conduct test with pooled empirical scope
+# Common scope: 
+min_x <- min(min(data1$`Contractual detail`),min(data2$`Contractual detail`)) 
+max_x <- max(max(data1$`Contractual detail`),max(data2$`Contractual detail`))
+min_y <- min(min(data1$`Innovation`),min(data2$`Innovation`)) 
+max_y <- max(max(data1$`Innovation`),max(data2$`Innovation`))
+scope <- c(min_x,max_x,min_y,max_y)
 
-# Conduct test
 set.seed(123)
-difference_independent <- nca_difference(data1 = data1_n,
-                                         data2 = data2_n,
+difference_independent_pooled <- nca_difference(data1 = data1,
+                                         data2 = data2,
                                          x = c("Contractual detail"),
                                          y = "Innovation",
-                                         scope = c(0,1,0,1),
+                                         scope = scope,
                                          ceilings = "ce_fdh",
-                                         test.rep = 1000, 
+                                         test.rep = 100, 
                                          test.type = "independent")
-print(difference_independent)
+print(difference_independent_pooled)
 
-# Paired test: effect size differences between 2 measurements
+
+# Conduct test with common theoretical scope
+# Common scope 
+scope <- c(1,7,1,5)
+set.seed(123)
+difference_independent_theoretical <- nca_difference(data1 = data1,
+                                         data2 = data2,
+                                         x = c("Contractual detail"),
+                                         y = "Innovation",
+                                         scope = scope,
+                                         ceilings = "ce_fdh",
+                                         test.rep = 100, 
+                                         test.type = "independent")
+print(difference_independent_theoretical)
+
+
+### Paired test: effect size differences between 2 measurements
 data1 <- subset(nca.example2, select = c(1,2)) # select X and Y for T1 
 
 # Simulate changes of X and Y at T2 
@@ -276,31 +286,40 @@ data2$`Innovation` <- pmax(1, ifelse(data2$`Innovation`
                                      - 1, data2$`Innovation`)
                            )
 
-# Min-max normalize data
-scale <- c(0, 1)
-min_max <- c(min(data1$Innovation), max(data1$Innovation),
-             min(data1$`Contractual detail`), max(data1$`Contractual detail`)
-)
-data1_n <- nca_util_normalize(data = data1, scale = scale, min_max = min_max)
-head(data1_n, 3)
+# Conduct test with pooled empirical scope
+# Common scope: 
+min_x <- min(min(data1$`Contractual detail`),min(data2$`Contractual detail`)) 
+max_x <- max(max(data1$`Contractual detail`),max(data2$`Contractual detail`))
+min_y <- min(min(data1$`Innovation`),min(data2$`Innovation`)) 
+max_y <- max(max(data1$`Innovation`),max(data2$`Innovation`))
+scope <- c(min_x,max_x,min_y,max_y)
 
-min_max <- c(min(data2$Innovation), max(data2$Innovation),
-             min(data2$`Contractual detail`), max(data2$`Contractual detail`)
-)
-data2_n <- nca_util_normalize(data = data2, scale = scale, min_max = min_max)
-head(data2_n, 3)
-
-# Conduct test
 set.seed(123)
-difference_paired <- nca_difference(data1=data1_n, 
-                                    data2=data2_n,
-                                    x = "Contractual detail",
-                                    y = "Innovation",
-                                    ceiling = "ce_fdh",
-                                    scope = c(0,1,0,1),
-                                    test.rep = 1000, 
-                                    test.type = "paired")
-print(difference_paired)
+difference_paired_pooled <- nca_difference(data1 = data1,
+                                                data2 = data2,
+                                                x = c("Contractual detail"),
+                                                y = "Innovation",
+                                                scope = scope,
+                                                ceilings = "ce_fdh",
+                                                test.rep = 100, 
+                                                test.type = "paired")
+print(difference_paired_pooled)
+
+
+# Conduct test with common theoretical scope
+# Common scope 
+scope <- c(1,7,1,5)
+set.seed(123)
+difference_paired_theoretical <- nca_difference(data1 = data1,
+                                                     data2 = data2,
+                                                     x = c("Contractual detail"),
+                                                     y = "Innovation",
+                                                     scope = scope,
+                                                     ceilings = "ce_fdh",
+                                                     test.rep = 100, 
+                                                     test.type = "paired")
+print(difference_paired_theoretical)
+
 
 #----Power analysis
 
