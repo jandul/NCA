@@ -58,6 +58,34 @@
     .subgroup { border-top: 1px dashed #ddd; padding-top: 10px; margin-top: 6px; }
     .subheading { font-weight: 800; font-size: 14px; color:#333; margin: 0 0 6px; }
 
+    /* Book cover */
+    a.cover {
+      display: block;
+      margin: 0 0 14px;
+      text-align: center;
+      text-decoration: none;
+    }
+    a.cover img {
+      width: 160px;
+      max-width: 55%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.10);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    a.cover:hover img {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+    }
+    a.cover .cover-caption {
+      display: block;
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: #666;
+    }
+    a.cover:hover .cover-caption { color: #111; }
+
     /* Quote under the Preview button */
     blockquote.quote {
       margin: 12px 0 0;
@@ -77,7 +105,7 @@
       color: #333;
     }
 
-    
+
     /* Modal */
     .modal-overlay {
       display: none;
@@ -135,8 +163,20 @@
     <div class="card">
       <div class="title">New book</div>
       <p class="desc">Dul, J. (2027). Necessary Condition Analysis (NCA): Principles and Application. Chapman &amp; Hall / CRC Press.</p>
-      <p class="desc">Expected publication date: 24 September 2026</p>
-      <a class="btn" href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">Open online version</a>
+
+      <!-- Book cover: links to the publisher's page -->
+      <a class="cover"
+         href="https://www.routledge.com/Necessary-Condition-Analysis-NCA-Principles-and-Application/Dul/p/book/9781032554471"
+         target="_blank" rel="noopener"
+         title="Order the book on Routledge">
+        <img src="nca-book-cover.jpg"
+             width="500" height="752"
+             alt="Cover of Necessary Condition Analysis (NCA): Principles and Application by Jan Dul"
+             loading="lazy" />
+        <span class="cover-caption">Order on Routledge</span>
+      </a>
+
+      <a class="btn" href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">Open free online version</a>
       <blockquote class="quote">
         “Jan Dul has written a wonderful book that provides researchers with a rigorous and practical framework for explicitly theorizing the necessary conditions that must be present to make an outcome possible, and that their absence guarantees the absence of the outcome. By systematically integrating theory development, research design, and data analysis, the book shows how to identify “must-have” conditions. Importantly, this book equips researchers with concrete tools to generate more precise, impactful contributions that advance cumulative knowledge.”
         <cite>— Herman Aguinis, Avram Tucker Distinguished Scholar and Professor of Management, The George Washington University, USA</cite>
