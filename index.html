@@ -201,6 +201,7 @@
         <div class="subgroup">
           <div class="subheading">Tools</div>
           <div style="display:grid;gap:10px;">
+            <a class="subbtn" href="# "onclick="document.getElementById('quiz-modal').classList.add('open');return false;">NCA readiness quiz</a>
             <a class="subbtn" href="#" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
             <a class="subbtn" href="#" onclick="document.getElementById('aiscore-modal').classList.add('open');return false;">AI-SCoRe</a>
             <a class="subbtn" href="#" onclick="document.getElementById('nert-modal').classList.add('open');return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
@@ -232,6 +233,21 @@
     </div>
 
   </div>
+
+  <!-- quiz modal -->
+  <div class="modal-overlay" id="quiz-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h2>NCA readiness quiz</h2>
+    <p>NCA should not be treated as a purely mechanical data-analysis procedure. Its application requires a theoretically grounded argument for why a condition is necessary, and a careful interpretation of the empirical results. Before applying NCA, test your readiness for it with ten multiple-choice questions to check your basic understanding of necessity logic. Wrong answers link to the relevant sections
+    of the NCA book.</p>
+    <div class="modal-actions">
+      <button class="modal-close"
+        onclick="document.getElementById('quiz-modal').classList.remove('open')">Close</button>
+      <a class="modal-download" href="/NCA/nca-quiz/" target="_blank" rel="noopener">Start quiz</a>
+    </div>
+  </div>
+</div>
+  
   <!-- NERT modal -->
   <div class="modal-overlay" id="nert-modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
