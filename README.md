@@ -14,6 +14,7 @@ This page contains supportive materials for the NCA book(s)  (code, checklists, 
 ## Additional materials
 Available and planned resources:
 Tools:
+- NCA readiness quiz
 - SCoRe checklist 
 - AI-SCoRe
 - NERT tool (table for NCA with regression)
