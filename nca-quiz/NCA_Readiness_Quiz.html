@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{margin:0}*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}</style>
+<title>NCA Readiness Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --ground:#F3F6F7; --surface:#FFFFFF; --ink:#14222E; --muted:#5A6A75; --line:#D5DEE2;
+  --accent:#0F6B6B; --accent-soft:#E0EFEE; --ok:#1E7A3F; --ok-soft:#E3F2E7; --bad:#B3261E; --bad-soft:#F8E4E2;
+  --shade:#DCE8E8; --logo-ground:transparent; --warn:#9A5B00; --warn-soft:#FBEFD9;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;--ground:#0F171D;--surface:#16212A;--ink:#E4ECEF;--muted:#98A8B2;--line:#2A3944;
+  --accent:#5CC2BD;--accent-soft:#16312F;--ok:#6FCF8E;--ok-soft:#15301F;--bad:#F08C84;--bad-soft:#3A1C1A;--shade:#1B3533;--logo-ground:#FFFFFF;--warn:#F2B55C;--warn-soft:#3A2C12;}}
+:root[data-theme="dark"]{
+  color-scheme:dark;--ground:#0F171D;--surface:#16212A;--ink:#E4ECEF;--muted:#98A8B2;--line:#2A3944;
+  --accent:#5CC2BD;--accent-soft:#16312F;--ok:#6FCF8E;--ok-soft:#15301F;--bad:#F08C84;--bad-soft:#3A1C1A;--shade:#1B3533;--logo-ground:#FFFFFF;--warn:#F2B55C;--warn-soft:#3A2C12;}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:40px 64px;display:grid;gap:28px}
+header{display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,38px);line-height:1.15;margin:6px 0 8px;text-wrap:balance}
+.lede{color:var(--muted);margin:0;max-width:52ch}
+.plot{width:112px;height:112px;flex:none;padding:8px;border-radius:10px;background:var(--logo-ground);box-sizing:content-box}
+.progress{display:flex;gap:6px;flex-wrap:wrap}
+.dot{width:34px;height:34px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  font-family:var(--mono);font-size:13px;cursor:pointer;display:grid;place-items:center}
+.dot[aria-current="step"]{border-color:var(--accent);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.dot.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.dot.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:28px;display:grid;gap:20px}
+@media (max-width:480px){.card{padding:20px}}
+.qnum{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.q{font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.35;margin:0;text-wrap:balance}
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opt{width:100%;text-align:left;display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border:1px solid var(--line);
+  border-radius:8px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)}
+.opt:disabled{cursor:default}
+.opt .k{font-family:var(--mono);font-size:13px;flex:none;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;color:var(--muted);margin-top:1px}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .k{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt.dim{opacity:.55}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.feedback{border-left:3px solid var(--ok);padding:4px 0 4px 16px}
+.feedback.bad{border-color:var(--bad)}
+.feedback strong{display:block;margin-bottom:2px}
+.feedback.bad strong{color:var(--bad)} .feedback:not(.bad) strong{color:var(--ok)}
+.feedback p{margin:0;color:var(--ink)}
+.nav{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn:disabled{opacity:.4;cursor:default}
+.score{font-family:var(--serif);font-size:56px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.score small{font-size:24px;color:var(--muted)}
+.verdict{font-size:18px;margin:0}
+.review{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.review li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.review .mark{font-family:var(--mono);font-weight:500}
+.review .mark.ok{color:var(--ok)} .review .mark.bad{color:var(--bad)}
+.review p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.stat{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.refs{margin-top:12px;display:grid;gap:4px}
+.refs span{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.refs ul{margin:0;padding-left:18px;display:grid;gap:2px}
+.refs a{color:var(--accent);text-underline-offset:2px}
+.review .refs{margin-top:8px;font-size:14px}
+.scorerow{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.pct{font-family:var(--mono);font-size:20px;color:var(--muted)}
+.meter{position:relative;height:10px;border-radius:5px;background:var(--line);overflow:visible}
+.meter span{display:block;height:100%;border-radius:5px;background:var(--accent)}
+.meter i{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);opacity:.5}
+.meterlab{position:relative;display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:-12px}
+.conclusion{--c:var(--ok);--cs:var(--ok-soft);background:var(--cs);border-radius:8px;padding:20px;display:grid;gap:8px}
+.conclusion.lvl-warn{--c:var(--warn);--cs:var(--warn-soft)}
+.conclusion.lvl-bad{--c:var(--bad);--cs:var(--bad-soft)}
+.conclusion h2{font-family:var(--serif);font-weight:600;font-size:20px;margin:0}
+.conclusion p{margin:0}
+.pill{justify-self:start;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--c);color:var(--surface)}
+.revisit ul{margin:4px 0 0;padding-left:18px;display:grid;gap:2px}
+.revisit a{color:var(--accent)}
+.meterlab .mid{position:absolute;left:80%;transform:translateX(-50%);white-space:nowrap}
+.qref{color:var(--muted);font-family:var(--mono);font-size:13px}
+.revh{font-family:var(--serif);font-weight:600;font-size:18px;margin:8px 0 -8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Necessary Condition Analysis</div>
+      <h1>NCA readiness quiz</h1>
+      <p class="lede">Ten questions on necessity logic, ceiling lines, bottlenecks and the three requirements for supporting a necessity hypothesis. You'll get feedback after each answer.</p>
+    </div>
+    <svg class="plot" viewBox="0 0 524 524" role="img" aria-label="NCA logo"><circle cx="73" cy="73" r="19" fill="#9DD7F5"/><circle cx="167" cy="73" r="19" fill="#9DD7F5"/><circle cx="261" cy="73" r="19" fill="#9DD7F5"/><circle cx="355" cy="73" r="19" fill="#9DD7F5"/><circle cx="73" cy="167" r="19" fill="#9DD7F5"/><circle cx="167" cy="167" r="19" fill="#9DD7F5"/><circle cx="261" cy="167" r="19" fill="#9DD7F5"/><circle cx="73" cy="261" r="19" fill="#9DD7F5"/><circle cx="167" cy="261" r="19" fill="#9DD7F5"/><circle cx="73" cy="355" r="19" fill="#9DD7F5"/><circle cx="261" cy="355" r="19" fill="#9DD7F5"/><circle cx="449" cy="355" r="19" fill="#9DD7F5"/><circle cx="449" cy="449" r="19" fill="#9DD7F5"/><circle cx="167" cy="449" r="19" fill="#00516E"/><circle cx="261" cy="449" r="19" fill="#00516E"/><circle cx="355" cy="261" r="19" fill="#00516E"/><circle cx="355" cy="355" r="19" fill="#00516E"/><circle cx="355" cy="449" r="19" fill="#00516E"/><circle cx="449" cy="167" r="19" fill="#00516E"/><circle cx="449" cy="261" r="19" fill="#00516E"/><line x1="16" y1="508" x2="508" y2="16" stroke="#009FE3" stroke-width="26" stroke-linecap="round"/></svg>
+  </header>
+
+  <nav class="progress" id="progress" aria-label="Questions"></nav>
+  <main id="stage"></main>
+</div>
+
+<script>
+const Q=[
+ {q:"What is a necessary condition?",o:["A condition that increases the probability of the outcome","A condition that must be present for the outcome to be possible","A condition that guarantees the outcome","A condition that is strongly correlated with the outcome"],a:1,f:"A necessary condition must be present for the outcome to be possible; its absence prevents the outcome."},
+ {q:"Which statement best expresses necessity logic?",o:["If X is present, Y must occur","If Y occurs, X is always sufficient","If X is absent, Y cannot occur","X and Y must be highly correlated"],a:2,f:"Necessity logic is expressed as: if X is absent, Y cannot occur."},
+ {q:"Which three elements are required to support a necessity hypothesis?",o:["Theory, correlation, and statistical significance","Theoretical justification, sufficiently large necessity effect, and statistical significance","Large sample, high R², and statistical significance","Reliable measurement, normality, and a correlation"],a:1,f:"All three are required: theoretical justification, a sufficiently large necessity effect, and a statistically significant permutation test."},
+ {q:"A study has a sufficiently large necessity effect and a statistically significant result, but does not provide theoretical justification. What should be concluded?",o:["Necessity is supported because two criteria are met","Necessity is supported if the XY plot looks convincing","The necessity hypothesis should be rejected","Theoretical justification is not needed when the effect size is large and significant"],a:2,f:"All three requirements must be met. Without theoretical support, the necessity hypothesis must be rejected."},
+ {q:"What is the purpose of the ceiling line in NCA?",o:["To represent the upper boundary of the observed data space relevant to necessity","To maximize the correlation between X and Y","To remove statistical outliers automatically","To replace theoretical reasoning"],a:0,f:"The ceiling line represents the boundary used to assess whether particular levels of Y require particular levels of X."},
+ {q:"Why is theoretical justification essential in NCA?",o:["Because NCA does not use data","Because statistical evidence alone does not establish that a relationship should be interpreted as a necessary condition","Because theory determines the p-value","Because theory eliminates the need for robustness analysis"],a:1,f:"A statistical pattern does not by itself provide the theoretical basis for interpreting X as necessary for Y. A theoretical justification for an average probabilistic effect cannot serve as a theoretical justification for a necessity effect."},
+ {q:"What does bottleneck analysis primarily investigate?",o:["Whether X predicts Y on average","The level of a condition required for specified levels of the outcome","Whether the sample is normally distributed","Whether the ceiling line is statistically significant"],a:1,f:"Bottleneck analysis examines the minimum level of a condition associated with specified target levels of the outcome."},
+ {q:"What is the role of robustness analysis?",o:["To make every necessity effect significant","To test whether conclusions remain stable under reasonable alternative analytical choices","To remove all cases that do not fit the hypothesis","To replace the main NCA analysis"],a:1,f:"Robustness analysis examines whether the substantive conclusion is stable under reasonable alternative choices."},
+ {q:"Which statement best describes NCA's relationship to conventional regression?",o:["NCA and regression test the same causal claim in a different way","NCA focuses on necessity logic rather than the average probabilistic relationship examined in regression","NCA is regression with a different theoretical focus","NCA requires regression before the necessity analysis can be conducted"],a:1,f:"NCA uses necessity causal logic; regression typically focuses on average probabilistic relationships."},
+ {"q": "A causal explanation provides the theoretical support for a necessity hypothesis. Which three questions should it answer?", "o": ["Is X correlated with Y, is the effect statistically significant, and is the sample large enough?", "Why is X sufficient for Y, why does X increase Y on average, and why does X precede Y?", "Why does X enable Y, why does the absence of X constrain Y, and why is there no substitute for the absence of X?", "Where is the ceiling line, how large is the effect size, and what is the p-value?"], "a": 2, "f": "The causal explanation must say why X enables Y, why the absence of X constrains (blocks) Y, and why nothing can compensate for the absence of X."}
+];
+const REFS=[[{"t": "2.4 Necessity causality", "u": "https://jandul.github.io/nca-book/causality.html#necessitycausality"}, {"t": "3.8 The meaning of ‘necessary but not sufficient’", "u": "https://jandul.github.io/nca-book/theory.html#necessarybutnotsufficient"}], [{"t": "2.4.1 Deterministic necessity", "u": "https://jandul.github.io/nca-book/causality.html#deterministicnecessity"}, {"t": "2.5 Causal versus conditional logic", "u": "https://jandul.github.io/nca-book/causality.html#causalversusconditionallogic"}], [{"t": "6.2 Core criteria for necessity", "u": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria"}, {"t": "9.10 Conclusion about necessity-in-kind", "u": "https://jandul.github.io/nca-book/dataanalysis.html#necessityinkind"}], [{"t": "6.2 Core criteria for necessity", "u": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria"}, {"t": "5.9.1 Lack of theoretical support", "u": "https://jandul.github.io/nca-book/statistics.html#lack-of-theoretical-support"}], [{"t": "4.3.2 Ceiling line", "u": "https://jandul.github.io/nca-book/mathematics.html#mathceiling"}, {"t": "9.3.2 Ceiling line specification", "u": "https://jandul.github.io/nca-book/dataanalysis.html#ceilinglinespecification"}], [{"t": "3.2 Main elements of a theory", "u": "https://jandul.github.io/nca-book/theory.html#definitionnecessitytheory"}, {"t": "5.9.1 Lack of theoretical support", "u": "https://jandul.github.io/nca-book/statistics.html#lack-of-theoretical-support"}, {"t": "7.3 Why developing necessity hypotheses is different", "u": "https://jandul.github.io/nca-book/hypothesisformulation.html#whynecessityhypothesis"}], [{"t": "9.11 Bottleneck analysis: necessity-in-degree", "u": "https://jandul.github.io/nca-book/dataanalysis.html#bottleneck"}], [{"t": "6.4.1 Robustness", "u": "https://jandul.github.io/nca-book/sensitivityspecificity.html#robustness"}, {"t": "9.12 Robustness checks", "u": "https://jandul.github.io/nca-book/dataanalysis.html#robustnesschecks"}], [{"t": "11.3.2 Comparison NCA and regression-based methods", "u": "https://jandul.github.io/nca-book/multimethodstudies.html#comparison-nca-and-regression-based-methods"}, {"t": "2.3.2 Probabilistic sufficiency", "u": "https://jandul.github.io/nca-book/causality.html#probabilisticsufficiency"}], [{"t": "7.5.3 Step 3: Provide causal explanation", "u": "https://jandul.github.io/nca-book/hypothesisformulation.html#causalexplanation"}, {"t": "7.5 Developing a formal necessity hypothesis", "u": "https://jandul.github.io/nca-book/hypothesisformulation.html#developingformaltheory"}]];
+const L="ABCD";
+const refHTML=i=>`<div class="refs"><span>Read more in the NCA book</span><ul>${REFS[i].map(r=>`<li><a href="${r.u}" target="_blank" rel="noopener">${r.t}</a></li>`).join("")}</ul></div>`;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const newOrder=()=>Q.map(it=>shuffle(it.o.map((_,i)=>i)));
+let cur=0, ans=Array(Q.length).fill(null), done=false, order=newOrder();
+const stage=document.getElementById('stage'), prog=document.getElementById('progress');
+
+function renderProgress(){
+  prog.innerHTML="";
+  Q.forEach((_,i)=>{
+    const b=document.createElement('button');b.className='dot';b.id='dot'+i;b.textContent=i+1;
+    if(ans[i]!==null) b.classList.add(ans[i]===Q[i].a?'ok':'bad');
+    if(!done&&i===cur) b.setAttribute('aria-current','step');
+    b.setAttribute('aria-label','Question '+(i+1));
+    b.onclick=()=>{done=false;cur=i;render();};
+    prog.appendChild(b);
+  });
+}
+function render(){
+  renderProgress();
+  if(done) return renderResults();
+  const it=Q[cur], picked=ans[cur], answered=picked!==null;
+  const answeredCount=ans.filter(x=>x!==null).length;
+  stage.innerHTML=`<section class="card" aria-live="polite">
+    <div class="qnum">Question ${cur+1} of ${Q.length}</div>
+    <h2 class="q">${it.q}</h2>
+    <ul class="opts">${order[cur].map((i,pos)=>{const t=it.o[i];
+      let c='opt';
+      if(answered){ if(i===it.a)c+=' correct'; else if(i===picked)c+=' wrong'; else c+=' dim'; }
+      return `<li><button class="${c}" id="q${cur}o${i}" data-i="${i}" ${answered?'disabled':''}><span class="k">${L[pos]}</span><span>${t}</span></button></li>`;
+    }).join('')}</ul>
+    ${answered?`<div class="feedback ${picked===it.a?'':'bad'}"><strong>${picked===it.a?'Correct':'Not quite — the answer is '+L[order[cur].indexOf(it.a)]}</strong><p>${it.f}</p>${picked!==it.a?refHTML(cur):''}</div>`:''}
+    <div class="nav">
+      <button class="btn" id="prev" ${cur===0?'disabled':''}>Previous</button>
+      ${cur<Q.length-1
+        ? `<button class="btn primary" id="next" ${answered?'':'disabled'}>Next question</button>`
+        : `<button class="btn primary" id="finish" ${answeredCount===Q.length?'':'disabled'}>See results</button>`}
+    </div>
+    <div class="stat">${answeredCount} of ${Q.length} answered</div>
+  </section>`;
+  stage.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[cur]=+b.dataset.i;render();});
+  const p=document.getElementById('prev'); if(p)p.onclick=()=>{cur--;render();};
+  const n=document.getElementById('next'); if(n)n.onclick=()=>{cur++;render();};
+  const f=document.getElementById('finish'); if(f)f.onclick=()=>{done=true;render();};
+}
+const TOPICS=["Definition of a necessary condition","Necessity logic","The three requirements for necessity","Theoretical justification as a requirement","The ceiling line","Why theory is essential","Bottleneck analysis","Robustness analysis","NCA versus regression","Causal explanation for theoretical support"];
+function renderResults(){
+  const s=ans.filter((x,i)=>x===Q[i].a).length;
+  stage.innerHTML=`<section class="card">
+    <div class="eyebrow">Final score</div>
+    <div class="score">${s}<small> / ${Q.length}</small></div>
+    <div class="nav"><button class="btn primary" id="restart">Retake quiz</button></div>
+  </section>`;
+  document.getElementById('restart').onclick=()=>{ans=Array(Q.length).fill(null);order=newOrder();cur=0;done=false;render();window.scrollTo(0,0);};
+  window.scrollTo(0,0);
+}
+render();
+</script>
+
+</body>
+</html>
