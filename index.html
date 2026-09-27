@@ -201,12 +201,12 @@
         <div class="subgroup">
           <div class="subheading">Tools</div>
           <div style="display:grid;gap:10px;">
-            <a class="subbtn" href="# "onclick="document.getElementById('quiz-modal').classList.add('open');return false;">NCA readiness quiz</a>
-            <a class="subbtn" href="#" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
-            <a class="subbtn" href="#" onclick="document.getElementById('aiscore-modal').classList.add('open');return false;">AI-SCoRe</a>
-            <a class="subbtn" href="#" onclick="document.getElementById('nert-modal').classList.add('open');return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
-            <a class="subbtn" href="#" onclick="document.getElementById('nest-modal').classList.add('open');return false;">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>
-            <a class="subbtn" href="#" onclick="document.getElementById('bipma-modal').classList.add('open');return false;">BIPMA tool <span style="font-size: 12px;">(plot for NCA with SEM)</span></a>
+            <a class="subbtn" href="#quiz" onclick="document.getElementById('quiz-modal').classList.add('open');return false;">NCA readiness quiz</a>
+            <a class="subbtn" href="#score" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
+            <a class="subbtn" href="#ai-score" onclick="document.getElementById('aiscore-modal').classList.add('open');return false;">AI-SCoRe</a>
+            <a class="subbtn" href="#nert" onclick="document.getElementById('nert-modal').classList.add('open');return false;">NERT tool <span style="font-size: 12px;">(table for NCA with regression)</span></a>
+            <a class="subbtn" href="#nest" onclick="document.getElementById('nest-modal').classList.add('open');return false;">NEST tool <span style="font-size: 12px;">(table for NCA with QCA)</span></a>
+            <a class="subbtn" href="#bipma" onclick="document.getElementById('bipma-modal').classList.add('open');return false;">BIPMA tool <span style="font-size: 12px;">(plot for NCA with SEM)</span></a>
           </div>
         </div>
 
@@ -214,9 +214,9 @@
         <div class="subgroup">
           <div class="subheading">NCA software</div>
           <div style="display:grid;gap:10px;">
-            <a class="subbtn" href="#" onclick="document.getElementById('qsg-modal').classList.add('open');return false;">Quick Start Guide NCA with R</a>
-            <a class="subbtn" href="#" onclick="document.getElementById('demo-modal').classList.add('open');return false;">Demonstration NCA with R</a>
-            <a class="subbtn" href="#" onclick="document.getElementById('stata-modal').classList.add('open');return false;">Quick Start Guide NCA with Stata</a>
+            <a class="subbtn" href="#r-guide" onclick="document.getElementById('qsg-modal').classList.add('open');return false;">Quick Start Guide NCA with R</a>
+            <a class="subbtn" href="#r-demo" onclick="document.getElementById('demo-modal').classList.add('open');return false;">Demonstration NCA with R</a>
+            <a class="subbtn" href="#stata-guide" onclick="document.getElementById('stata-modal').classList.add('open');return false;">Quick Start Guide NCA with Stata</a>
           </div>
         </div>
 
@@ -305,10 +305,10 @@
       <h2>AI-SCoRe</h2>
       <p>AI-SCoRe is a series of prompts that can be used to get AI-generated feedback on a document describing an empirical NCA study (e.g., a manuscript). Select an option below.</p>
       <div style="display:grid;gap:10px;margin-bottom:20px;">
-        <a class="subbtn" href="#" onclick="openSub('aiscore-instructions');return false;">Read about AI-SCoRe</a>
-        <a class="subbtn" href="#" onclick="openSub('aiscore-regular');return false;">Use regular AI-SCoRe</a>
-        <a class="subbtn" href="#" onclick="openSub('aiscore-system');return false;">Use system AI-SCoRe</a>
-        <a class="subbtn" href="#" onclick="openSub('aiscore-feedback');return false;">Give feedback</a>
+        <a class="subbtn" href="#ai-score-about" onclick="openSub('aiscore-instructions');return false;">Read about AI-SCoRe</a>
+        <a class="subbtn" href="#ai-score-regular" onclick="openSub('aiscore-regular');return false;">Use regular AI-SCoRe</a>
+        <a class="subbtn" href="#ai-score-system" onclick="openSub('aiscore-system');return false;">Use system AI-SCoRe</a>
+        <a class="subbtn" href="#ai-score-feedback" onclick="openSub('aiscore-feedback');return false;">Give feedback</a>
       </div>
       <div class="modal-actions">
         <button class="modal-close" onclick="document.getElementById('aiscore-modal').classList.remove('open')">Close</button>
@@ -381,7 +381,7 @@
       <p>After the report is provided you can request a pdf file for sharing the report with others, for example, <em>Provide a pdf of the AI-SCoRe report for downloading. Include the book links.</em></p>
 
       <h3 class="instr-h3">Step 3 — Give feedback to development team</h3>
-      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#" onclick="closeSub('aiscore-regular');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
+      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#ai-score-feedback" onclick="closeSub('aiscore-regular');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
 
       <div class="modal-actions" style="margin-top:16px;">
         <button class="modal-close" onclick="closeSub('aiscore-regular')">Close</button>
@@ -417,7 +417,7 @@
       <p>Start a new conversation and upload your NCA document (e.g., manuscript). Claude will automatically apply the skill when it detects a relevant request — for example, <em>"review my NCA paper"</em> or <em>"apply the SCoRe checklist"</em>.</p>
 
       <h3 class="instr-h3">Step 6 — Give feedback to development team</h3>
-      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#" onclick="closeSub('aiscore-system');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
+      <p>To further develop AI-SCoRe, share your experiences with the developers by answering three questions or by sending an email to the developers <a href="#ai-score-feedback" onclick="closeSub('aiscore-system');openSub('aiscore-feedback');return false;">[use the Give Feedback link]</a>.</p>
 
       <div class="modal-actions" style="margin-top:16px;">
         <button class="modal-close" onclick="closeSub('aiscore-system')">Close</button>
@@ -550,7 +550,47 @@
     </div>
   </div>
 
+  <!-- Direct links to pop-ups, e.g. https://jandul.github.io/NCA/#quiz -->
+  <script>
+    // Link name (after the #)  ->  id of the pop-up
+    const MODALS = {
+      'quiz':              'quiz-modal',
+      'score':             'score-modal',
+      'ai-score':          'aiscore-modal',
+      'ai-score-about':    'aiscore-instructions',
+      'ai-score-regular':  'aiscore-regular',
+      'ai-score-system':   'aiscore-system',
+      'ai-score-feedback': 'aiscore-feedback',
+      'nert':              'nert-modal',
+      'nest':              'nest-modal',
+      'bipma':             'bipma-modal',
+      'r-guide':           'qsg-modal',
+      'r-demo':            'demo-modal',
+      'stata-guide':       'stata-modal'
+    };
+    const NAMES = Object.fromEntries(Object.entries(MODALS).map(([k, v]) => [v, k]));
 
+    // Open the pop-up named in the address (on page load and when the # changes)
+    function openFromHash() {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      const id = MODALS[location.hash.slice(1)];
+      if (id) document.getElementById(id).classList.add('open');
+    }
+    window.addEventListener('hashchange', openFromHash);
+    openFromHash();
+
+    // Keep the address bar in sync when pop-ups are opened or closed by clicking
+    const sync = new MutationObserver(() => {
+      const open = document.querySelector('.modal-overlay.open');
+      const hash = open && NAMES[open.id] ? '#' + NAMES[open.id] : '';
+      if (location.hash !== hash) {
+        history.replaceState(null, '', hash || location.pathname + location.search);
+      }
+    });
+    document.querySelectorAll('.modal-overlay').forEach(m =>
+      sync.observe(m, { attributes: true, attributeFilter: ['class'] })
+    );
+  </script>
 
 </body>
 </html>
