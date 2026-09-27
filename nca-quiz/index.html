@@ -91,6 +91,8 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,38px);line-
 .revisit a{color:var(--accent)}
 .meterlab .mid{position:absolute;left:80%;transform:translateX(-50%);white-space:nowrap}
 .qref{color:var(--muted);font-family:var(--mono);font-size:13px}
+.community{color:var(--muted);font-size:15px;margin:0;min-height:1.5em}
+.privacy{font-size:12px;color:var(--muted);margin:0}
 .revh{font-family:var(--serif);font-weight:600;font-size:18px;margin:8px 0 -8px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -131,6 +133,31 @@ const refHTML=i=>`<div class="refs"><span>Read more in the NCA book</span><ul>${
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const newOrder=()=>Q.map(it=>shuffle(it.o.map((_,i)=>i)));
 let cur=0, ans=Array(Q.length).fill(null), done=false, order=newOrder();
+
+// ---- Results logging (Google Sheet) ----
+// Paste your Apps Script web app URL here (ends with /exec)
+const RESULTS_URL='https://script.google.com/macros/s/AKfycbzisKR7iKYOjguaTL47uJjCAYzzBokeIBYqaGMKPGsdB0k32lUujxNgIra2-tBq-GRpQg/exec';
+let logged=false; // log each attempt only once, even if the visitor revisits questions
+
+async function logQuizResult(score,total,answers){
+  const box=document.getElementById('quiz-stats');
+  if(!RESULTS_URL.startsWith('https://')) return; // not configured yet
+  if(box) box.textContent='Loading statistics from other participants… (this can take a few seconds)';
+  try{
+    if(!logged){
+      logged=true;
+      await fetch(RESULTS_URL,{method:'POST',mode:'no-cors',
+        body:JSON.stringify({score:score,total:total,answers:answers})});
+    }
+    const res=await fetch(RESULTS_URL+'?score='+score);
+    const st=await res.json();
+    if(box&&st.count>0){
+      box.textContent=st.count+(st.count===1?' person has':' people have')+' taken this quiz. '+
+        'Average score: '+st.average.toFixed(1)+' out of '+total+'.'+
+        (st.count>1&&st.lowerPct!==null?' You scored better than '+st.lowerPct+'% of participants.':'');
+    } else if(box){ box.textContent=''; }
+  }catch(err){ if(box) box.textContent=''; /* the quiz keeps working; the statistics just don't appear */ }
+}
 const stage=document.getElementById('stage'), prog=document.getElementById('progress');
 
 function renderProgress(){
@@ -177,9 +204,12 @@ function renderResults(){
   stage.innerHTML=`<section class="card">
     <div class="eyebrow">Final score</div>
     <div class="score">${s}<small> / ${Q.length}</small></div>
+    <p class="community" id="quiz-stats"></p>
     <div class="nav"><button class="btn primary" id="restart">Retake quiz</button></div>
+    <p class="privacy">Anonymous scores are stored to show these statistics and to improve the quiz.</p>
   </section>`;
-  document.getElementById('restart').onclick=()=>{ans=Array(Q.length).fill(null);order=newOrder();cur=0;done=false;render();window.scrollTo(0,0);};
+  logQuizResult(s,Q.length,ans.map((x,i)=>x===Q[i].a?1:0));
+  document.getElementById('restart').onclick=()=>{logged=false;ans=Array(Q.length).fill(null);order=newOrder();cur=0;done=false;render();window.scrollTo(0,0);};
   window.scrollTo(0,0);
 }
 render();
