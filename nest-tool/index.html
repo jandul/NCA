@@ -505,7 +505,7 @@ function buildPreview(inp) {
   h += '</tbody></table>';
   h += '<div class="footnote">' +
     'S1, \u2026 = Sufficient configurations<br>' +
-    'NiD = Necessity in Degree: Required membership score according to NCA<br>' +
+    'NiD = Necessity-in-Degree: Required membership score according to NCA<br>' +
     SYM.core_present + '/' + SYM.cont_present + ' = Presence of core/contributory condition<br>' +
     SYM.core_absent + '/' + SYM.cont_absent + ' = Absence of core/contributory condition<br>' +
     SYM.nec_present + '/' + SYM.nec_absent + ' = \u2018Don\u2019t care\u2019 according to QCA; necessary (NiD) according to NCA' +
@@ -621,7 +621,7 @@ cfgLines.join(',\n'),
 'final_df <- rbind(display, fit_rows)',
 'note_lines <- c(',
 '  "S1, \\u2026 = Sufficient configurations",',
-'  "NiD = Necessity in Degree: Required membership score according to NCA",',
+'  "NiD = Necessity-in-Degree: Required membership score according to NCA",',
 '  paste0(sym$core_present, "/", sym$cont_present, " = Presence of core/contributory condition"),',
 '  paste0(sym$core_absent, "/", sym$cont_absent, " = Absence of core/contributory condition"),',
 '  paste0(sym$nec_present, "/", sym$nec_absent, " = \'Don\\u2019t care\' according to QCA; high/low level required according to NCA")',
