@@ -201,6 +201,7 @@
         <div class="subgroup">
           <div class="subheading">Tools</div>
           <div style="display:grid;gap:10px;">
+            <a class="subbtn" href="#faq" onclick="openFaq();return false;">NCA FAQ <span class="badge-new">New</span></a>
             <a class="subbtn" href="#quiz" onclick="document.getElementById('quiz-modal').classList.add('open');return false;">NCA readiness quiz</a>
             <a class="subbtn" href="#score" onclick="document.getElementById('score-modal').classList.add('open');return false;">SCoRe checklist</a>
             <a class="subbtn" href="#ai-score" onclick="document.getElementById('aiscore-modal').classList.add('open');return false;">AI-SCoRe</a>
@@ -550,10 +551,1036 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       NCA FAQ — selection pop-up and answers pop-up
+       ============================================================ -->
+  <style>
+    /* "New" label on the NCA FAQ button */
+    .badge-new {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: #111;
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      vertical-align: 1px;
+    }
+
+    .faq-choices { margin: 0 0 20px; }
+    .faq-choices-heading { font-weight: 800; font-size: 14px; color: #333; margin: 0 0 6px; }
+    .faq-choice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 0;
+      font-size: 14px;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+    .faq-choice:hover { color: #111; }
+    .faq-choice input { margin: 0; width: 15px; height: 15px; accent-color: #111; cursor: pointer; flex: none; }
+    .faq-choice:has(input:checked) { color: #111; }
+    .faq-choice.faq-all {
+      font-weight: 700;
+      color: #111;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .faq-hint { font-size: 12.5px; color: #666; margin: -12px 0 16px; }
+    button.modal-close:disabled { opacity: 0.6; cursor: not-allowed; }
+    button.modal-close:disabled:hover { border-color: #ddd; }
+
+    .faq-results-modal { max-width: 680px; max-height: 85vh; overflow-y: auto; }
+    .faq-group { margin-top: 26px; }
+    .faq-group:first-of-type { margin-top: 10px; }
+    .faq-group-head {
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin: 0 0 4px;
+    }
+    .faq-group-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #777;
+      margin: 0 0 2px;
+    }
+    .faq-group-title { font-weight: 800; font-size: 16px; color: #111; margin: 0; }
+    .modal p.faq-group-intro { font-size: 13px; font-style: italic; color: #666; margin: 3px 0 0; line-height: 1.5; }
+    .faq-q { font-size: 14px; font-weight: 800; color: #111; margin: 14px 0 4px; }
+    .modal p.faq-a { margin: 0 0 6px; }
+    .modal p.faq-refs { font-size: 13px; color: #555; margin: 0 0 4px; line-height: 1.5; }
+    #faq-results-lead a, .faq-refs a { color: #111; }
+    #faq-results-lead a:hover, .faq-refs a:hover { color: #555; }
+    .faq-note { color: #666; }
+  </style>
+
+  <!-- FAQ modal — step 1: choose audiences -->
+  <div class="modal-overlay" id="faq-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal" style="max-width:480px;max-height:85vh;overflow-y:auto;">
+      <h2>NCA FAQ</h2>
+      <p>Short answers to the questions that different groups may ask about Necessary Condition Analysis (NCA). Each answer points to the sections of the online NCA book where the point is developed. Select one or more audiences below.</p>
+      <div class="faq-choices" id="faq-choices"></div>
+      <p class="faq-hint" id="faq-count"></p>
+      <div class="modal-actions">
+        <button class="modal-close" onclick="document.getElementById('faq-modal').classList.remove('open')">Close</button>
+        <button class="modal-close" id="faq-show" onclick="showFaq()" style="font-weight:700;" disabled>Show questions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ modal — step 2: questions and answers -->
+  <div class="modal-overlay" id="faq-results" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal faq-results-modal" id="faq-results-box">
+      <h2>NCA FAQ</h2>
+      <p id="faq-results-lead" style="margin-bottom:8px;"></p>
+      <div id="faq-results-body"></div>
+      <div class="modal-actions" style="margin-top:22px;">
+        <button class="modal-close" onclick="backToFaq()">Change selection</button>
+        <button class="modal-close" onclick="document.getElementById('faq-results').classList.remove('open')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // FAQ content: Dul, J. (2027). Necessary condition analysis (NCA): Principles and application.
+    // Each group = one audience; each item = question, answer and links to the online book.
+    const FAQ_DATA = [
+  {
+    "title": "General questions: basics",
+    "intro": "Questions that people from any background may ask.",
+    "items": [
+      {
+        "q": "What is NCA?",
+        "a": "A methodology and data-analysis method for testing whether a condition <em>X<\/em> is necessary for an outcome <em>Y<\/em>. The data analysis shows this as an empty space in a corner of the <em>XY<\/em> plot.",
+        "refs": [
+          {
+            "label": "Chapter 1 Introduction",
+            "url": "https://jandul.github.io/nca-book/introduction.html#introduction",
+            "note": ""
+          },
+          {
+            "label": "2.4 Necessity causality",
+            "url": "https://jandul.github.io/nca-book/causality.html#necessitycausality",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What does \"necessary but not sufficient\" mean?",
+        "a": "Without the condition, the outcome cannot occur; with it, the outcome is possible. NCA does not claim sufficiency: whether the condition also guarantees the outcome is a separate question that NCA does not test.",
+        "refs": [
+          {
+            "label": "3.8 The meaning of ‘necessary but not sufficient’",
+            "url": "https://jandul.github.io/nca-book/theory.html#necessarybutnotsufficient",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Isn't necessity unrealistically deterministic?",
+        "a": "No; NCA allows a few exceptions, so the claim holds for almost all cases rather than strictly every case, and only within the theoretical domain specified in the hypothesis.",
+        "refs": [
+          {
+            "label": "2.4.3 Typicality necessity",
+            "url": "https://jandul.github.io/nca-book/causality.html#typicalitynecessity",
+            "note": ""
+          },
+          {
+            "label": "4.5.4 Purity – noise and exceptions",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#purity",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Is a necessary condition always a high level of <em>X<\/em> for a high level of <em>Y<\/em>?",
+        "a": "No; a low level of the condition can also be necessary, and the outcome can be a low level, so four directions are possible. The direction stated in the hypothesis determines which corner of the <em>XY<\/em> plot is expected to be empty, and NCA can analyze any of the four corners.",
+        "refs": [
+          {
+            "label": "3.5 Direction of a necessity relationship",
+            "url": "https://jandul.github.io/nca-book/theory.html#direction",
+            "note": ""
+          },
+          {
+            "label": "3.6 Expected empty corner",
+            "url": "https://jandul.github.io/nca-book/theory.html#expectedemptycorner",
+            "note": ""
+          },
+          {
+            "label": "3.7 Double necessity",
+            "url": "https://jandul.github.io/nca-book/theory.html#morecorners",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How is NCA different from regression?",
+        "a": "Regression estimates what happens on average; NCA identifies what cannot happen without the condition.",
+        "refs": [
+          {
+            "label": "11.3.2 Comparison NCA and regression-based methods",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#comparison-nca-and-regression-based-methods",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How is NCA different from QCA?",
+        "a": "QCA mainly identifies combinations of conditions that are sufficient for an outcome; NCA identifies single conditions that are necessary for it. When QCA analyzes necessity, it does so only in kind, not in degree.",
+        "refs": [
+          {
+            "label": "11.5.2 Comparison NCA and QCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#comparisonncaqca",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can NCA be combined with other methods?",
+        "a": "Yes; NCA adds a necessity lens to methods with other lenses, such as regression and SEM (average effects) or QCA (sufficient combinations), so that combining them gives additional insights rather than competing answers.",
+        "refs": [
+          {
+            "label": "Chapter 11 Multimethod studies",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#multimethodstudies",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "When is NCA the appropriate method?",
+        "a": "When a theory gives reasons why <em>X<\/em> is necessary for <em>Y<\/em>, so that a necessity hypothesis can be stated before the data are analyzed.",
+        "refs": [
+          {
+            "label": "Chapter 7 Hypothesis",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#hypothesisformulation",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What must a theoretical justification of necessity explain?",
+        "a": "Why <em>X<\/em> enables <em>Y<\/em>, why the absence of <em>X<\/em> blocks <em>Y<\/em>, why nothing can compensate for the absence of <em>X<\/em>, and why <em>X<\/em> must be in place before <em>Y<\/em> can occur.",
+        "refs": [
+          {
+            "label": "7.5 Developing a formal necessity hypothesis",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#developingformaltheory",
+            "note": ""
+          },
+          {
+            "label": "7.5.3 Step 3: Provide causal explanation",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#causalexplanation",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What is the ceiling line?",
+        "a": "The line that separates the area where cases are possible from the empty area where they are not; it marks, for each level of <em>X<\/em>, the highest level of <em>Y<\/em> that can be reached.",
+        "refs": [
+          {
+            "label": "4.3.2 Ceiling line",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathceiling",
+            "note": ""
+          },
+          {
+            "label": "9.3.2 Ceiling line specification",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#ceilinglinespecification",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What is the effect size?",
+        "a": "The size of the empty area relative to the scope, between 0 and 1, with <em>d<\/em> ≥ 0.10 as a common threshold.",
+        "refs": [
+          {
+            "label": "4.3.1 Bounding box",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#formalboundingbox",
+            "note": ""
+          },
+          {
+            "label": "4.4.1 Effect size",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#effectsize",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "When does NCA conclude that a condition is necessary?",
+        "a": "A necessary condition is plausible when three criteria are met together: theoretical support, an effect size of <em>d<\/em> ≥ 0.10, and <em>p<\/em> \\&lt; 0.05.",
+        "refs": [
+          {
+            "label": "6.2 Core criteria for necessity",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What is the difference between necessity in kind and necessity in degree?",
+        "a": "Necessity in kind says that <em>X<\/em> is necessary for <em>Y<\/em>; necessity in degree says which level of <em>X<\/em> is necessary for which level of <em>Y<\/em>, as shown in the bottleneck table.",
+        "refs": [
+          {
+            "label": "9.10 Conclusion about necessity-in-kind",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#necessityinkind",
+            "note": ""
+          },
+          {
+            "label": "9.11 Bottleneck analysis: necessity-in-degree",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#bottleneck",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "General questions: doing an NCA study",
+    "intro": "Practical questions about data, analysis and reporting.",
+    "items": [
+      {
+        "q": "How large must my sample be?",
+        "a": "There is no fixed minimum; larger samples give more power to detect a true ceiling, and a power analysis shows the sample size needed for a given effect size.",
+        "refs": [
+          {
+            "label": "5.6 Power analysis",
+            "url": "https://jandul.github.io/nca-book/statistics.html#statisticspower",
+            "note": ""
+          },
+          {
+            "label": "6.3 Statistical credibility",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#statisticalcredibility",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can I use NCA with small-n, qualitative or dichotomous data?",
+        "a": "Yes; NCA works with case studies, qualitative scores and set membership scores, using purposive case selection in small-n studies.",
+        "refs": [
+          {
+            "label": "8.3.2 Small-n case selection",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#smallncaseselection",
+            "note": ""
+          },
+          {
+            "label": "8.4.2 Qualitative data",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#qualitativedata",
+            "note": ""
+          },
+          {
+            "label": "8.4.3 Set membership data",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#setmembership",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Which ceiling line should I use?",
+        "a": "The default lines are CE-FDH (stepwise) for discrete variables or irregular, non-linear ceilings, and CR-FDH (straight line) for continuous variables and linear ceilings; the choice is checked for robustness.",
+        "refs": [
+          {
+            "label": "4.3.2 Ceiling line",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathceiling",
+            "note": ""
+          },
+          {
+            "label": "9.3.2 Ceiling line specification",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#ceilinglinespecification",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What do I do with outliers?",
+        "a": "Identify the cases with a large influence on the effect size (ceiling and scope outliers), and remove them only for a substantive reason such as a measurement error.",
+        "refs": [
+          {
+            "label": "9.8 Outlier analysis",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#outliers",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How do I know the result is robust?",
+        "a": "By checking whether the conclusion holds under reasonable alternative choices of ceiling line, scope, thresholds and outliers.",
+        "refs": [
+          {
+            "label": "6.4.1 Robustness",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#robustness",
+            "note": ""
+          },
+          {
+            "label": "9.12 Robustness checks",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#robustnesschecks",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How do I know the necessity model fits the data?",
+        "a": "NCA has eight model fit metrics: complexity, fit, ceiling accuracy, noise, exceptions, support, spread and sharpness, each with an example guideline; better fit increases the credibility of the evidence for necessity.",
+        "refs": [
+          {
+            "label": "4.5 Model fit",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#modelfit",
+            "note": ""
+          },
+          {
+            "label": "6.4.2 Model fit",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#modelfit1",
+            "note": ""
+          },
+          {
+            "label": "9.9 Model fit",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#modelfit2",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How should I report an NCA study?",
+        "a": "Use the SCoRe checklist, which lists what to report from theory to discussion.",
+        "refs": [
+          {
+            "label": "10.3 SCoRe checklist and recommendations",
+            "url": "https://jandul.github.io/nca-book/reporting.html#review",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What software can I use?",
+        "a": "The NCA package for R, and a module for Stata.",
+        "refs": [
+          {
+            "label": "Appendix B Software",
+            "url": "https://jandul.github.io/nca-book/appendixb.html#appendixb",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Regression and SEM researchers",
+    "intro": "Researchers in management, psychology and related fields who work mainly with regression and structural equation modeling.",
+    "items": [
+      {
+        "q": "Why does NCA not need control variables?",
+        "a": "In observational data, a third variable cannot move cases above a true ceiling, so control does not change the ceiling; only a <em>Z<\/em> that is sufficient for <em>X<\/em> and necessary for <em>Y<\/em> threatens the interpretation. An intervention that changes the causal mechanism, for example a substitute for <em>X<\/em>, can change the ceiling itself.",
+        "refs": [
+          {
+            "label": "4.6 Multiple necessary conditions",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#multipleconditions",
+            "note": ""
+          },
+          {
+            "label": "11.3.3 Regression-based statistical concepts do not (always) apply to NCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#confounding",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "If X is a significant predictor, why isn't it necessary?",
+        "a": "An average effect and necessity are different claims, and a condition can have one without the other.",
+        "refs": [
+          {
+            "label": "11.3.2 Comparison NCA and regression-based methods",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#comparison-nca-and-regression-based-methods",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Does NCA need regression or SEM to be rigorous?",
+        "a": "No; NCA is a complete method for testing necessity, and combining methods helps only when the study also asks sufficiency questions.",
+        "refs": [
+          {
+            "label": "11.2 Method-triangulation versus causal-pluralism",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#methodtriangulationversuscausalpluralism",
+            "note": ""
+          },
+          {
+            "label": "11.4 Combining NCA and SEM in a multimethod study",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#ncasem",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Causal data scientists",
+    "intro": "Researchers trained in potential outcomes, DAGs, quasi-experimental designs and debiased machine learning.",
+    "items": [
+      {
+        "q": "What is the estimand?",
+        "a": "The estimand is the ceiling <em>c<\/em>(<em>x<\/em>): the upper bound on the potential outcome <em>Y<\/em>(<em>x<\/em>) that holds for (almost) all cases, a claim about the support of <em>Y<\/em>(<em>x<\/em>), not its mean.",
+        "refs": [
+          {
+            "label": "2.4 Necessity causality",
+            "url": "https://jandul.github.io/nca-book/causality.html#necessitycausality",
+            "note": ""
+          },
+          {
+            "label": "4.3.2 Ceiling line",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathceiling",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Doesn't Pearl already have the probability of necessity?",
+        "a": "The probability of necessity is the probability that an outcome that occurred would have been absent without its binary cause, whereas NCA asks which levels of the outcome are possible at each level of a continuous condition.",
+        "refs": [
+          {
+            "label": "2.4 Necessity causality",
+            "url": "https://jandul.github.io/nca-book/causality.html#necessitycausality",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How is necessity identified without statistical control?",
+        "a": "In observational data, no other variable can produce cases above a true ceiling, so only a <em>Z<\/em> that is sufficient for <em>X<\/em> and necessary for <em>Y<\/em> can make an empty corner spurious. Whether such a <em>Z<\/em> exists must be considered when the hypothesis is formulated, and others can challenge the hypothesis by proposing a plausible <em>Z<\/em>.",
+        "refs": [
+          {
+            "label": "5.9 Spuriousness",
+            "url": "https://jandul.github.io/nca-book/statistics.html#spurious",
+            "note": ""
+          },
+          {
+            "label": "11.3.3 Regression-based statistical concepts do not (always) apply to NCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#confounding",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can't selection or collider bias empty the corner?",
+        "a": "Yes, so the necessity theory must first explain why low-<em>X<\/em>, high-<em>Y<\/em> cases cannot exist, and the sample must then be drawn so that such cases, if they existed, could have been observed.",
+        "refs": [
+          {
+            "label": "8.3 Sampling and selection of cases",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#samplingandselection",
+            "note": "(sampling in general; selection that depends on <em>X<\/em> and <em>Y<\/em> jointly is not discussed)"
+          }
+        ]
+      },
+      {
+        "q": "Isn't boundary estimation non-standard and sensitive to extreme cases?",
+        "a": "Yes, because the ceiling depends on a few extreme cases, and a single case with measurement error can change it. NCA therefore checks these cases with outlier analysis, robustness checks and sensitivity analysis, and judges the ceiling by its effect size and a permutation test.",
+        "refs": [
+          {
+            "label": "5.5 Quality of ceiling lines",
+            "url": "https://jandul.github.io/nca-book/statistics.html#ceilingquality",
+            "note": ""
+          },
+          {
+            "label": "9.8 Outlier analysis",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#outliers",
+            "note": ""
+          },
+          {
+            "label": "9.12 Robustness checks",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#robustnesschecks",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Why not just run an experiment?",
+        "a": "Experiments can test necessity, by setting <em>X<\/em> low and checking that high <em>Y<\/em> never occurs, but they are not required, because observational data can falsify a necessity hypothesis as well.",
+        "refs": [
+          {
+            "label": "8.2.4 Experimental study",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#experiment",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Econometricians",
+    "intro": "Researchers who work with frontier analysis, quantile regression, panel data and the statistical properties of estimators.",
+    "items": [
+      {
+        "q": "Isn't this just frontier analysis (FDH or DEA)?",
+        "a": "NCA's base ceiling line is the free disposal hull (FDH) from production economics, but NCA uses it in two dimensions, one condition at a time, to test a necessity hypothesis rather than to measure the efficiency of units.",
+        "refs": [
+          {
+            "label": "4.3.2.1 Stepwise linear ceiling line",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathcefdh",
+            "note": ""
+          },
+          {
+            "label": "4.4 Mathematical estimation",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathematicalestimation",
+            "note": ""
+          },
+          {
+            "label": "4.6 Multiple necessary conditions",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#multipleconditions",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Why not quantile regression or stochastic frontier analysis?",
+        "a": "These methods model the distribution of cases below the ceiling, so the estimated ceiling drops as more cases appear below it; NCA's envelopment lines depend only on the cases at the boundary.",
+        "refs": [
+          {
+            "label": "4.4 Mathematical estimation",
+            "url": "https://jandul.github.io/nca-book/mathematics.html#mathematicalestimation",
+            "note": ""
+          },
+          {
+            "label": "5.5.2 Simulation results for NCA’s effect size",
+            "url": "https://jandul.github.io/nca-book/statistics.html#simulationeffect",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What about endogeneity?",
+        "a": "Endogeneity is not a separate problem for the ceiling; it is reinterpreted as reverse causality and measurement error, which theory, time order or an experiment address.",
+        "refs": [
+          {
+            "label": "5.7 Reverse causality",
+            "url": "https://jandul.github.io/nca-book/statistics.html#reversecausality",
+            "note": ""
+          },
+          {
+            "label": "11.3.3 Regression-based statistical concepts do not (always) apply to NCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#confounding",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What are the estimator's statistical properties?",
+        "a": "Ceiling estimators are judged by bias, efficiency and consistency in Monte Carlo simulations, and inference uses a permutation test whose null hypothesis is that <em>X<\/em> and <em>Y<\/em> are unrelated.",
+        "refs": [
+          {
+            "label": "5.3 Permutation tests",
+            "url": "https://jandul.github.io/nca-book/statistics.html#permutationtest",
+            "note": ""
+          },
+          {
+            "label": "5.5 Quality of ceiling lines",
+            "url": "https://jandul.github.io/nca-book/statistics.html#ceilingquality",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can NCA be used with panel data?",
+        "a": "Yes: each period can be analyzed with a common scope, and effect sizes can be compared between time points with a paired test.",
+        "refs": [
+          {
+            "label": "5.3.6 Paired test: effect size difference between two time points",
+            "url": "https://jandul.github.io/nca-book/statistics.html#paired",
+            "note": ""
+          },
+          {
+            "label": "5.3.7 Common scope",
+            "url": "https://jandul.github.io/nca-book/statistics.html#commonscope",
+            "note": ""
+          },
+          {
+            "label": "8.2.2 Longitudinal study",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#longitudinal",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Psychometricians and measurement methodologists",
+    "intro": "",
+    "items": [
+      {
+        "q": "Doesn't the effect size depend on how scores are constructed?",
+        "a": "Yes, as regression coefficients do; conclusions about constructs require valid and reliable scores in both methods.",
+        "refs": [
+          {
+            "label": "8.4.1 Quantitative data",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#quantitativedata",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Doesn't random measurement error bias NCA?",
+        "a": "Yes, but differently than in regression. Mainly error in cases near the ceiling or at the edges of the scope matters, and a single such case can change the result strongly. Error in cases far below the ceiling and away from the edges has little influence. Random error tends to lower the effect size and produce false negatives; sensitivity analysis can show how robust the ceiling is.",
+        "refs": [
+          {
+            "label": "5.8 Measurement error",
+            "url": "https://jandul.github.io/nca-book/statistics.html#measurementerror",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can effect sizes be compared across groups?",
+        "a": "Only with a common scope and, as in any comparison, measurement invariance.",
+        "refs": [
+          {
+            "label": "5.3.5 Independent test: effect size difference between two groups",
+            "url": "https://jandul.github.io/nca-book/statistics.html#independent",
+            "note": ""
+          },
+          {
+            "label": "5.3.7 Common scope",
+            "url": "https://jandul.github.io/nca-book/statistics.html#commonscope",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "QCA researchers",
+    "intro": "Researchers who use Qualitative Comparative Analysis and set-theoretic methods.",
+    "items": [
+      {
+        "q": "Isn't NCA the same as QCA's necessity analysis?",
+        "a": "No; NCA works with raw scores or set membership scores and identifies necessity in kind (<em>X<\/em> is necessary for <em>Y<\/em>) and in degree (level <em>x<\/em> of <em>X<\/em> is necessary for level <em>y<\/em> of <em>Y<\/em>), with an effect size and a <em>p<\/em> value. QCA works only with set membership scores and identifies necessity only in kind, evaluated by consistency.",
+        "refs": [
+          {
+            "label": "11.5.2 Comparison NCA and QCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#comparisonncaqca",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Why can NCA and fsQCA reach different conclusions about necessity?",
+        "a": "In fsQCA the ceiling is fixed in advance as the diagonal, so necessity is rejected when too many cases lie above it, whereas NCA estimates the ceiling from the data and can find necessity for some levels of <em>X<\/em> and <em>Y<\/em>. With crisp (dichotomous) sets, both usually reach the same conclusion.",
+        "refs": [
+          {
+            "label": "11.5.2 Comparison NCA and QCA",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#comparisonncaqca",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What does combining NCA and QCA add?",
+        "a": "NCA tests necessity in kind and in degree, while QCA identifies combinations of conditions that are sufficient for the outcome, so together they answer two different questions.",
+        "refs": [
+          {
+            "label": "11.6 Combining NCA and QCA in a multimethod study",
+            "url": "https://jandul.github.io/nca-book/multimethodstudies.html#combiningncaandqcainamultimethodstudy",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Applied researchers and PhD students",
+    "intro": "",
+    "items": [
+      {
+        "q": "Can I use NCA to explore which variables are necessary?",
+        "a": "No; NCA tests a necessity hypothesis stated before the analysis, and an empty corner without a theory is not a necessity conclusion.",
+        "refs": [
+          {
+            "label": "7.2 Hypothesis formulation and testing",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#hypothesistesting",
+            "note": ""
+          },
+          {
+            "label": "7.3 Why developing necessity hypotheses is different",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#whynecessityhypothesis",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Is p \\&lt; 0.05 enough?",
+        "a": "No; a necessity conclusion also needs a theoretical justification and a practically relevant effect size (typically <em>d<\/em> ≥ 0.10).",
+        "refs": [
+          {
+            "label": "6.2 Core criteria for necessity",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria",
+            "note": ""
+          },
+          {
+            "label": "9.4 Selection of evaluation criteria",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#selectionevaluationcriteria",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What sample do I need?",
+        "a": "One that covers low levels of the condition and high levels of the outcome, so that cases in the expected empty corner could appear if necessity were false.",
+        "refs": [
+          {
+            "label": "8.3 Sampling and selection of cases",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#samplingandselection",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can I select cases on the outcome?",
+        "a": "Yes, in small-n studies with purposive case selection, where necessity is evaluated without a <em>p<\/em> value; in large-n studies that use a <em>p<\/em> value, the sample should be representative of the population. In both, selection must not depend on <em>X<\/em> and <em>Y<\/em> jointly.",
+        "refs": [
+          {
+            "label": "8.3.2 Small-n case selection",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#smallncaseselection",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Journal editors and reviewers",
+    "intro": "",
+    "items": [
+      {
+        "q": "How should I evaluate an NCA manuscript?",
+        "a": "Check the basics first: whether a theoretically justified necessity hypothesis is stated before the analysis, whether the necessity conclusion is based on all three criteria (theory, effect size, <em>p<\/em> value), and whether the sample covers the expected empty corner.",
+        "refs": [
+          {
+            "label": "6.2 Core criteria for necessity",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria",
+            "note": ""
+          },
+          {
+            "label": "7.5 Developing a formal necessity hypothesis",
+            "url": "https://jandul.github.io/nca-book/hypothesisformulation.html#developingformaltheory",
+            "note": ""
+          },
+          {
+            "label": "8.3 Sampling and selection of cases",
+            "url": "https://jandul.github.io/nca-book/datacollection.html#samplingandselection",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How can I assess the overall quality of an NCA study?",
+        "a": "With the SCoRe checklist, which evaluates Strengthening (theoretical rigor), Conducting (data and analysis quality) and Reporting (transparency) in six parts with 5–10 items each, and marks some items as must-haves for any NCA publication.",
+        "refs": [
+          {
+            "label": "10.3 SCoRe checklist and recommendations",
+            "url": "https://jandul.github.io/nca-book/reporting.html#review",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "When is a critique of NCA valid?",
+        "a": "When it evaluates NCA on its own terms: as a test of a theoretically justified necessity hypothesis, judged by all three criteria (theory, effect size, <em>p<\/em> value), not as an estimator of an average effect or of the full data generating process. A critique based on simulations should also report all four outcomes of the test (true positives, false positives, true negatives and false negatives) and use data generating processes in which necessity can exist.",
+        "refs": [
+          {
+            "label": "6.2 Core criteria for necessity",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#corecriteria",
+            "note": ""
+          },
+          {
+            "label": "6.3 Statistical credibility",
+            "url": "https://jandul.github.io/nca-book/sensitivityspecificity.html#statisticalcredibility",
+            "note": ""
+          },
+          {
+            "label": "Appendix E Simulations for TPR and TNR",
+            "url": "https://jandul.github.io/nca-book/appendixtprtnr.html#appendixtprtnr",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Is a weak application a reason to reject NCA?",
+        "a": "No; weak theorizing or poor samples justify criticism of the application, not of the method.",
+        "refs": [
+          {
+            "label": "10.3 SCoRe checklist and recommendations",
+            "url": "https://jandul.github.io/nca-book/reporting.html#review",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Practitioners and managers",
+    "intro": "People who want to use NCA results for decisions and interventions.",
+    "items": [
+      {
+        "q": "What does a necessary condition mean for my decisions?",
+        "a": "It is a must-have: without it the desired outcome will not occur, whatever else you invest in, but having it does not guarantee the outcome.",
+        "refs": [
+          {
+            "label": "12.2.1 Must-have factors for desired outcomes",
+            "url": "https://jandul.github.io/nca-book/practice.html#must",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "How is a necessary condition different from a driver?",
+        "a": "A driver raises the outcome on average and can be compensated by other drivers, while a necessary condition cannot be compensated and must be in place first.",
+        "refs": [
+          {
+            "label": "12.2.3 Shifting attention from average to individual interventions",
+            "url": "https://jandul.github.io/nca-book/practice.html#shifting-attention-from-average-to-individual-interventions",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "What level of the condition do I need?",
+        "a": "The bottleneck table shows, for each target level of the outcome, the minimum level required of each necessary condition.",
+        "refs": [
+          {
+            "label": "9.11 Bottleneck analysis: necessity-in-degree",
+            "url": "https://jandul.github.io/nca-book/dataanalysis.html#bottleneck",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Where should I invest first?",
+        "a": "In the bottleneck: the necessary condition that is below its required level, because investing in other conditions does not help until it is fixed.",
+        "refs": [
+          {
+            "label": "12.4 Interventions for making desired outcomes possible",
+            "url": "https://jandul.github.io/nca-book/practice.html#desiredintervention",
+            "note": ""
+          },
+          {
+            "label": "12.6 Interventions with multiple necessary conditions",
+            "url": "https://jandul.github.io/nca-book/practice.html#multipleintervention",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Can NCA help prevent undesired outcomes?",
+        "a": "Yes; removing or keeping low a necessary condition for an undesired outcome, a stop factor, prevents that outcome.",
+        "refs": [
+          {
+            "label": "12.2.2 Stop factors for undesired outcomes",
+            "url": "https://jandul.github.io/nca-book/practice.html#stop",
+            "note": ""
+          },
+          {
+            "label": "12.5 Interventions for preventing undesired outcomes",
+            "url": "https://jandul.github.io/nca-book/practice.html#undesiredintervention",
+            "note": ""
+          }
+        ]
+      },
+      {
+        "q": "Does the result apply to individual cases or only on average?",
+        "a": "The ceiling holds for (almost) all cases, so it applies to each individual case, not only to a group of cases on average.",
+        "refs": [
+          {
+            "label": "12.2.3 Shifting attention from average to individual interventions",
+            "url": "https://jandul.github.io/nca-book/practice.html#shifting-attention-from-average-to-individual-interventions",
+            "note": ""
+          }
+        ]
+      }
+    ]
+  }
+];
+
+    (function buildFaqChoices() {
+      const box = document.getElementById('faq-choices');
+      let html = '<div class="faq-choices-heading">Audience</div><label class="faq-choice faq-all"><input type="checkbox" id="faq-all" onchange="faqToggleAll(this.checked)"> All</label>';
+      FAQ_DATA.forEach((g, i) => {
+        html += '<label class="faq-choice"><input type="checkbox" class="faq-group-cb" value="' + i +
+                '" onchange="faqSync()"> ' + g.title + '</label>';
+      });
+      box.innerHTML = html;
+      faqSync();
+    })();
+
+    function faqGroupBoxes() { return Array.from(document.querySelectorAll('.faq-group-cb')); }
+
+    function faqToggleAll(on) {
+      faqGroupBoxes().forEach(cb => cb.checked = on);
+      faqSync();
+    }
+
+    function faqSync() {
+      const boxes = faqGroupBoxes();
+      const chosen = boxes.filter(cb => cb.checked);
+      document.getElementById('faq-all').checked = chosen.length === boxes.length;
+      document.getElementById('faq-show').disabled = chosen.length === 0;
+      const n = chosen.reduce((s, cb) => s + FAQ_DATA[cb.value].items.length, 0);
+      document.getElementById('faq-count').textContent =
+        chosen.length ? n + (n === 1 ? ' question selected.' : ' questions selected.') : 'No audience selected yet.';
+    }
+
+    function openFaq() {
+      document.getElementById('faq-modal').classList.add('open');
+    }
+
+    function showFaq() {
+      const chosen = faqGroupBoxes().filter(cb => cb.checked).map(cb => FAQ_DATA[cb.value]);
+      if (!chosen.length) return;
+      let html = '';
+      chosen.forEach(g => {
+        html += '<div class="faq-group"><div class="faq-group-head">' +
+                '<div class="faq-group-label">Audience · ' + g.items.length + ' questions</div>' +
+                '<div class="faq-group-title">' + g.title + '</div>' +
+                (g.intro ? '<p class="faq-group-intro">' + g.intro + '</p>' : '') + '</div>';
+        g.items.forEach(it => {
+          const links = it.refs.map(r =>
+            '<a href="' + r.url + '" target="_blank" rel="noopener">' + r.label + '</a>' +
+            (r.note ? ' <span class="faq-note">' + r.note + '</span>' : '')
+          ).join('; ');
+          html += '<div class="faq-q">' + it.q + '</div>' +
+                  '<p class="faq-a">' + it.a + '</p>' +
+                  '<p class="faq-refs"><strong>Book:</strong> ' + links + '</p>';
+        });
+        html += '</div>';
+      });
+      const all = chosen.length === FAQ_DATA.length;
+      const n = chosen.reduce((s, g) => s + g.items.length, 0);
+      document.getElementById('faq-results-lead').innerHTML =
+        (all ? 'All audiences' : chosen.map(g => g.title).join(' · ')) + ' — ' + n + ' questions. ' +
+        'Links open the corresponding section of the <a href="https://jandul.github.io/nca-book/" target="_blank" rel="noopener">online NCA book</a>.';
+      document.getElementById('faq-results-body').innerHTML = html;
+      document.getElementById('faq-modal').classList.remove('open');
+      document.getElementById('faq-results').classList.add('open');
+      document.getElementById('faq-results-box').scrollTop = 0;
+    }
+
+    function backToFaq() {
+      document.getElementById('faq-results').classList.remove('open');
+      document.getElementById('faq-modal').classList.add('open');
+    }
+  </script>
+  <!-- ============================ end NCA FAQ ============================ -->
+
   <!-- Direct links to pop-ups, e.g. https://jandul.github.io/NCA/#quiz -->
   <script>
     // Link name (after the #)  ->  id of the pop-up
     const MODALS = {
+      'faq':               'faq-modal',
       'quiz':              'quiz-modal',
       'score':             'score-modal',
       'ai-score':          'aiscore-modal',
