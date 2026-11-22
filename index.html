@@ -99,6 +99,12 @@
     }
     a.subbtn:hover { border-color:#999; }
 
+    /* Archived book: greyed out */
+    .archived .subheading { color:#999; }
+    .archived p.desc { color:#aaa; }
+    .archived a.subbtn { color:#888; background:#f2f2f2; border-color:#e2e2e2; }
+    .archived a.subbtn:hover { color:#555; border-color:#bbb; }
+
     .disabled { opacity: 0.6; cursor: not-allowed; }
     footer { margin-top: 22px; font-size: 13px; color:#666; }
 
@@ -238,6 +244,13 @@
         <cite>— Herman Aguinis, Avram Tucker Distinguished Scholar and Professor of Management, The George Washington University, USA</cite>
       </blockquote>
 
+      <!-- Archived book -->
+      <div class="subgroup archived" style="margin-top:40px;">
+        <div class="subheading">Archived book</div>
+        <p class="desc" style="font-size:13px;margin:0 0 8px;">"Legacy" version (2021-2026). Previously on bookdown.com. Replaced by new book.</p>
+        <a class="subbtn" href="https://jandul.github.io/archived-nca-book/" target="_blank" rel="noopener">Open archived book</a>
+      </div>
+
     </div>
 
     <!-- Extras -->
@@ -276,15 +289,6 @@
           <div style="display:grid;gap:10px;">
             <a class="subbtn disabled" href="#" onclick="return false;">Conduct NCA with SEM in R</a>
             <a class="subbtn disabled" href="#" onclick="return false;">Conduct NCA with QCA in R</a>
-          </div>
-        </div>
-
-        <!-- Archived book -->
-        <div class="subgroup">
-          <div class="subheading">Archived book</div>
-          <p class="desc" style="font-size:13px;margin:0 0 8px;">"Legacy" version (2021-2026). Previously on bookdown.com. Replaced by new book.</p>
-          <div style="display:grid;gap:10px;">
-            <a class="subbtn" href="https://jandul.github.io/archived-nca-book/" target="_blank" rel="noopener">Open archived book</a>
           </div>
         </div>
 
