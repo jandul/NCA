@@ -115,8 +115,7 @@ HOW TO EDIT THIS FAQ
   separated by semicolons:  Book: [2.4 Necessity causality](https://...); [Chapter 7](https://...)
   A short note may follow a link in brackets, e.g. [8.3.1 Sampling](https://...) (only large-n)
 - Use *X* for italics.
-- Click Knit. The page is saved as index.html in a folder called nca-faq next to this file.
-  Upload that index.html to the nca-faq folder of the NCA repository on GitHub.
+- Knit, then upload the result to the nca-faq folder on GitHub as index.html.
   The FAQ dialog on the landing page reads its questions from that page automatically.
 -->
 <p><a href="https://jandul.github.io/NCA/">← NCA Book Resources</a></p>
@@ -269,6 +268,25 @@ Small-n case selection</a>; <a href="https://jandul.github.io/nca-book/datacolle
 Qualitative data</a>; <a href="https://jandul.github.io/nca-book/datacollection.html#setmembership">8.4.3
 Set membership data</a></p>
 </div>
+<div id="can-nca-be-used-in-qualitative-research" class="section level3">
+<h3>Can NCA be used in qualitative research?</h3>
+<p>Yes. NCA can be applied in a case study, where qualitative evidence
+from interviews, documents or observations is coded into levels of the
+condition and the outcome. Cases are selected purposively, so that the
+outcome is present (<em>Y</em> = 1) or the condition is absent
+(<em>X</em> = 0). A single case can reject the deterministic necessity
+hypothesis, and confidence grows as more cases do not falsify it. NCA is
+then applied by visual inspection of the <em>XY</em>-table. With nominal
+scores (categories without order) the size of the empty space is
+arbitrary, so no meaningful effect size can be calculated; with
+dichotomous scores the effect size is always 1 when the expected cell is
+empty. A <em>p</em> value cannot be estimated because the cases are few
+and not randomly selected.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/datacollection.html#casestudy">8.2.3
+Case study</a>; <a href="https://jandul.github.io/nca-book/datacollection.html#smallncaseselection">8.3.2
+Small-n case selection</a>; <a href="https://jandul.github.io/nca-book/datacollection.html#qualitativedata">8.4.2
+Qualitative data</a></p>
+</div>
 <div id="which-ceiling-line-should-i-use" class="section level3">
 <h3>Which ceiling line should I use?</h3>
 <p>The default lines are CE-FDH (stepwise) for discrete variables or
@@ -326,31 +344,94 @@ B Software</a></p>
 mainly with regression and structural equation modeling.</em></p>
 <div id="why-does-nca-not-need-control-variables" class="section level3">
 <h3>Why does NCA not need control variables?</h3>
-<p>In observational data, a third variable cannot move cases above a
-true ceiling, so control does not change the ceiling; only a <em>Z</em>
-that is sufficient for <em>X</em> and necessary for <em>Y</em> threatens
-the interpretation. An intervention that changes the causal mechanism,
-for example a substitute for <em>X</em>, can change the ceiling
-itself.</p>
-<p>Book: <a href="https://jandul.github.io/nca-book/mathematics.html#multipleconditions">4.6
-Multiple necessary conditions</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#confounding">11.3.3
-Regression-based statistical concepts do not (always) apply to
-NCA</a></p>
+<p>Because other variables cannot put cases in the empty corner. In
+regression, control variables separate the effect of <em>X</em> from the
+effects of other variables on the average. In NCA, a true ceiling holds
+for all cases, whatever their scores on other variables, so there is
+nothing to control for. Only a variable <em>Z</em> that is sufficient
+for <em>X</em> and necessary for <em>Y</em> could make the empty corner
+misleading, and this is checked with theory, not by adding control
+variables.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/multimethodstudies.html#confounding">11.3.3
+Regression-based statistical concepts do not (always) apply to NCA</a>;
+<a href="https://jandul.github.io/nca-book/statistics.html#spurious">5.9
+Spuriousness</a></p>
 </div>
 <div id="if-x-is-a-significant-predictor-why-isnt-it-necessary" class="section level3">
 <h3>If X is a significant predictor, why isn&#39;t it necessary?</h3>
-<p>An average effect and necessity are different claims, and a condition
-can have one without the other.</p>
+<p>Because the two are different claims. A significant predictor means
+that more <em>X</em> goes with more <em>Y</em> on average, but cases
+with low <em>X</em> can still reach high <em>Y</em>. A necessary
+condition means that high <em>Y</em> is not possible without <em>X</em>.
+A condition can be a predictor, necessary, both or neither, so a
+regression result does not show necessity, and an NCA result does not
+show an average effect.</p>
 <p>Book: <a href="https://jandul.github.io/nca-book/multimethodstudies.html#comparison-nca-and-regression-based-methods">11.3.2
 Comparison NCA and regression-based methods</a></p>
 </div>
 <div id="does-nca-need-regression-or-sem-to-be-rigorous" class="section level3">
 <h3>Does NCA need regression or SEM to be rigorous?</h3>
-<p>No; NCA is a complete method for testing necessity, and combining
-methods helps only when the study also asks sufficiency questions.</p>
+<p>No. NCA is a complete method for testing necessity. Regression or SEM
+is added only when the study also asks about average effects. The
+methods answer different questions, so one cannot be a robustness check
+of the other.</p>
 <p>Book: <a href="https://jandul.github.io/nca-book/multimethodstudies.html#methodtriangulationversuscausalpluralism">11.2
-Method-triangulation versus causal-pluralism</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#ncasem">11.4
-Combining NCA and SEM in a multimethod study</a></p>
+Method-triangulation versus causal-pluralism</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#combining-nca-and-regression-based-methods">11.3.4
+Combining NCA and regression-based methods</a></p>
+</div>
+<div id="should-i-use-standardized-latent-variable-scores-and-what-do-negative-scores-in-the-bottleneck-table-mean" class="section level3">
+<h3>Should I use standardized latent variable scores, and what do
+negative scores in the bottleneck table mean?</h3>
+<p>The effect size and <em>p</em> value do not change when scores are
+standardized or linearly transformed, so any of these scores give valid
+results. The bottleneck table is easier to read with unstandardized
+scores, which stay close to the original measurement scale. Standardized
+scores have a mean of 0, so a negative score only means &quot;below average&quot;.
+To avoid negative values, unstandardize the scores, rescale them to
+0–100 (min-max normalization), or express the bottleneck table in
+percentiles.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/multimethodstudies.html#stepsncasem">11.4.1
+Steps for conducting NCA with SEM</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#recommendationplssem">11.4.2
+Recommendations for combining NCA and SEM</a>; <a href="https://jandul.github.io/nca-book/dataanalysis.html#percentile">9.11.2
+Levels expressed as percentiles</a></p>
+</div>
+<div id="how-does-nca-deal-with-mediation" class="section level3">
+<h3>How does NCA deal with mediation?</h3>
+<p>As a chain of necessity, in which <em>X</em> is necessary for
+<em>M</em> and <em>M</em> is necessary for <em>Y</em>. This does not
+always make <em>X</em> necessary for <em>Y</em>. The chain is only as
+strong as its weakest link, and the chain effect size can even be 0 when
+each link has a positive effect size. Whether <em>X</em> is necessary
+for <em>Y</em> is shown directly by the ceiling of <em>X</em> on
+<em>Y</em>, which already includes the chain, so no separate indirect
+effect needs to be estimated. NCA&#39;s (practical) strength is its focus on
+(multiple) single conditions: each relationship (<em>X</em>–<em>M</em>,
+<em>M</em>–<em>Y</em> or <em>X</em>–<em>Y</em>) can be tested as a
+single necessity relationship, depending on which condition is relevant
+(actionable) and which outcome is the relevant desired or undesired
+outcome.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/mathematics.html#arguments-for-single-condition-analyses">4.6.3
+Arguments for single condition analyses</a>; <a href="https://jandul.github.io/nca-book/mathematics.html#chain">4.6.4
+Chain of necessity</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#confounding">11.3.3
+Regression-based statistical concepts do not (always) apply to
+NCA</a></p>
+</div>
+<div id="how-does-nca-deal-with-moderation" class="section level3">
+<h3>How does NCA deal with moderation?</h3>
+<p>A third variable cannot raise the overall ceiling, so it cannot
+weaken a necessary condition. What it can show is that the ceiling is
+lower in a subgroup, which means that another condition is also
+necessary there. Subgroups can be compared by estimating the effect size
+in each group with a common scope and testing the difference. The
+necessity of <em>X</em> for <em>Y</em> can be tested in the whole
+population or in a subgroup, depending on what is the focal unit and
+theoretical domain of the necessity hypothesis.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/theory.html#definitionnecessitytheory">3.2
+Main elements of a theory</a>; <a href="https://jandul.github.io/nca-book/multimethodstudies.html#confounding">11.3.3
+Regression-based statistical concepts do not (always) apply to NCA</a>;
+<a href="https://jandul.github.io/nca-book/statistics.html#independent">5.3.5
+Independent test: effect size difference between two groups</a>; <a href="https://jandul.github.io/nca-book/statistics.html#commonscope">5.3.7
+Common scope</a></p>
 </div>
 </div>
 <div id="causal-data-scientists" class="section level2">
@@ -416,6 +497,20 @@ Robustness checks</a></p>
 checking that high <em>Y</em> never occurs, but they are not required,
 because observational data can falsify a necessity hypothesis as
 well.</p>
+<p>Book: <a href="https://jandul.github.io/nca-book/datacollection.html#experiment">8.2.4
+Experimental study</a></p>
+</div>
+<div id="can-nca-be-used-with-an-experimental-design" class="section level3">
+<h3>Can NCA be used with an experimental design?</h3>
+<p>Yes. In an experimental design, cases are randomly assigned to a
+treatment group, where the condition is removed or reduced, and a
+control group. Randomization ensures that time effects, such as other
+necessary conditions that disappear, affect both groups alike. Necessity
+is supported when the outcome disappears or drops more in the treatment
+group than in the control group. In observational data no third variable
+can move cases above a true ceiling, but over time other necessary
+conditions can lower the outcome in both groups, and randomization
+balances that.</p>
 <p>Book: <a href="https://jandul.github.io/nca-book/datacollection.html#experiment">8.2.4
 Experimental study</a></p>
 </div>
